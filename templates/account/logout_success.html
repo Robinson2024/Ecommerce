@@ -1,0 +1,299 @@
+{% extends "account/base_auth.html" %}
+{% load i18n %}
+
+{% block title %}Sesión Cerrada - Tech Ecommerce{% endblock %}
+
+{% block extra_head %}
+<style>
+    .logout-success-container {
+        text-align: center;
+        animation: slideInUp 0.8s ease-out;
+        padding: 2rem 0;
+    }
+
+    .success-icon {
+        width: 120px;
+        height: 120px;
+        background: linear-gradient(135deg, #4caf50, #45a049);
+        border-radius: 50%;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 1.5rem;
+        box-shadow: 0 20px 40px rgba(76, 175, 80, 0.3);
+        animation: pulse 2s infinite;
+    }
+
+    .success-icon i {
+        font-size: 3rem;
+        color: white;
+    }    .success-title {
+        font-size: 2.5rem;
+        font-weight: 700;
+        background: linear-gradient(135deg, #4caf50, #2e7d32);
+        background-clip: text;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        margin-bottom: 1rem;
+    }
+
+    .success-subtitle {
+        font-size: 1.2rem;
+        color: #666;
+        margin-bottom: 2rem;
+        max-width: 500px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .feature-card {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 20px;
+        padding: 2rem;
+        margin-bottom: 1.5rem;
+        transition: all 0.3s ease;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    }
+
+    .feature-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+    }
+
+    .feature-icon {
+        width: 60px;
+        height: 60px;
+        background: linear-gradient(135deg, var(--auth-primary), var(--auth-secondary));
+        border-radius: 15px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 1rem;
+    }
+
+    .feature-icon i {
+        font-size: 1.5rem;
+        color: white;
+    }
+
+    .action-buttons {
+        margin-top: 2rem;
+    }
+
+    .btn-primary-custom {
+        background: linear-gradient(135deg, var(--auth-primary), var(--auth-secondary));
+        border: none;
+        border-radius: 12px;
+        padding: 12px 30px;
+        font-weight: 600;
+        color: white;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        margin: 0 10px;
+        display: inline-block;
+    }
+
+    .btn-primary-custom:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 25px rgba(0, 123, 255, 0.3);
+        color: white;
+        text-decoration: none;
+    }
+
+    .btn-outline-custom {
+        border: 2px solid var(--auth-primary);
+        color: var(--auth-primary);
+        background: transparent;
+        border-radius: 12px;
+        padding: 10px 30px;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        margin: 0 10px;
+        display: inline-block;
+    }
+
+    .btn-outline-custom:hover {
+        background: var(--auth-primary);
+        color: white;
+        transform: translateY(-2px);
+        text-decoration: none;
+    }
+
+    .countdown-timer {
+        background: linear-gradient(135deg, #fff3cd, #ffeaa7);
+        border: none;
+        border-radius: 12px;
+        padding: 1rem;
+        margin-top: 2rem;
+        border-left: 4px solid #f39c12;
+    }
+
+    .countdown-timer i {
+        color: #f39c12;
+        margin-right: 8px;
+    }
+
+    @keyframes slideInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @keyframes pulse {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.05); }
+        100% { transform: scale(1); }
+    }
+
+    @media (max-width: 768px) {
+        .success-title {
+            font-size: 2rem;
+        }
+        
+        .btn-primary-custom,
+        .btn-outline-custom {
+            margin: 5px 0;
+            width: 100%;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="logout-success-container">
+    <!-- Icono de éxito -->
+    <div class="success-icon">
+        <i class="bi bi-check-lg"></i>
+    </div>
+
+    <!-- Título principal -->
+    <h1 class="success-title">¡Sesión Cerrada!</h1>
+    <p class="success-subtitle">
+        Has cerrado sesión exitosamente. Tu información está segura y tu carrito se ha guardado automáticamente.
+    </p>
+
+    <!-- Características destacadas -->
+    <div class="row justify-content-center">
+        <div class="col-lg-4 col-md-6 mb-3">
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="bi bi-shield-check"></i>
+                </div>
+                <h6 class="fw-bold">Datos Protegidos</h6>
+                <p class="text-muted small mb-0">
+                    Tu información personal y preferencias están completamente seguras.
+                </p>
+            </div>
+        </div>
+        
+        <div class="col-lg-4 col-md-6 mb-3">
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="bi bi-cart-check"></i>
+                </div>
+                <h6 class="fw-bold">Carrito Guardado</h6>
+                <p class="text-muted small mb-0">
+                    Tus productos permanecen en el carrito para tu próxima visita.
+                </p>
+            </div>
+        </div>
+        
+        <div class="col-lg-4 col-md-6 mb-3">
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="bi bi-heart"></i>
+                </div>
+                <h6 class="fw-bold">Lista de Deseos</h6>
+                <p class="text-muted small mb-0">
+                    Tus productos favoritos te esperan para cuando regreses.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Información adicional -->
+    <div class="countdown-timer">
+        <div class="d-flex align-items-center justify-content-center">
+            <i class="bi bi-info-circle"></i>
+            <span class="fw-medium">
+                Serás redirigido automáticamente a la página principal en <span id="countdown">10</span> segundos
+            </span>
+        </div>
+    </div>
+
+    <!-- Botones de acción -->
+    <div class="action-buttons">
+        <a href="{% url 'account_login' %}" class="btn-primary-custom">
+            <i class="bi bi-box-arrow-in-right me-2"></i>
+            Iniciar Sesión Nuevamente
+        </a>
+        <a href="/" class="btn-outline-custom">
+            <i class="bi bi-house me-2"></i>
+            Ir a Inicio
+        </a>
+    </div>
+
+    <!-- Información de contacto -->
+    <div class="mt-4 text-center">
+        <p class="text-muted small">
+            ¿Necesitas ayuda? 
+            <a href="#" class="text-decoration-none fw-medium" style="color: var(--auth-primary);">
+                Contáctanos
+            </a>
+        </p>
+    </div>
+</div>
+
+<script>
+// Countdown y redirección automática
+let countdownElement = document.getElementById('countdown');
+let countdownTime = 10;
+
+function updateCountdown() {
+    countdownElement.textContent = countdownTime;
+    
+    if (countdownTime <= 0) {
+        window.location.href = '/';
+    } else {
+        countdownTime--;
+        setTimeout(updateCountdown, 1000);
+    }
+}
+
+// Iniciar countdown
+setTimeout(updateCountdown, 1000);
+
+// Pausar countdown si el usuario interactúa
+document.addEventListener('click', function() {
+    countdownTime = 999; // Pausar countdown
+});
+
+document.addEventListener('keydown', function() {
+    countdownTime = 999; // Pausar countdown
+});
+
+// Efectos de entrada
+document.addEventListener('DOMContentLoaded', function() {
+    // Animar las tarjetas con delay
+    const cards = document.querySelectorAll('.feature-card');
+    cards.forEach((card, index) => {
+        card.style.opacity = '0';
+        card.style.transform = 'translateY(30px)';
+        
+        setTimeout(() => {
+            card.style.transition = 'all 0.6s ease';
+            card.style.opacity = '1';
+            card.style.transform = 'translateY(0)';
+        }, 300 + (index * 150));
+    });
+});
+</script>
+{% endblock %}

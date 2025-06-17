@@ -1,0 +1,117 @@
+<!-- cart_items.html - Lista de items en el carrito -->
+{% if items %}
+    {% for item in items %}
+        <div class="cart-item border-bottom py-3" id="cart-item-{{ item.product.id }}">
+            <div class="row align-items-center">
+                <!-- Imagen del producto -->
+                <div class="col-2 col-md-1">
+                    {% if item.product.get_main_image %}
+                        <img src="{{ item.product.get_main_image.image.url }}" 
+                             alt="{{ item.product.name }}"
+                             class="product-image">
+                    {% else %}
+                        <div class="product-image bg-light d-flex align-items-center justify-content-center">
+                            <i class="bi bi-image text-muted"></i>
+                        </div>
+                    {% endif %}
+                </div>
+                
+                <!-- Información del producto -->
+                <div class="col-6 col-md-4">
+                    <h6 class="mb-1">
+                        <a href="{% url 'products:detail' item.product.slug %}" 
+                           class="text-decoration-none text-dark">
+                            {{ item.product.name }}
+                        </a>
+                    </h6>
+                    {% if item.variant %}
+                        <small class="text-muted">
+                            {% for attr_value in item.variant.attribute_values.all %}
+                                {{ attr_value.attribute.name }}: {{ attr_value.value }}{% if not forloop.last %}, {% endif %}
+                            {% endfor %}
+                        </small>
+                    {% endif %}
+                    <div class="mt-1">
+                        <small class="text-muted">SKU: {{ item.product.sku }}</small>
+                    </div>
+                </div>
+                
+                <!-- Precio unitario -->
+                <div class="col-2 col-md-2 text-center">
+                    <div class="fw-bold text-success">
+                        ${{ item.price|floatformat:0 }}
+                    </div>
+                    {% if item.product.compare_price and item.product.compare_price > item.price %}
+                        <small class="text-muted text-decoration-line-through">
+                            ${{ item.product.compare_price|floatformat:0 }}
+                        </small>
+                    {% endif %}
+                </div>
+                
+                <!-- Controles de cantidad -->
+                <div class="col-2 col-md-3">
+                    <div class="quantity-controls">
+                        <button type="button" 
+                                class="btn-quantity-decrease"
+                                hx-post="{% url 'cart:update' %}"
+                                hx-vals='{"product_id": "{{ item.product.id }}", "quantity": "{{ item.quantity|add:-1 }}"{% if item.variant %}, "variant_id": "{{ item.variant.id }}"{% endif %}}'
+                                hx-indicator="#loading-indicator"
+                                {% if item.quantity <= 1 %}disabled{% endif %}>
+                            <i class="bi bi-dash"></i>
+                        </button>
+                        
+                        <input type="number" 
+                               value="{{ item.quantity }}" 
+                               min="1" 
+                               max="99"
+                               class="form-control quantity-input"
+                               hx-post="{% url 'cart:update' %}"
+                               hx-trigger="change"
+                               hx-vals='{"product_id": "{{ item.product.id }}"{% if item.variant %}, "variant_id": "{{ item.variant.id }}"{% endif %}}'
+                               hx-include="this"
+                               hx-indicator="#loading-indicator"
+                               name="quantity">
+                        
+                        <button type="button" 
+                                class="btn-quantity-increase"
+                                hx-post="{% url 'cart:update' %}"
+                                hx-vals='{"product_id": "{{ item.product.id }}", "quantity": "{{ item.quantity|add:1 }}"{% if item.variant %}, "variant_id": "{{ item.variant.id }}"{% endif %}}'
+                                hx-indicator="#loading-indicator">
+                            <i class="bi bi-plus"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Total del item -->
+                <div class="col-10 col-md-1 text-end mt-2 mt-md-0">
+                    <div class="fw-bold text-primary">
+                        ${{ item.get_total_price|floatformat:0 }}
+                    </div>
+                </div>
+                
+                <!-- Botón eliminar -->
+                <div class="col-2 col-md-1 text-end">
+                    <button type="button" 
+                            class="btn btn-outline-danger btn-sm"
+                            hx-post="{% url 'cart:remove' %}"
+                            hx-vals='{"product_id": "{{ item.product.id }}"{% if item.variant %}, "variant_id": "{{ item.variant.id }}"{% endif %}}'
+                            hx-confirm="¿Eliminar {{ item.product.name }} del carrito?"
+                            hx-indicator="#loading-indicator"
+                            title="Eliminar del carrito">
+                        <i class="bi bi-trash"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+{% else %}
+    <div class="text-center py-5">
+        <i class="bi bi-cart-x display-1 text-muted"></i>
+        <h5 class="mt-3 text-muted">Tu carrito está vacío</h5>
+        <p class="text-muted">Agrega algunos productos para comenzar</p>
+        <a href="{% url 'products:list' %}" class="btn btn-primary">
+            <i class="bi bi-shop"></i>
+            Ir a la tienda
+        </a>
+    </div>
+{% endif %}

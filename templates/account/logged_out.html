@@ -1,0 +1,315 @@
+{% extends "account/base_auth.html" %}
+{% load i18n %}
+
+{% block title %}Sesión Cerrada - Tech Ecommerce{% endblock %}
+
+{% block content %}
+<div class="text-center mb-4">
+    <div class="mb-3">
+        <i class="bi bi-check-circle-fill" style="font-size: 4rem; color: var(--auth-success);"></i>
+    </div>
+    <h1 class="auth-title" style="color: var(--auth-success);">¡Hasta pronto!</h1>
+    <p class="auth-subtitle">Has cerrado sesión exitosamente</p>
+</div>
+
+<!-- Mensaje de confirmación -->
+<div class="alert alert-success-modern alert-modern text-center mb-4">
+    <h5 class="mb-3">
+        <i class="bi bi-shield-check-fill me-2"></i>
+        Sesión cerrada de forma segura
+    </h5>
+    <p class="mb-0">
+        Tu información está protegida y tu carrito se ha guardado automáticamente 
+        para tu próxima visita.
+    </p>
+</div>
+
+<!-- Acciones principales -->
+<div class="row g-3 mb-4">
+    <div class="col-md-6">
+        <a href="/" class="btn btn-auth-primary w-100" style="padding: 1rem;">
+            <i class="bi bi-house-fill me-2"></i>
+            Volver al Inicio
+        </a>
+    </div>
+    <div class="col-md-6">
+        <a href="{% url 'account_login' %}" class="btn btn-outline-primary w-100" style="padding: 1rem; border-radius: 16px;">
+            <i class="bi bi-box-arrow-in-right me-2"></i>
+            Iniciar Sesión Nuevamente
+        </a>
+    </div>
+</div>
+
+<!-- Navegación rápida -->
+<div class="border-top pt-4 mb-4">
+    <h6 class="text-center mb-3 text-muted">Continúa explorando Tech Ecommerce</h6>
+    <div class="row g-3">
+        <div class="col-6 col-md-3">
+            <a href="/products/" class="btn btn-outline-secondary w-100 h-100" style="border-radius: 16px; padding: 1.5rem 1rem;">
+                <i class="bi bi-bag-fill d-block mb-2" style="font-size: 2rem;"></i>
+                <div class="fw-bold">Productos</div>
+                <small class="text-muted">Ver catálogo</small>
+            </a>
+        </div>
+        <div class="col-6 col-md-3">
+            <a href="/products/?featured=true" class="btn btn-outline-secondary w-100 h-100" style="border-radius: 16px; padding: 1.5rem 1rem;">
+                <i class="bi bi-star-fill d-block mb-2" style="font-size: 2rem;"></i>
+                <div class="fw-bold">Destacados</div>
+                <small class="text-muted">Productos populares</small>
+            </a>
+        </div>
+        <div class="col-6 col-md-3">
+            <a href="/products/?category=smartphones" class="btn btn-outline-secondary w-100 h-100" style="border-radius: 16px; padding: 1.5rem 1rem;">
+                <i class="bi bi-phone-fill d-block mb-2" style="font-size: 2rem;"></i>
+                <div class="fw-bold">Smartphones</div>
+                <small class="text-muted">Lo más nuevo</small>
+            </a>
+        </div>
+        <div class="col-6 col-md-3">
+            <a href="/products/?category=laptops" class="btn btn-outline-secondary w-100 h-100" style="border-radius: 16px; padding: 1.5rem 1rem;">
+                <i class="bi bi-laptop-fill d-block mb-2" style="font-size: 2rem;"></i>
+                <div class="fw-bold">Laptops</div>
+                <small class="text-muted">Alta gama</small>
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Beneficios de crear cuenta -->
+<div class="border rounded-3 p-4 mb-4" style="background: linear-gradient(135deg, #f0f8ff, #e6f3ff); border-radius: 20px !important;">
+    <h6 class="text-center mb-3">
+        <i class="bi bi-gift-fill me-2"></i>
+        ¿Por qué crear una cuenta en Tech Ecommerce?
+    </h6>
+    <div class="row text-center">
+        <div class="col-md-3 mb-3">
+            <i class="bi bi-truck text-primary" style="font-size: 2.5rem;"></i>
+            <div class="mt-2">
+                <div class="fw-bold">Envío Gratis</div>
+                <small class="text-muted">En compras superiores a $50</small>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <i class="bi bi-percent text-success" style="font-size: 2.5rem;"></i>
+            <div class="mt-2">
+                <div class="fw-bold">Ofertas Exclusivas</div>
+                <small class="text-muted">Descuentos especiales</small>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <i class="bi bi-heart-fill text-danger" style="font-size: 2.5rem;"></i>
+            <div class="mt-2">
+                <div class="fw-bold">Lista de Deseos</div>
+                <small class="text-muted">Guarda tus favoritos</small>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <i class="bi bi-shield-check text-info" style="font-size: 2.5rem;"></i>
+            <div class="mt-2">
+                <div class="fw-bold">Compra Segura</div>
+                <small class="text-muted">Garantía total</small>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Newsletter signup -->
+<div class="alert" style="background: linear-gradient(135deg, #e8f5e8, #c8e6c9); border: none; border-radius: 16px; border-left: 4px solid var(--auth-success);">
+    <div class="row align-items-center">
+        <div class="col-md-8">
+            <h6 class="mb-2">
+                <i class="bi bi-envelope-heart-fill me-2"></i>
+                ¡No te pierdas nuestras ofertas!
+            </h6>
+            <p class="mb-0 small">
+                Suscríbete a nuestro newsletter y recibe descuentos exclusivos directamente en tu email.
+            </p>
+        </div>
+        <div class="col-md-4 text-end">
+            <a href="#newsletter" class="btn btn-success" style="border-radius: 12px;">
+                <i class="bi bi-envelope-plus-fill me-2"></i>
+                Suscribirme
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Timeline de lo que pasó -->
+<div class="border-top pt-4">
+    <h6 class="text-center mb-4 text-muted">Tu sesión:</h6>
+    <div class="row text-center">
+        <div class="col-3">
+            <div class="mb-2">
+                <div class="rounded-circle d-inline-flex align-items-center justify-content-center" 
+                     style="width: 40px; height: 40px; background: var(--auth-success); color: white;">
+                    <i class="bi bi-box-arrow-in-right"></i>
+                </div>
+            </div>
+            <small class="text-muted">Iniciaste sesión</small>
+        </div>
+        <div class="col-3">
+            <div class="mb-2">
+                <div class="rounded-circle d-inline-flex align-items-center justify-content-center" 
+                     style="width: 40px; height: 40px; background: var(--auth-success); color: white;">
+                    <i class="bi bi-bag-check"></i>
+                </div>
+            </div>
+            <small class="text-muted">Exploraste productos</small>
+        </div>
+        <div class="col-3">
+            <div class="mb-2">
+                <div class="rounded-circle d-inline-flex align-items-center justify-content-center" 
+                     style="width: 40px; height: 40px; background: var(--auth-success); color: white;">
+                    <i class="bi bi-shield-check"></i>
+                </div>
+            </div>
+            <small class="text-muted">Datos protegidos</small>
+        </div>
+        <div class="col-3">
+            <div class="mb-2">
+                <div class="rounded-circle d-inline-flex align-items-center justify-content-center" 
+                     style="width: 40px; height: 40px; background: var(--auth-success); color: white;">
+                    <i class="bi bi-box-arrow-right"></i>
+                </div>
+            </div>
+            <small class="text-muted">Cerraste sesión</small>
+        </div>
+    </div>
+</div>
+
+<!-- Información de contacto -->
+<div class="mt-4 text-center">
+    <small class="text-muted">
+        <i class="bi bi-headset me-1"></i>
+        ¿Dudas o sugerencias? 
+        <a href="mailto:soporte@techecommerce.com" class="auth-link">soporte@techecommerce.com</a>
+    </small>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Animaciones específicas para logout done */
+    .alert, .btn, .col-md-3, .col-3 {
+        animation: slideInUp 0.8s ease-out;
+    }
+    
+    @keyframes slideInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    /* Hover effects mejorados */
+    .btn-outline-secondary {
+        transition: all 0.4s ease;
+        border: 2px solid #6c757d;
+    }
+    
+    .btn-outline-secondary:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 15px 30px rgba(108, 117, 125, 0.2);
+        border-color: var(--auth-primary);
+        color: var(--auth-primary);
+    }
+    
+    /* Efectos en los iconos */
+    .bi {
+        transition: transform 0.3s ease;
+    }
+    
+    .btn:hover .bi {
+        transform: scale(1.2);
+    }
+    
+    /* Animación de pulso para elementos importantes */
+    .rounded-circle {
+        animation: pulse 2s infinite;
+    }
+    
+    @keyframes pulse {
+        0% { box-shadow: 0 0 0 0 rgba(102, 126, 234, 0.4); }
+        70% { box-shadow: 0 0 0 10px rgba(102, 126, 234, 0); }
+        100% { box-shadow: 0 0 0 0 rgba(102, 126, 234, 0); }
+    }
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Efecto de escritura en el título
+    const title = document.querySelector('.auth-title');
+    if (title) {
+        const text = title.textContent;
+        title.textContent = '';
+        let i = 0;
+        
+        function typeWriter() {
+            if (i < text.length) {
+                title.textContent += text.charAt(i);
+                i++;
+                setTimeout(typeWriter, 50);
+            }
+        }
+        
+        setTimeout(typeWriter, 300);
+    }
+    
+    // Animación staggered para elementos
+    const elements = document.querySelectorAll('.alert, .btn, .col-md-3');
+    elements.forEach((element, index) => {
+        element.style.animationDelay = (index * 0.1) + 's';
+    });
+    
+    // Efecto confetti al cargar (opcional)
+    setTimeout(() => {
+        // Aquí podrías agregar un efecto de confetti
+        // usando una librería como canvas-confetti
+        console.log('🎉 ¡Logout exitoso!');
+    }, 1000);
+    
+    // Analytics tracking (ejemplo)
+    if (typeof gtag !== 'undefined') {
+        gtag('event', 'logout', {
+            'event_category': 'authentication',
+            'event_label': 'successful_logout'
+        });
+    }
+    
+    // Auto-redirect timer (opcional, comentado)
+    /*
+    let countdown = 60; // 60 segundos
+    const countdownElement = document.createElement('div');
+    countdownElement.className = 'text-center mt-3';
+    countdownElement.innerHTML = `
+        <small class="text-muted">
+            <i class="bi bi-clock me-1"></i>
+            Redirección automática al inicio en: <span id="countdown">${countdown}</span>s
+        </small>
+    `;
+    
+    const updateCountdown = () => {
+        const countdownSpan = document.getElementById('countdown');
+        if (countdownSpan) {
+            countdownSpan.textContent = countdown;
+            countdown--;
+            
+            if (countdown < 0) {
+                window.location.href = '/';
+            }
+        }
+    };
+    
+    // Opcional: agregar countdown y auto-redirect
+    // document.querySelector('.container').appendChild(countdownElement);
+    // setInterval(updateCountdown, 1000);
+    */
+});
+</script>
+{% endblock %}

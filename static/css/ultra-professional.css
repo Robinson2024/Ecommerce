@@ -1,0 +1,660 @@
+/* Tech Ecommerce - Modern 2025 Professional Design */
+
+/* Modern 2025 Title - Reduced Size */
+.hero-content h1 {
+    font-size: clamp(3.5rem, 9vw, 6.5rem) !important;
+    font-weight: 800 !important;
+    line-height: 1.1 !important;
+    letter-spacing: -0.02em !important;
+    margin-bottom: 2rem !important;
+    
+    /* Modern 2025 Gradient - Slate & Emerald */
+    background: linear-gradient(135deg, 
+        #f8fafc 0%,     /* Pure white */
+        #e2e8f0 15%,    /* Light slate */
+        #10b981 30%,    /* Emerald 500 */
+        #059669 45%,    /* Emerald 600 */
+        #047857 60%,    /* Emerald 700 */
+        #065f46 75%,    /* Emerald 800 */
+        #ffffff 90%,    /* White */
+        #f1f5f9 100%    /* Slate 100 */
+    ) !important;
+    background-size: 200% 200% !important;
+    -webkit-background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
+    background-clip: text !important;
+    
+    /* Modern 2025 Glow - Emerald Based */
+    text-shadow: 
+        0 0 20px rgba(16, 185, 129, 0.4),
+        0 0 40px rgba(16, 185, 129, 0.2),
+        0 0 60px rgba(16, 185, 129, 0.1),
+        2px 2px 0px rgba(0, 0, 0, 0.6) !important;
+    
+    /* Subtle Modern Animation */
+    animation: modern2025TitleGlow 8s ease-in-out infinite alternate !important;
+    
+    /* Professional Filters */
+    filter: brightness(1.1) contrast(1.05) !important;
+    
+    /* Better Definition */
+    -webkit-text-stroke: 0.5px rgba(16, 185, 129, 0.1) !important;
+    
+    /* Full Visibility */
+    width: 100% !important;
+    overflow: visible !important;
+    white-space: nowrap !important;
+    display: block !important;
+}
+
+@keyframes modern2025TitleGlow {
+    0% { 
+        background-position: 0% 50%;
+        text-shadow: 
+            0 0 20px rgba(16, 185, 129, 0.4),
+            0 0 40px rgba(16, 185, 129, 0.2),
+            2px 2px 0px rgba(0, 0, 0, 0.6);
+        filter: brightness(1.1) contrast(1.05);
+    }
+    100% { 
+        background-position: 100% 50%;
+        text-shadow: 
+            0 0 25px rgba(5, 150, 105, 0.5),
+            0 0 50px rgba(5, 150, 105, 0.3),
+            2px 2px 0px rgba(0, 0, 0, 0.6);
+        filter: brightness(1.15) contrast(1.1);
+    }
+}
+
+/* Modern 2025 Subtitle */
+.hero-content h2 {
+    font-size: clamp(1.6rem, 3.5vw, 2.4rem) !important;
+    font-weight: 700 !important;
+    color: #6366f1 !important; /* Indigo 500 - Modern 2025 accent */
+    text-shadow: 
+        0 0 15px rgba(99, 102, 241, 0.5),
+        0 0 30px rgba(99, 102, 241, 0.2),
+        1px 1px 0px rgba(0, 0, 0, 0.6) !important;
+    margin-bottom: 2rem !important;
+    letter-spacing: -0.01em !important;
+    animation: modern2025SubtitlePulse 10s ease-in-out infinite !important;
+    filter: brightness(1.05) !important;
+}
+
+@keyframes modern2025SubtitlePulse {
+    0%, 100% { 
+        color: #6366f1; /* Indigo 500 */
+        text-shadow: 
+            0 0 15px rgba(99, 102, 241, 0.5),
+            0 0 30px rgba(99, 102, 241, 0.2),
+            1px 1px 0px rgba(0, 0, 0, 0.6);
+    }
+    33% { 
+        color: #8b5cf6; /* Violet 500 */
+        text-shadow: 
+            0 0 18px rgba(139, 92, 246, 0.6),
+            0 0 36px rgba(139, 92, 246, 0.3),
+            1px 1px 0px rgba(0, 0, 0, 0.6);
+    }
+    66% { 
+        color: #10b981; /* Emerald 500 */
+        text-shadow: 
+            0 0 16px rgba(16, 185, 129, 0.55),
+            0 0 32px rgba(16, 185, 129, 0.25),
+            1px 1px 0px rgba(0, 0, 0, 0.6);
+    }
+}
+
+/* Modern 2025 Background */
+.hero-tech {
+    background: linear-gradient(135deg, 
+        rgba(15, 23, 42, 0.95) 0%,    /* Slate 900 */
+        rgba(16, 185, 129, 0.08) 15%, /* Emerald 500 */
+        rgba(99, 102, 241, 0.06) 35%, /* Indigo 500 */
+        rgba(139, 92, 246, 0.05) 50%, /* Violet 500 */
+        rgba(16, 185, 129, 0.08) 65%, /* Emerald 500 */
+        rgba(30, 41, 59, 0.95) 85%,   /* Slate 800 */
+        rgba(2, 6, 23, 0.95) 100%     /* Slate 950 */
+    ) !important;
+    min-height: 90vh !important;
+}
+
+.hero-tech::before {
+    background: 
+        radial-gradient(circle at 20% 30%, rgba(16, 185, 129, 0.12) 0%, transparent 50%),  /* Emerald */
+        radial-gradient(circle at 80% 70%, rgba(99, 102, 241, 0.1) 0%, transparent 50%),   /* Indigo */
+        radial-gradient(circle at 50% 50%, rgba(139, 92, 246, 0.08) 0%, transparent 50%),  /* Violet */
+        radial-gradient(circle at 30% 80%, rgba(6, 182, 212, 0.09) 0%, transparent 45%)    /* Cyan */
+    !important;
+    animation: modern2025BackgroundShift 12s ease-in-out infinite !important;
+}
+
+@keyframes modern2025BackgroundShift {
+    0%, 100% { opacity: 1; }
+    25% { opacity: 0.85; }
+    50% { opacity: 1.05; }
+    75% { opacity: 0.9; }
+}
+
+/* Modern 2025 Description */
+.hero-content .lead {
+    font-size: clamp(1.1rem, 2.2vw, 1.4rem) !important;
+    line-height: 1.8 !important;
+    color: rgba(248, 250, 252, 0.9) !important; /* Slate 50 */
+    margin-bottom: 3rem !important;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5) !important;
+    font-weight: 400 !important;
+    letter-spacing: 0.01em !important;
+}
+
+/* Modern 2025 Buttons */
+.btn-primary {
+    font-size: 1.05rem !important;
+    padding: 1.1rem 2.5rem !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.8px !important;
+    /* Modern gradient: Emerald to Teal */
+    background: linear-gradient(135deg, #10b981 0%, #059669 30%, #0d9488 70%, #0f766e 100%) !important;
+    box-shadow: 
+        0 8px 25px rgba(16, 185, 129, 0.25),
+        0 4px 12px rgba(0, 0, 0, 0.15) !important;
+    border-radius: 10px !important;
+    transition: all 0.3s ease !important;
+    color: white !important;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px) scale(1.02) !important;
+    box-shadow: 
+        0 12px 35px rgba(16, 185, 129, 0.35),
+        0 6px 18px rgba(0, 0, 0, 0.25) !important;
+    /* Hover: Brighter emerald gradient */
+    background: linear-gradient(135deg, #34d399 0%, #10b981 30%, #14b8a6 70%, #0d9488 100%) !important;
+    color: white !important;
+}
+
+.btn-outline {
+    font-size: 1.05rem !important;
+    padding: 1.1rem 2.5rem !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.8px !important;
+    background: rgba(99, 102, 241, 0.06) !important; /* Indigo tint */
+    border: 2px solid #6366f1 !important; /* Indigo 500 */
+    color: #6366f1 !important;
+    border-radius: 10px !important;
+    backdrop-filter: blur(10px) !important;
+    box-shadow: 
+        0 6px 20px rgba(99, 102, 241, 0.2),
+        inset 0 1px 0 rgba(99, 102, 241, 0.1) !important;
+    transition: all 0.3s ease !important;
+}
+
+.btn-outline:hover {
+    /* Modern violet to indigo gradient */
+    background: linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%) !important;
+    color: white !important;
+    transform: translateY(-2px) scale(1.02) !important;
+    box-shadow: 
+        0 12px 35px rgba(99, 102, 241, 0.35),
+        0 6px 18px rgba(0, 0, 0, 0.2) !important;
+    border-color: #8b5cf6 !important; /* Violet 500 */
+}
+
+/* Enhanced Text Colors for 2025 */
+.text-gradient {
+    background: linear-gradient(135deg, 
+        #10b981 0%,   /* Emerald 500 */
+        #059669 25%,  /* Emerald 600 */
+        #0d9488 50%,  /* Teal 600 */
+        #0f766e 75%,  /* Teal 700 */
+        #10b981 100%  /* Emerald 500 */
+    ) !important;
+    background-size: 200% 200% !important;
+    -webkit-background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
+    background-clip: text !important;
+    font-weight: 800 !important;
+    animation: modern2025GradientFlow 4s ease-in-out infinite !important;
+}
+
+@keyframes modern2025GradientFlow {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+}
+
+.text-cyan {
+    color: #06b6d4 !important; /* Cyan 500 - Modern 2025 */
+    text-shadow: 
+        0 0 15px rgba(6, 182, 212, 0.5),
+        0 0 30px rgba(6, 182, 212, 0.2) !important;
+}
+
+.text-glow {
+    color: #f8fafc !important; /* Slate 50 */
+    text-shadow: 
+        0 0 20px rgba(16, 185, 129, 0.6),
+        0 0 40px rgba(16, 185, 129, 0.3),
+        0 0 60px rgba(16, 185, 129, 0.1) !important;
+}
+
+/* Ensure Full Width for Title */
+.hero-content {
+    width: 100% !important;
+    max-width: none !important;
+}
+
+/* Mobile Responsive 2025 */
+@media (max-width: 768px) {
+    .hero-content h1 {
+        font-size: clamp(2.5rem, 12vw, 4rem) !important;
+        line-height: 1.2 !important;
+        white-space: normal !important;
+        word-break: keep-all !important;
+    }
+    
+    .hero-content h2 {
+        font-size: clamp(1.3rem, 6vw, 1.8rem) !important;
+    }
+    
+    .hero-content .lead {
+        font-size: clamp(1rem, 4vw, 1.2rem) !important;
+    }
+    
+    .btn-primary, .btn-outline {
+        font-size: 0.95rem !important;
+        padding: 1rem 2rem !important;
+        letter-spacing: 0.6px !important;
+    }
+}
+
+/* Tablet Responsive 2025 */
+@media (min-width: 769px) and (max-width: 1024px) {
+    .hero-content h1 {
+        font-size: clamp(3rem, 8vw, 5.5rem) !important;
+    }
+    
+    .hero-content h2 {
+        font-size: clamp(1.4rem, 3.5vw, 2.2rem) !important;
+    }
+}
+
+@keyframes cleanTitleGlow {
+    0% { 
+        background-position: 0% 50%;
+        text-shadow: 
+            0 0 20px rgba(0, 210, 255, 0.6),
+            0 0 40px rgba(0, 210, 255, 0.4),
+            2px 2px 0px rgba(0, 0, 0, 0.7);
+        filter: brightness(1.1) contrast(1.05);
+    }
+    100% { 
+        background-position: 100% 50%;
+        text-shadow: 
+            0 0 25px rgba(64, 201, 255, 0.7),
+            0 0 50px rgba(64, 201, 255, 0.5),
+            2px 2px 0px rgba(0, 0, 0, 0.7);
+        filter: brightness(1.15) contrast(1.1);
+    }
+}
+
+/* Clean Professional Subtitle */
+.hero-content h2 {
+    font-size: clamp(1.8rem, 4vw, 2.8rem) !important;
+    font-weight: 700 !important;
+    color: #00d2ff !important;
+    text-shadow: 
+        0 0 15px rgba(0, 210, 255, 0.6),
+        0 0 30px rgba(0, 210, 255, 0.3),
+        1px 1px 0px rgba(0, 0, 0, 0.7) !important;
+    margin-bottom: 2rem !important;
+    letter-spacing: -0.01em !important;
+    animation: cleanSubtitlePulse 8s ease-in-out infinite !important;
+    filter: brightness(1.05) !important;
+}
+
+@keyframes cleanSubtitlePulse {
+    0%, 100% { 
+        color: #00d2ff;
+        text-shadow: 
+            0 0 15px rgba(0, 210, 255, 0.6),
+            0 0 30px rgba(0, 210, 255, 0.3),
+            1px 1px 0px rgba(0, 0, 0, 0.7);
+    }
+    50% { 
+        color: #40c9ff;
+        text-shadow: 
+            0 0 18px rgba(64, 201, 255, 0.7),
+            0 0 36px rgba(64, 201, 255, 0.4),
+            1px 1px 0px rgba(0, 0, 0, 0.7);
+    }
+}
+
+/* Simplified Background */
+.hero-tech {
+    background: linear-gradient(135deg, 
+        rgba(10, 14, 19, 0.95) 0%, 
+        rgba(0, 168, 255, 0.08) 20%,
+        rgba(124, 58, 237, 0.05) 50%,
+        rgba(0, 210, 255, 0.08) 80%,
+        rgba(15, 20, 25, 0.95) 100%) !important;
+    min-height: 90vh !important;
+}
+
+.hero-tech::before {
+    background: 
+        radial-gradient(circle at 20% 30%, rgba(0, 210, 255, 0.12) 0%, transparent 50%),
+        radial-gradient(circle at 80% 70%, rgba(64, 201, 255, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 50% 50%, rgba(124, 58, 237, 0.08) 0%, transparent 50%) !important;
+    animation: subtleBackgroundShift 10s ease-in-out infinite !important;
+}
+
+@keyframes subtleBackgroundShift {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.9; }
+}
+
+/* Clean Professional Description */
+.hero-content .lead {
+    font-size: clamp(1.2rem, 2.5vw, 1.5rem) !important;
+    line-height: 1.8 !important;
+    color: rgba(255, 255, 255, 0.9) !important;
+    margin-bottom: 3rem !important;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5) !important;
+    font-weight: 400 !important;
+    letter-spacing: 0.01em !important;
+}
+
+/* Simplified Buttons */
+.btn-primary {
+    font-size: 1.1rem !important;
+    padding: 1.2rem 2.8rem !important;
+    font-weight: 700 !important;
+    letter-spacing: 1px !important;
+    background: linear-gradient(135deg, #00a8ff 0%, #0078d4 50%, #00d2ff 100%) !important;
+    box-shadow: 
+        0 8px 25px rgba(0, 168, 255, 0.3),
+        0 4px 12px rgba(0, 0, 0, 0.2) !important;
+    border-radius: 12px !important;
+    transition: all 0.3s ease !important;
+}
+
+.btn-primary:hover {
+    transform: translateY(-3px) scale(1.02) !important;
+    box-shadow: 
+        0 12px 35px rgba(0, 168, 255, 0.4),
+        0 6px 18px rgba(0, 0, 0, 0.3) !important;
+    background: linear-gradient(135deg, #40c9ff 0%, #00a8ff 50%, #0078d4 100%) !important;
+}
+
+.btn-outline {
+    font-size: 1.1rem !important;
+    padding: 1.2rem 2.8rem !important;
+    font-weight: 700 !important;
+    letter-spacing: 1px !important;
+    background: rgba(0, 210, 255, 0.06) !important;
+    border: 2px solid #00d2ff !important;
+    color: #00d2ff !important;
+    border-radius: 12px !important;
+    backdrop-filter: blur(10px) !important;
+    box-shadow: 
+        0 6px 20px rgba(0, 210, 255, 0.2),
+        inset 0 1px 0 rgba(0, 210, 255, 0.1) !important;
+    transition: all 0.3s ease !important;
+}
+
+.btn-outline:hover {
+    background: linear-gradient(135deg, #00d2ff 0%, #40c9ff 100%) !important;
+    color: #0a0e13 !important;
+    transform: translateY(-3px) scale(1.02) !important;
+    box-shadow: 
+        0 12px 35px rgba(0, 210, 255, 0.4),
+        0 6px 18px rgba(0, 0, 0, 0.2) !important;
+    border-color: #40c9ff !important;
+}
+
+/* Ensure Full Width for Title */
+.hero-content {
+    width: 100% !important;
+    max-width: none !important;
+}
+
+/* Mobile Responsive - Ensure Title is Always Visible */
+@media (max-width: 768px) {
+    .hero-content h1 {
+        font-size: clamp(3rem, 15vw, 5rem) !important;
+        line-height: 1.1 !important;
+        white-space: normal !important;
+        word-break: keep-all !important;
+    }
+    
+    .hero-content h2 {
+        font-size: clamp(1.4rem, 6vw, 2rem) !important;
+    }
+    
+    .hero-content .lead {
+        font-size: clamp(1rem, 4vw, 1.3rem) !important;
+    }
+    
+    .btn-primary, .btn-outline {
+        font-size: 1rem !important;
+        padding: 1rem 2rem !important;
+        letter-spacing: 0.8px !important;
+    }
+}
+
+/* Tablet Responsive */
+@media (min-width: 769px) and (max-width: 1024px) {
+    .hero-content h1 {
+        font-size: clamp(4rem, 10vw, 7rem) !important;
+    }
+    
+    .hero-content h2 {
+        font-size: clamp(1.6rem, 4vw, 2.5rem) !important;
+    }
+}
+
+@keyframes ultraTitleGlow {
+    0% { 
+        background-position: 0% 50%;
+        text-shadow: 
+            0 0 40px rgba(0, 245, 255, 1),
+            0 0 80px rgba(0, 245, 255, 0.8),
+            0 0 120px rgba(0, 245, 255, 0.6),
+            4px 4px 0px rgba(0, 0, 0, 0.9);
+        filter: brightness(1.3) contrast(1.2) saturate(1.1);
+    }
+    50% { 
+        background-position: 50% 100%;
+        text-shadow: 
+            0 0 50px rgba(64, 201, 255, 1),
+            0 0 100px rgba(64, 201, 255, 0.9),
+            0 0 150px rgba(64, 201, 255, 0.7),
+            4px 4px 0px rgba(0, 0, 0, 0.9);
+        filter: brightness(1.4) contrast(1.3) saturate(1.2);
+    }
+    100% { 
+        background-position: 100% 0%;
+        text-shadow: 
+            0 0 60px rgba(0, 210, 255, 1),
+            0 0 120px rgba(0, 210, 255, 0.9),
+            0 0 180px rgba(0, 210, 255, 0.8),
+            4px 4px 0px rgba(0, 0, 0, 0.9);
+        filter: brightness(1.5) contrast(1.4) saturate(1.3);
+    }
+}
+
+/* Ultra Professional Subtitle */
+.hero-content h2 {
+    font-size: clamp(2rem, 5vw, 3.5rem) !important;
+    font-weight: 800 !important;
+    color: #00f5ff !important;
+    text-shadow: 
+        0 0 25px rgba(0, 245, 255, 1),
+        0 0 50px rgba(0, 245, 255, 0.8),
+        0 0 75px rgba(0, 245, 255, 0.6),
+        0 0 100px rgba(0, 245, 255, 0.4),
+        3px 3px 0px rgba(0, 0, 0, 0.9) !important;
+    margin-bottom: 2.5rem !important;
+    letter-spacing: -0.02em !important;
+    animation: ultraSubtitlePulse 5s ease-in-out infinite !important;
+    filter: brightness(1.2) contrast(1.1) !important;
+    -webkit-text-stroke: 0.5px rgba(0, 245, 255, 0.2) !important;
+}
+
+@keyframes ultraSubtitlePulse {
+    0%, 100% { 
+        color: #00f5ff;
+        text-shadow: 
+            0 0 25px rgba(0, 245, 255, 1),
+            0 0 50px rgba(0, 245, 255, 0.8),
+            0 0 75px rgba(0, 245, 255, 0.6),
+            3px 3px 0px rgba(0, 0, 0, 0.9);
+        filter: brightness(1.2) contrast(1.1);
+    }
+    20% { 
+        color: #40c9ff;
+        text-shadow: 
+            0 0 30px rgba(64, 201, 255, 1),
+            0 0 60px rgba(64, 201, 255, 0.8),
+            0 0 90px rgba(64, 201, 255, 0.6),
+            3px 3px 0px rgba(0, 0, 0, 0.9);
+        filter: brightness(1.25) contrast(1.15);
+    }
+    40% { 
+        color: #00d2ff;
+        text-shadow: 
+            0 0 35px rgba(0, 210, 255, 1),
+            0 0 70px rgba(0, 210, 255, 0.8),
+            0 0 105px rgba(0, 210, 255, 0.6),
+            3px 3px 0px rgba(0, 0, 0, 0.9);
+        filter: brightness(1.3) contrast(1.2);
+    }
+    60% { 
+        color: #0088ff;
+        text-shadow: 
+            0 0 28px rgba(0, 136, 255, 1),
+            0 0 56px rgba(0, 136, 255, 0.8),
+            0 0 84px rgba(0, 136, 255, 0.6),
+            3px 3px 0px rgba(0, 0, 0, 0.9);
+        filter: brightness(1.27) contrast(1.17);
+    }
+    80% { 
+        color: #00a8ff;
+        text-shadow: 
+            0 0 32px rgba(0, 168, 255, 1),
+            0 0 64px rgba(0, 168, 255, 0.8),
+            0 0 96px rgba(0, 168, 255, 0.6),
+            3px 3px 0px rgba(0, 0, 0, 0.9);
+        filter: brightness(1.28) contrast(1.18);
+    }
+}
+
+/* Ultra Enhanced Background */
+.hero-tech {
+    background: linear-gradient(135deg, 
+        rgba(5, 8, 12, 0.98) 0%, 
+        rgba(0, 168, 255, 0.15) 12%,
+        rgba(124, 58, 237, 0.1) 25%,
+        rgba(0, 210, 255, 0.15) 38%,
+        rgba(8, 12, 16, 0.98) 50%,
+        rgba(0, 245, 255, 0.12) 62%,
+        rgba(64, 201, 255, 0.1) 75%,
+        rgba(12, 16, 20, 0.98) 88%,
+        rgba(0, 0, 0, 0.95) 100%) !important;
+    min-height: 95vh !important;
+}
+
+.hero-tech::before {
+    background: 
+        radial-gradient(circle at 12% 20%, rgba(0, 245, 255, 0.25) 0%, transparent 35%),
+        radial-gradient(circle at 88% 80%, rgba(64, 201, 255, 0.2) 0%, transparent 35%),
+        radial-gradient(circle at 50% 50%, rgba(124, 58, 237, 0.15) 0%, transparent 30%),
+        radial-gradient(circle at 20% 90%, rgba(0, 210, 255, 0.18) 0%, transparent 25%),
+        radial-gradient(circle at 80% 10%, rgba(0, 168, 255, 0.22) 0%, transparent 25%) !important;
+    animation: ultraBackgroundShift 12s ease-in-out infinite !important;
+}
+
+@keyframes ultraBackgroundShift {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    25% { opacity: 0.9; transform: scale(1.02); }
+    50% { opacity: 1.1; transform: scale(1.05); }
+    75% { opacity: 0.95; transform: scale(1.03); }
+}
+
+/* Ultra Professional Description */
+.hero-content .lead {
+    font-size: clamp(1.3rem, 3vw, 1.8rem) !important;
+    line-height: 2 !important;
+    color: rgba(255, 255, 255, 0.95) !important;
+    margin-bottom: 4rem !important;
+    text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.7) !important;
+    font-weight: 500 !important;
+    letter-spacing: 0.02em !important;
+    filter: brightness(1.1) !important;
+}
+
+/* Ultra Enhanced Buttons */
+.btn-primary {
+    font-size: 1.2rem !important;
+    padding: 1.4rem 3.5rem !important;
+    font-weight: 900 !important;
+    letter-spacing: 1.5px !important;
+    box-shadow: 
+        0 15px 50px rgba(0, 168, 255, 0.5),
+        0 8px 25px rgba(0, 0, 0, 0.4),
+        inset 0 3px 0 rgba(255, 255, 255, 0.4),
+        inset 0 -3px 0 rgba(0, 0, 0, 0.3) !important;
+}
+
+.btn-outline {
+    font-size: 1.2rem !important;
+    padding: 1.4rem 3.5rem !important;
+    font-weight: 900 !important;
+    letter-spacing: 1.5px !important;
+    border-width: 3px !important;
+    box-shadow: 
+        0 12px 40px rgba(0, 245, 255, 0.4),
+        inset 0 3px 0 rgba(0, 245, 255, 0.3) !important;
+}
+
+/* Responsive Enhancements */
+@media (max-width: 768px) {
+    .hero-content h1 {
+        font-size: clamp(2.5rem, 12vw, 4rem) !important;
+        line-height: 0.9 !important;
+    }
+    
+    .hero-content h2 {
+        font-size: clamp(1.5rem, 8vw, 2.5rem) !important;
+    }
+    
+    .hero-content .lead {
+        font-size: clamp(1.1rem, 4vw, 1.4rem) !important;
+    }
+    
+    .btn-primary, .btn-outline {
+        font-size: 1rem !important;
+        padding: 1.2rem 2.5rem !important;
+        letter-spacing: 1px !important;
+    }
+}
+
+/* Ultra High Definition Display Support */
+@media (min-resolution: 2dppx), (min-resolution: 192dpi) {
+    .hero-content h1 {
+        text-shadow: 
+            0 0 50px rgba(0, 245, 255, 1),
+            0 0 100px rgba(0, 245, 255, 0.8),
+            0 0 150px rgba(0, 245, 255, 0.6),
+            0 0 200px rgba(0, 245, 255, 0.4),
+            5px 5px 0px rgba(0, 0, 0, 0.9) !important;
+    }
+    
+    .hero-content h2 {
+        text-shadow: 
+            0 0 30px rgba(0, 245, 255, 1),
+            0 0 60px rgba(0, 245, 255, 0.8),
+            0 0 90px rgba(0, 245, 255, 0.6),
+            4px 4px 0px rgba(0, 0, 0, 0.9) !important;
+    }
+}

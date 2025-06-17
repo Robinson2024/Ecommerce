@@ -1,0 +1,28 @@
+# ========================================
+# DEPENDENCIAS DE DESARROLLO
+# ========================================
+# Herramientas que solo se usan durante el desarrollo local
+# Incluye todas las dependencias base + herramientas de desarrollo
+
+-r base.txt
+
+# Testing Framework - Framework de testing
+pytest==8.4.0                              # Framework moderno de testing para Python
+pytest-django==4.11.1                      # Integración de pytest con Django
+pytest-cov==6.2.1                          # Análisis de cobertura de código en tests
+factory-boy==3.3.1                         # Fábrica de objetos para crear datos de prueba
+faker==30.3.0                              # Generador de datos falsos realistas
+
+# Code Quality - Calidad y formato de código
+black==24.10.0                             # Formateador automático de código Python
+isort==6.0.1                               # Organizador automático de imports
+flake8==7.2.0                              # Linter para detectar errores de estilo
+mypy==1.16.1                               # Verificador de tipos estáticos
+django-stubs==5.1.0                        # Type hints para Django
+
+# Development server enhancements - Mejoras del servidor de desarrollo
+watchdog==6.0.0                            # Auto-recarga automática de archivos modificados
+
+# Performance analysis - Análisis de rendimiento
+django-silk==5.1.0                         # Profiling de consultas SQL y performance
+memory-profiler==0.61.0                    # Análisis detallado del uso de memoria

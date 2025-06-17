@@ -1,0 +1,432 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ product.name }} - Tech Ecommerce{% endblock %}
+
+{% block meta_description %}{{ product.meta_description|default:product.short_description|default:product.description|truncatewords:25 }}{% endblock %}
+
+{% block extra_css %}
+<style>
+    .product-gallery {
+        position: sticky;
+        top: 100px;
+    }
+    
+    .thumbnail-image {
+        transition: all 0.3s ease;
+        cursor: pointer;
+    }
+    
+    .thumbnail-image:hover {
+        transform: scale(1.05);
+        box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    }
+    
+    .thumbnail-image.active {
+        border: 3px solid #007bff;
+        transform: scale(1.02);
+    }
+    
+    .product-badge {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        z-index: 10;
+    }
+    
+    .price-section {
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        border-radius: 15px;
+        padding: 2rem;
+        border: 1px solid #dee2e6;
+    }
+    
+    .feature-list {
+        background: linear-gradient(135deg, #e3f2fd 0%, #f3e5f5 100%);
+        border-radius: 15px;
+        padding: 1.5rem;
+    }
+    
+    .quantity-selector {
+        border: 2px solid #007bff;
+        border-radius: 50px;
+        overflow: hidden;
+        display: inline-flex;
+        background: white;
+    }
+    
+    .quantity-btn {
+        background: #007bff;
+        color: white;
+        border: none;
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+    }
+    
+    .quantity-btn:hover {
+        background: #0056b3;
+        transform: scale(1.1);
+    }
+    
+    .quantity-input {
+        border: none;
+        text-align: center;
+        width: 60px;
+        height: 40px;
+        font-weight: bold;
+        background: transparent;
+    }
+    
+    .product-tabs .nav-link {
+        border: none;
+        background: transparent;
+        color: #6c757d;
+        font-weight: 600;
+        padding: 1rem 2rem;
+        border-radius: 50px;
+        margin: 0 0.5rem;
+        transition: all 0.3s ease;
+    }
+    
+    .product-tabs .nav-link.active {
+        background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0,123,255,0.4);
+    }
+    
+    .related-product-card {
+        transition: all 0.3s ease;
+        border: none;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        border-radius: 15px;
+        overflow: hidden;
+    }
+    
+    .related-product-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+    }
+    
+    .zoom-container {
+        position: relative;
+        overflow: hidden;
+        border-radius: 15px;
+        background: white;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    }
+    
+    .zoom-image {
+        transition: transform 0.3s ease;
+        cursor: zoom-in;
+    }
+    
+    .zoom-image:hover {
+        transform: scale(1.1);
+    }
+    
+    @media (max-width: 768px) {
+        .product-gallery {
+            position: static;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-4 py-3">
+    <!-- Breadcrumb mejorado -->
+    <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a href="{% url 'core:home' %}" class="text-decoration-none">
+                    <i class="bi bi-house-fill me-1"></i>Inicio
+                </a>
+            </li>
+            <li class="breadcrumb-item">
+                <a href="{% url 'products:list' %}" class="text-decoration-none">Productos</a>
+            </li>
+            {% if product.category %}
+            <li class="breadcrumb-item">
+                <a href="{% url 'products:list' %}?category={{ product.category.slug }}" 
+                   class="text-decoration-none">{{ product.category.name }}</a>
+            </li>
+            {% endif %}
+            <li class="breadcrumb-item active">{{ product.name|truncatewords:3 }}</li>
+        </ol>
+    </nav>
+
+    <div class="row g-5">
+        <!-- Galería de imágenes (Columna izquierda) -->
+        <div class="col-lg-6">
+            <div class="product-gallery">
+                <!-- Imagen principal -->
+                <div class="main-image-container mb-4">
+                    <div class="zoom-container position-relative">
+                        {% if product.is_on_sale %}
+                        <div class="product-badge">
+                            <span class="badge bg-danger fs-6">
+                                -{{ product.discount_percentage|floatformat:0 }}%
+                            </span>
+                        </div>
+                        {% endif %}
+                        
+                        {% if product.featured_image %}
+                        <img id="main-image" 
+                             src="{{ product.featured_image.url }}" 
+                             alt="{{ product.name }}" 
+                             class="img-fluid zoom-image w-100"
+                             style="height: 500px; object-fit: cover;">
+                        {% else %}
+                        <div class="d-flex align-items-center justify-content-center bg-light" 
+                             style="height: 500px;">
+                            <div class="text-center">
+                                <i class="bi bi-image display-1 text-muted"></i>
+                                <p class="text-muted mt-3">Imagen no disponible</p>
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Información del producto (Columna derecha) -->
+        <div class="col-lg-6">
+            <div class="product-info">
+                <!-- Header con categoría y marca -->
+                <div class="mb-3">
+                    <div class="d-flex align-items-center gap-3 mb-2">
+                        {% if product.category %}
+                        <a href="{% url 'products:list' %}?category={{ product.category.slug }}" 
+                           class="badge bg-primary text-decoration-none">
+                            {{ product.category.name }}
+                        </a>
+                        {% endif %}
+                        {% if product.brand %}
+                        <a href="{% url 'products:list' %}?brand={{ product.brand.slug }}" 
+                           class="badge bg-secondary text-decoration-none">
+                            {{ product.brand.name }}
+                        </a>
+                        {% endif %}
+                    </div>
+                    
+                    <h1 class="display-5 fw-bold text-dark mb-2">{{ product.name }}</h1>
+                    
+                    {% if product.sku %}
+                    <p class="text-muted small mb-0">
+                        <i class="bi bi-tag me-1"></i>SKU: {{ product.sku }}
+                    </p>
+                    {% endif %}
+                </div>
+                
+                <!-- Rating y reseñas -->
+                <div class="mb-4">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="text-warning">
+                            {% for i in "12345" %}
+                                <i class="bi bi-star-fill"></i>
+                            {% endfor %}
+                        </div>
+                        <span class="badge bg-light text-dark">4.8/5</span>
+                        <a href="#reviews" class="text-decoration-none small">
+                            ({{ product.reviews_count|default:127 }} reseñas)
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Badges de estado -->
+                <div class="mb-4">
+                    <div class="d-flex flex-wrap gap-2">
+                        {% if product.is_featured %}
+                        <span class="badge bg-warning text-dark">
+                            <i class="bi bi-star me-1"></i>Producto Destacado
+                        </span>
+                        {% endif %}
+                        
+                        {% if product.is_in_stock %}
+                            {% if product.is_low_stock %}
+                            <span class="badge bg-warning">
+                                <i class="bi bi-exclamation-triangle me-1"></i>¡Últimas unidades!
+                            </span>
+                            {% else %}
+                            <span class="badge bg-success">
+                                <i class="bi bi-check-circle me-1"></i>En Stock
+                            </span>
+                            {% endif %}
+                        {% else %}
+                        <span class="badge bg-danger">
+                            <i class="bi bi-x-circle me-1"></i>Sin Stock
+                        </span>
+                        {% endif %}
+                        
+                        <span class="badge bg-info">
+                            <i class="bi bi-truck me-1"></i>Envío Gratis
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Precios -->
+                <div class="price-section mb-4">
+                    {% if product.is_on_sale %}
+                    <div class="d-flex align-items-center gap-3 mb-2">
+                        <span class="display-4 fw-bold text-success">
+                            ${{ product.price|floatformat:0 }}
+                        </span>
+                        <span class="h4 text-muted text-decoration-line-through">
+                            ${{ product.compare_price|floatformat:0 }}
+                        </span>
+                    </div>
+                    <div class="text-success fw-bold">
+                        <i class="bi bi-arrow-down me-1"></i>
+                        Ahorras ${{ product.savings|floatformat:0 }}
+                    </div>
+                    {% else %}
+                    <div class="display-4 fw-bold text-primary">
+                        ${{ product.price|floatformat:0 }}
+                    </div>
+                    {% endif %}
+                    
+                    <div class="mt-3">
+                        <small class="text-muted">
+                            <i class="bi bi-credit-card me-1"></i>
+                            Hasta 12 cuotas sin interés
+                        </small>
+                    </div>
+                </div>
+
+                <!-- Descripción corta -->
+                {% if product.short_description %}
+                <div class="mb-4">
+                    <h5 class="fw-bold mb-3">Descripción</h5>
+                    <p class="lead text-muted">{{ product.short_description }}</p>
+                </div>
+                {% endif %}
+
+                <!-- Selector de cantidad y botones -->
+                {% if product.is_in_stock %}
+                <div class="mb-4">
+                    <div class="row g-3 align-items-center">
+                        <div class="col-auto">
+                            <label class="form-label fw-bold">Cantidad:</label>
+                        </div>
+                        <div class="col-auto">
+                            <div class="quantity-selector">
+                                <button type="button" class="quantity-btn" onclick="decreaseQuantity()">
+                                    <i class="bi bi-dash"></i>
+                                </button>
+                                <input type="number" 
+                                       id="quantity" 
+                                       name="quantity" 
+                                       value="1" 
+                                       min="1" 
+                                       max="{{ product.stock }}"
+                                       class="quantity-input">
+                                <button type="button" class="quantity-btn" onclick="increaseQuantity()">
+                                    <i class="bi bi-plus"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <small class="text-muted">
+                                ({{ product.stock }} disponibles)
+                            </small>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Botones de acción -->
+                <div class="d-grid gap-3 mb-4">
+                    <button type="button" 
+                            class="btn btn-primary btn-lg fw-bold"
+                            hx-post="{% url 'cart:add' %}"
+                            hx-vals='{"product_id": "{{ product.id }}"}'
+                            hx-include="#quantity"
+                            hx-target="#cart-messages"
+                            hx-swap="beforeend"
+                            hx-indicator="#loading-indicator">
+                        <i class="bi bi-cart-plus me-2"></i>
+                        Agregar al Carrito
+                    </button>
+                    
+                    <div class="row g-2">
+                        <div class="col-6">
+                            <button class="btn btn-outline-danger w-100">
+                                <i class="bi bi-heart me-1"></i>
+                                Favoritos
+                            </button>
+                        </div>
+                        <div class="col-6">
+                            <button class="btn btn-outline-secondary w-100">
+                                <i class="bi bi-share me-1"></i>
+                                Compartir
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                {% else %}
+                <div class="alert alert-warning">
+                    <i class="bi bi-exclamation-triangle me-2"></i>
+                    <strong>Producto no disponible</strong><br>
+                    Este producto está temporalmente agotado.
+                    <a href="#" class="alert-link">Notificarme cuando esté disponible</a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Descripción detallada -->
+    {% if product.description %}
+    <div class="mt-5 pt-5 border-top">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <h2 class="h3 fw-bold text-dark mb-4">Descripción del producto</h2>
+                <div class="bg-light rounded p-4">
+                    {{ product.description|linebreaks }}
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<!-- Messages Container -->
+<div id="cart-messages"></div>
+
+<!-- Loading Indicator -->
+<div id="loading-indicator" class="htmx-indicator position-fixed top-50 start-50 translate-middle">
+    <div class="bg-white rounded-3 p-4 shadow-lg text-center">
+        <div class="spinner-border text-primary mb-2" role="status">
+            <span class="visually-hidden">Cargando...</span>
+        </div>
+        <div class="small">Procesando...</div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function decreaseQuantity() {
+    const input = document.getElementById('quantity');
+    const currentValue = parseInt(input.value);
+    if (currentValue > 1) {
+        input.value = currentValue - 1;
+    }
+}
+
+function increaseQuantity() {
+    const input = document.getElementById('quantity');
+    const currentValue = parseInt(input.value);
+    const maxValue = parseInt(input.max);
+    if (currentValue < maxValue) {
+        input.value = currentValue + 1;
+    }
+}
+</script>
+{% endblock %}

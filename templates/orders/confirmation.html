@@ -1,0 +1,359 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Confirmación del Pedido - Tech Ecommerce{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    {% if order %}
+        <!-- Confirmación exitosa -->
+        <div class="text-center mb-5">
+            <div class="success-icon mb-4">
+                <i class="bi bi-check-circle-fill text-success" style="font-size: 4rem;"></i>
+            </div>
+            <h1 class="display-4 text-success mb-3">¡Pedido Confirmado!</h1>
+            <p class="lead">Tu pedido <strong>#{{ order.order_number }}</strong> ha sido procesado exitosamente.</p>
+            <p class="text-muted">Recibirás un email de confirmación en breve.</p>
+        </div>
+
+        <!-- Progress Bar -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="d-flex justify-content-center">
+                    <div class="progress-checkout">
+                        <div class="step completed">
+                            <div class="step-number">
+                                <i class="bi bi-check"></i>
+                            </div>
+                            <div class="step-label">Carrito</div>
+                        </div>
+                        <div class="step-line completed"></div>
+                        <div class="step completed">
+                            <div class="step-number">
+                                <i class="bi bi-check"></i>
+                            </div>
+                            <div class="step-label">Checkout</div>
+                        </div>
+                        <div class="step-line completed"></div>
+                        <div class="step active">
+                            <div class="step-number">
+                                <i class="bi bi-check"></i>
+                            </div>
+                            <div class="step-label">Confirmación</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <!-- Detalles del Pedido -->
+            <div class="col-lg-8">
+                <!-- Información del Cliente -->
+                <div class="card shadow-sm mb-4">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0">
+                            <i class="bi bi-person-fill"></i>
+                            Información del Cliente
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <strong>Nombre:</strong><br>
+                                {{ order.customer.first_name }} {{ order.customer.last_name }}
+                            </div>
+                            <div class="col-md-6">
+                                <strong>Email:</strong><br>
+                                {{ order.customer.email }}
+                            </div>
+                        </div>
+                        <div class="row mt-3">
+                            <div class="col-md-6">
+                                <strong>Teléfono:</strong><br>
+                                {{ order.customer.phone }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Dirección de Envío -->
+                <div class="card shadow-sm mb-4">
+                    <div class="card-header bg-success text-white">
+                        <h5 class="mb-0">
+                            <i class="bi bi-geo-alt-fill"></i>
+                            Dirección de Envío
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <address class="mb-0">
+                            {{ order.shipping.address_line1 }}<br>
+                            {% if order.shipping.address_line2 %}
+                                {{ order.shipping.address_line2 }}<br>
+                            {% endif %}
+                            {{ order.shipping.city }}, {{ order.shipping.state }} {{ order.shipping.postal_code }}<br>
+                            {{ order.shipping.country }}
+                        </address>
+                    </div>
+                </div>
+
+                <!-- Productos Ordenados -->
+                <div class="card shadow-sm mb-4">
+                    <div class="card-header bg-info text-white">
+                        <h5 class="mb-0">
+                            <i class="bi bi-box-seam"></i>
+                            Productos Ordenados
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        {% for item in order.items %}
+                            <div class="row align-items-center mb-3 {% if not forloop.last %}border-bottom pb-3{% endif %}">
+                                <div class="col-md-2">
+                                    {% if item.product.featured_image %}
+                                        <img src="{{ item.product.featured_image.url }}" 
+                                             alt="{{ item.product.name }}" 
+                                             class="img-fluid rounded" 
+                                             style="width: 60px; height: 60px; object-fit: cover;">
+                                    {% else %}
+                                        <div class="bg-light rounded d-flex align-items-center justify-content-center" 
+                                             style="width: 60px; height: 60px;">
+                                            <i class="bi bi-image text-muted"></i>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                <div class="col-md-6">
+                                    <h6 class="mb-1">{{ item.product.name }}</h6>
+                                    <small class="text-muted">SKU: {{ item.product.sku|default:"N/A" }}</small>
+                                </div>
+                                <div class="col-md-2 text-center">
+                                    <span class="badge bg-secondary">{{ item.quantity }}</span>
+                                </div>
+                                <div class="col-md-2 text-end">
+                                    <strong>${{ item.get_total_price|floatformat:0 }}</strong>
+                                    <br>
+                                    <small class="text-muted">${{ item.price|floatformat:0 }} c/u</small>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                {% if order.notes %}
+                <!-- Notas del Pedido -->
+                <div class="card shadow-sm mb-4">
+                    <div class="card-header bg-warning text-dark">
+                        <h5 class="mb-0">
+                            <i class="bi bi-chat-left-text"></i>
+                            Notas del Pedido
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <p class="mb-0">{{ order.notes }}</p>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- Resumen del Pedido -->
+            <div class="col-lg-4">
+                <div class="card shadow-sm sticky-top" style="top: 2rem;">
+                    <div class="card-header bg-dark text-white">
+                        <h5 class="mb-0">
+                            <i class="bi bi-receipt"></i>
+                            Resumen del Pedido
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <!-- Número de pedido -->
+                        <div class="alert alert-success mb-3">
+                            <div class="text-center">
+                                <strong>Pedido #{{ order.order_number }}</strong><br>
+                                <small>Estado: {{ order.status|capfirst }}</small>
+                            </div>
+                        </div>
+
+                        <!-- Totales -->
+                        <div class="d-flex justify-content-between mb-2">
+                            <span>Subtotal:</span>
+                            <span>${{ order.subtotal|floatformat:0 }}</span>
+                        </div>
+                        
+                        <div class="d-flex justify-content-between mb-2">
+                            <span>Envío:</span>
+                            <span>
+                                {% if order.shipping_cost > 0 %}
+                                    ${{ order.shipping_cost|floatformat:0 }}
+                                {% else %}
+                                    <span class="text-success">¡Gratis!</span>
+                                {% endif %}
+                            </span>
+                        </div>
+
+                        <hr>
+
+                        <div class="d-flex justify-content-between fw-bold h5">
+                            <span>Total:</span>
+                            <span class="text-success">${{ order.total|floatformat:0 }}</span>
+                        </div>
+
+                        <!-- Información adicional -->
+                        <div class="alert alert-info mt-3">
+                            <small>
+                                <i class="bi bi-info-circle"></i>
+                                Este pedido será procesado en las próximas 24 horas.
+                            </small>
+                        </div>
+
+                        <!-- Acciones -->
+                        <div class="d-grid gap-2 mt-4">
+                            <a href="{% url 'products:list' %}" class="btn btn-primary">
+                                <i class="bi bi-shop"></i>
+                                Seguir Comprando
+                            </a>
+                            
+                            <a href="{% url 'core:home' %}" class="btn btn-outline-secondary">
+                                <i class="bi bi-house"></i>
+                                Ir al Inicio
+                            </a>
+                        </div>
+
+                        <!-- Tiempo estimado -->
+                        <div class="mt-4 text-center">
+                            <div class="row text-center">
+                                <div class="col-4">
+                                    <i class="bi bi-truck text-primary fs-4"></i>
+                                    <small class="d-block text-muted">3-5 días hábiles</small>
+                                </div>
+                                <div class="col-4">
+                                    <i class="bi bi-shield-check text-success fs-4"></i>
+                                    <small class="d-block text-muted">Compra protegida</small>
+                                </div>
+                                <div class="col-4">
+                                    <i class="bi bi-headset text-info fs-4"></i>
+                                    <small class="d-block text-muted">Soporte 24/7</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    {% else %}
+        <!-- Error: No se encontró el pedido -->
+        <div class="text-center py-5">
+            <div class="error-icon mb-4">
+                <i class="bi bi-exclamation-circle-fill text-warning" style="font-size: 4rem;"></i>
+            </div>
+            <h1 class="display-4 text-warning mb-3">Oops!</h1>
+            <p class="lead">No se encontró información del pedido.</p>
+            <p class="text-muted">Es posible que la sesión haya expirado o que el pedido no se haya procesado correctamente.</p>
+            
+            <div class="mt-4">
+                <a href="{% url 'cart:detail' %}" class="btn btn-primary me-2">
+                    <i class="bi bi-cart3"></i>
+                    Ir al Carrito
+                </a>
+                <a href="{% url 'products:list' %}" class="btn btn-outline-secondary">
+                    <i class="bi bi-shop"></i>
+                    Ver Productos
+                </a>
+            </div>
+        </div>
+    {% endif %}
+</div>
+
+<style>
+/* Progress Bar Styles */
+.progress-checkout {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 2rem;
+}
+
+.step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.step-number {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: #e9ecef;
+    color: #6c757d;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    margin-bottom: 8px;
+}
+
+.step.active .step-number,
+.step.completed .step-number {
+    background-color: var(--bs-success);
+    color: white;
+}
+
+.step-label {
+    font-size: 0.875rem;
+    color: #6c757d;
+}
+
+.step.active .step-label,
+.step.completed .step-label {
+    color: var(--bs-success);
+    font-weight: 600;
+}
+
+.step-line {
+    width: 60px;
+    height: 2px;
+    background-color: #e9ecef;
+    margin: 0 1rem;
+    margin-top: -16px;
+}
+
+.step-line.completed {
+    background-color: var(--bs-success);
+}
+
+/* Card Styles */
+.card {
+    border: none;
+    border-radius: 1rem;
+}
+
+.card-header {
+    border-radius: 1rem 1rem 0 0 !important;
+    border-bottom: 1px solid rgba(255,255,255,0.2);
+}
+
+/* Animation for success */
+.success-icon {
+    animation: bounceIn 0.8s ease-out;
+}
+
+@keyframes bounceIn {
+    0% {
+        transform: scale(0.3);
+        opacity: 0;
+    }
+    50% {
+        transform: scale(1.05);
+        opacity: 0.8;
+    }
+    70% {
+        transform: scale(0.9);
+        opacity: 0.9;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+</style>
+{% endblock %}

@@ -1,0 +1,188 @@
+{% extends "account/base_auth.html" %}
+{% load i18n %}
+{% load account socialaccount %}
+{% load cache %}
+
+{% block title %}Iniciar Sesión - Tech Ecommerce{% endblock %}
+
+{% block extra_head %}
+<!-- Preload recursos críticos para mejor rendimiento -->
+<link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" as="style">
+<link rel="preconnect" href="https://fonts.gstatic.com">
+
+<style>
+/* CSS crítico inline para evitar bloqueo */
+.login-form-container {
+    max-width: 400px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+.auth-form-optimized {
+    animation: slideInUp 0.3s ease-out;
+}
+
+@keyframes slideInUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Optimización: reducir animaciones en dispositivos lentos */
+@media (prefers-reduced-motion: reduce) {
+    .auth-form-optimized { animation: none; }
+    * { transition-duration: 0.01ms !important; }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Cache de contenido estático por 10 minutos -->
+{% cache 600 login_static_content %}
+<div class="login-form-container">
+    <div class="text-center mb-4">
+        <h1 class="auth-title">¡Bienvenido de vuelta!</h1>
+        <p class="auth-subtitle">Inicia sesión en tu cuenta para continuar</p>
+    </div>
+</div>
+{% endcache %}
+
+<!-- Contenido dinámico (errores, mensajes) - no se cachea -->
+{% if form.errors %}
+    <div class="alert alert-danger-modern alert-modern">
+        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+        <strong>¡Ups! Algo salió mal:</strong>
+        <ul class="mb-0 mt-2">
+            {% for field, errors in form.errors.items %}
+                {% for error in errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+            {% endfor %}
+        </ul>
+    </div>
+{% endif %}
+
+{% if messages %}
+    {% for message in messages %}
+        <div class="alert alert-{{ message.tags }}-modern alert-modern">
+            <i class="bi bi-info-circle-fill me-2"></i>
+            {{ message }}
+        </div>
+    {% endfor %}
+{% endif %}
+
+<div class="login-form-container">
+    <!-- Formulario optimizado -->
+    <form method="post" action="{% url 'account_login' %}" class="auth-form-optimized" novalidate>
+        {% csrf_token %}
+        
+        <!-- Email/Usuario optimizado -->
+        <div class="form-floating mb-3">
+            <input 
+                type="text" 
+                class="form-control" 
+                id="id_login" 
+                name="login" 
+                value="{{ form.login.value|default:'' }}"
+                placeholder="tu@email.com"
+                required
+                autocomplete="username"
+                autofocus
+            >
+            <label for="id_login">
+                <i class="bi bi-envelope me-2"></i>Email o Usuario
+            </label>
+        </div>
+        
+        <!-- Contraseña optimizada -->
+        <div class="form-floating mb-3">
+            <input 
+                type="password" 
+                class="form-control" 
+                id="id_password" 
+                name="password"
+                placeholder="Contraseña"
+                required
+                autocomplete="current-password"
+            >
+            <label for="id_password">
+                <i class="bi bi-lock me-2"></i>Contraseña
+            </label>
+        </div>
+        
+        <!-- Recordar sesión -->
+        <div class="form-check mb-3">
+            <input 
+                class="form-check-input" 
+                type="checkbox" 
+                id="id_remember" 
+                name="remember"
+                checked
+            >
+            <label class="form-check-label" for="id_remember">
+                Recordar mi sesión
+            </label>
+        </div>
+        
+        <!-- Botón de login optimizado -->
+        <button type="submit" class="btn btn-modern w-100 mb-3" id="loginBtn">
+            <span id="loginText">
+                <i class="bi bi-box-arrow-in-right me-2"></i>
+                Iniciar Sesión
+            </span>
+            <span id="loginSpinner" class="d-none">
+                <span class="spinner-border spinner-border-sm me-2"></span>
+                Iniciando sesión...
+            </span>
+        </button>
+        
+        <!-- Enlaces rápidos -->
+        <div class="text-center">
+            <p class="mb-2">
+                <a href="{% url 'account_reset_password' %}" class="text-decoration-none">
+                    ¿Olvidaste tu contraseña?
+                </a>
+            </p>
+            <p class="mb-0">
+                ¿No tienes cuenta? 
+                <a href="{% url 'account_signup' %}" class="fw-bold text-decoration-none">
+                    Regístrate aquí
+                </a>
+            </p>
+        </div>
+    </form>
+</div>
+
+<!-- JavaScript optimizado inline para mejor rendimiento -->
+<script>
+// JavaScript crítico inline para evitar bloqueo
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.querySelector('.auth-form-optimized');
+    const loginBtn = document.getElementById('loginBtn');
+    const loginText = document.getElementById('loginText');
+    const loginSpinner = document.getElementById('loginSpinner');
+    
+    // Optimización: mostrar loading state
+    form.addEventListener('submit', function() {
+        loginBtn.disabled = true;
+        loginText.classList.add('d-none');
+        loginSpinner.classList.remove('d-none');
+    });
+    
+    // Optimización: validación básica del lado cliente
+    const emailInput = document.getElementById('id_login');
+    const passwordInput = document.getElementById('id_password');
+    
+    function validateForm() {
+        const isValid = emailInput.value.trim() && passwordInput.value.trim();
+        loginBtn.disabled = !isValid;
+        return isValid;
+    }
+    
+    emailInput.addEventListener('input', validateForm);
+    passwordInput.addEventListener('input', validateForm);
+    
+    // Validación inicial
+    validateForm();
+});
+</script>
+{% endblock %}

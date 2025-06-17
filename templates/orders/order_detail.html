@@ -1,0 +1,453 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Pedido #{{ order.order_number }} - Tech Ecommerce{% endblock %}
+
+{% block extra_css %}
+<style>
+    .order-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border-radius: 15px;
+        padding: 2rem;
+        margin-bottom: 2rem;
+    }
+    .status-badge {
+        padding: 8px 16px;
+        border-radius: 20px;
+        font-weight: bold;
+        font-size: 0.9rem;
+    }
+    .status-pending { background-color: #ffc107; color: #000; }
+    .status-paid { background-color: #28a745; color: white; }
+    .status-processing { background-color: #17a2b8; color: white; }
+    .status-shipped { background-color: #6f42c1; color: white; }
+    .status-delivered { background-color: #28a745; color: white; }
+    .status-cancelled { background-color: #dc3545; color: white; }
+    
+    .order-timeline {
+        position: relative;
+        padding: 1rem 0;
+    }
+    .timeline-item {
+        position: relative;
+        padding-left: 3rem;
+        margin-bottom: 1.5rem;
+    }
+    .timeline-icon {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 2rem;
+        height: 2rem;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.8rem;
+    }
+    .timeline-icon.completed {
+        background-color: #28a745;
+        color: white;
+    }
+    .timeline-icon.current {
+        background-color: #007bff;
+        color: white;
+    }
+    .timeline-icon.pending {
+        background-color: #e9ecef;
+        color: #6c757d;
+    }
+    .order-items-card {
+        border: none;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        border-radius: 15px;
+    }
+    .item-image {
+        width: 80px;
+        height: 80px;
+        object-fit: cover;
+        border-radius: 8px;
+    }
+    .action-buttons .btn {
+        margin: 0.25rem;
+    }
+    @media (max-width: 768px) {
+        .order-header {
+            padding: 1.5rem;
+        }
+        .timeline-item {
+            padding-left: 2.5rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <!-- Order Header -->
+    <div class="order-header">
+        <div class="row align-items-center">
+            <div class="col-md-8">
+                <h1 class="mb-2">Pedido #{{ order.order_number }}</h1>
+                <p class="mb-0">
+                    <i class="bi bi-calendar"></i>
+                    Realizado el {{ order.created_at|date:"d/m/Y" }} a las {{ order.created_at|date:"H:i" }}
+                </p>
+            </div>
+            <div class="col-md-4 text-md-end">
+                <span class="status-badge status-{{ order.status }}">
+                    {{ order.get_status_display }}
+                </span>
+                <div class="mt-2">
+                    <h3 class="mb-0">${{ order.total_amount|floatformat:0 }}</h3>
+                    <small>{{ order.currency }}</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Main Content -->
+        <div class="col-lg-8">
+            <!-- Order Timeline -->
+            <div class="card order-items-card mb-4">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0">
+                        <i class="bi bi-clock-history"></i>
+                        Estado del Pedido
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="order-timeline">
+                        <!-- Pending -->
+                        <div class="timeline-item">
+                            <div class="timeline-icon completed">
+                                <i class="bi bi-cart-check"></i>
+                            </div>
+                            <div>
+                                <h6 class="mb-1">Pedido Recibido</h6>
+                                <small class="text-muted">{{ order.created_at|date:"d/m/Y H:i" }}</small>
+                                <p class="mb-0 small">Tu pedido ha sido recibido y está siendo procesado.</p>
+                            </div>
+                        </div>
+
+                        <!-- Payment -->
+                        <div class="timeline-item">
+                            <div class="timeline-icon {% if order.payment_status == 'completed' %}completed{% elif order.payment_status == 'processing' %}current{% else %}pending{% endif %}">
+                                <i class="bi bi-credit-card"></i>
+                            </div>
+                            <div>
+                                <h6 class="mb-1">Pago {{ order.get_payment_status_display }}</h6>
+                                {% if order.payment_status == 'completed' %}
+                                    <small class="text-muted">{{ order.payment.processed_at|date:"d/m/Y H:i" }}</small>
+                                    <p class="mb-0 small">Pago confirmado exitosamente.</p>
+                                {% else %}
+                                    <p class="mb-0 small">Esperando confirmación de pago.</p>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <!-- Processing -->
+                        <div class="timeline-item">
+                            <div class="timeline-icon {% if order.status in 'processing,shipped,delivered' %}completed{% elif order.status == 'paid' %}current{% else %}pending{% endif %}">
+                                <i class="bi bi-gear"></i>
+                            </div>
+                            <div>
+                                <h6 class="mb-1">Procesando Pedido</h6>
+                                {% if order.status in 'processing,shipped,delivered' %}
+                                    <small class="text-muted">Procesado</small>
+                                    <p class="mb-0 small">Tu pedido está siendo preparado para envío.</p>
+                                {% else %}
+                                    <p class="mb-0 small">Prepararemos tu pedido una vez confirmado el pago.</p>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <!-- Shipped -->
+                        <div class="timeline-item">
+                            <div class="timeline-icon {% if order.status in 'shipped,delivered' %}completed{% elif order.status == 'processing' %}current{% else %}pending{% endif %}">
+                                <i class="bi bi-truck"></i>
+                            </div>
+                            <div>
+                                <h6 class="mb-1">Enviado</h6>
+                                {% if order.shipped_at %}
+                                    <small class="text-muted">{{ order.shipped_at|date:"d/m/Y H:i" }}</small>
+                                    <p class="mb-0 small">
+                                        Tu pedido ha sido enviado. 
+                                        {% if order.tracking_number %}
+                                            <br>Número de seguimiento: <strong>{{ order.tracking_number }}</strong>
+                                        {% endif %}
+                                    </p>
+                                {% else %}
+                                    <p class="mb-0 small">Tu pedido será enviado pronto.</p>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <!-- Delivered -->
+                        <div class="timeline-item">
+                            <div class="timeline-icon {% if order.status == 'delivered' %}completed{% else %}pending{% endif %}">
+                                <i class="bi bi-house-check"></i>
+                            </div>
+                            <div>
+                                <h6 class="mb-1">Entregado</h6>
+                                {% if order.delivered_at %}
+                                    <small class="text-muted">{{ order.delivered_at|date:"d/m/Y H:i" }}</small>
+                                    <p class="mb-0 small">¡Tu pedido ha sido entregado exitosamente!</p>
+                                {% else %}
+                                    <p class="mb-0 small">Tu pedido será entregado pronto.</p>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Order Items -->
+            <div class="card order-items-card">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0">
+                        <i class="bi bi-box-seam"></i>
+                        Productos ({{ order.items.count }})
+                    </h5>
+                </div>
+                <div class="card-body">
+                    {% for item in order.items.all %}
+                    <div class="row align-items-center {% if not forloop.last %}border-bottom{% endif %} py-3">
+                        <div class="col-md-2 text-center">
+                            {% if item.product.image %}
+                                <img src="{{ item.product.image.url }}" 
+                                     alt="{{ item.product_name }}" 
+                                     class="item-image">
+                            {% else %}
+                                <div class="item-image bg-light d-flex align-items-center justify-content-center">
+                                    <i class="bi bi-image text-muted"></i>
+                                </div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-6">
+                            <h6 class="mb-1">{{ item.product_name }}</h6>
+                            {% if item.variant_info %}
+                                <p class="text-muted small mb-1">{{ item.variant_info }}</p>
+                            {% endif %}
+                            <p class="text-muted small mb-0">SKU: {{ item.product_sku }}</p>
+                        </div>
+                        <div class="col-md-2 text-center">
+                            <span class="fw-bold">{{ item.quantity }}</span>
+                            <br>
+                            <small class="text-muted">unidades</small>
+                        </div>
+                        <div class="col-md-2 text-end">
+                            <div class="fw-bold">${{ item.total_price|floatformat:0 }}</div>
+                            <small class="text-muted">${{ item.unit_price|floatformat:0 }} c/u</small>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Sidebar -->
+        <div class="col-lg-4">
+            <!-- Order Summary -->
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h6 class="mb-0">
+                        <i class="bi bi-receipt"></i>
+                        Resumen del Pedido
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Subtotal:</span>
+                        <span>${{ order.subtotal|floatformat:0 }}</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Envío:</span>
+                        <span>
+                            {% if order.shipping_cost > 0 %}
+                                ${{ order.shipping_cost|floatformat:0 }}
+                            {% else %}
+                                <span class="text-success">¡Gratis!</span>
+                            {% endif %}
+                        </span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>IVA (19%):</span>
+                        <span>${{ order.tax_amount|floatformat:0 }}</span>
+                    </div>
+                    <hr>
+                    <div class="d-flex justify-content-between fw-bold h5">
+                        <span>Total:</span>
+                        <span class="text-primary">${{ order.total_amount|floatformat:0 }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Customer Info -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h6 class="mb-0">
+                        <i class="bi bi-person"></i>
+                        Información del Cliente
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <p class="mb-2"><strong>{{ order.get_full_name }}</strong></p>
+                    <p class="mb-2">
+                        <i class="bi bi-envelope"></i>
+                        {{ order.email }}
+                    </p>
+                    {% if order.phone %}
+                    <p class="mb-0">
+                        <i class="bi bi-telephone"></i>
+                        {{ order.phone }}
+                    </p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Shipping Address -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h6 class="mb-0">
+                        <i class="bi bi-truck"></i>
+                        Dirección de Envío
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <address class="mb-0">
+                        {{ order.get_shipping_address_display|linebreaks }}
+                    </address>
+                </div>
+            </div>
+
+            <!-- Payment Info -->
+            {% if order.payment %}
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h6 class="mb-0">
+                        <i class="bi bi-credit-card"></i>
+                        Información de Pago
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <p class="mb-2">
+                        <strong>Método:</strong> {{ order.get_payment_method_display }}
+                    </p>
+                    <p class="mb-2">
+                        <strong>Estado:</strong> 
+                        <span class="badge bg-{{ order.payment.status|yesno:'success,warning,danger' }}">
+                            {{ order.payment.get_status_display }}
+                        </span>
+                    </p>
+                    {% if order.payment.processed_at %}
+                    <p class="mb-0">
+                        <strong>Procesado:</strong> {{ order.payment.processed_at|date:"d/m/Y H:i" }}
+                    </p>
+                    {% endif %}
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Action Buttons -->
+            <div class="action-buttons">
+                {% if order.can_cancel %}
+                <button class="btn btn-outline-danger w-100 mb-2" 
+                        onclick="confirmCancel('{{ order.order_number }}')">
+                    <i class="bi bi-x-circle"></i>
+                    Cancelar Pedido
+                </button>
+                {% endif %}
+                
+                {% if order.tracking_number %}
+                <a href="{% url 'orders:track' order.order_number %}" 
+                   class="btn btn-outline-primary w-100 mb-2">
+                    <i class="bi bi-geo-alt"></i>
+                    Rastrear Pedido
+                </a>
+                {% endif %}
+                
+                <button onclick="window.print()" 
+                        class="btn btn-outline-secondary w-100 mb-2">
+                    <i class="bi bi-printer"></i>
+                    Imprimir Pedido
+                </button>
+                
+                <a href="{% url 'orders:list' %}" 
+                   class="btn btn-primary w-100">
+                    <i class="bi bi-arrow-left"></i>
+                    Volver a Mis Pedidos
+                </a>
+            </div>
+
+            <!-- Support -->
+            <div class="alert alert-info mt-4">
+                <h6 class="alert-heading">
+                    <i class="bi bi-headset"></i>
+                    ¿Necesitas Ayuda?
+                </h6>
+                <p class="mb-0 small">
+                    Si tienes alguna pregunta sobre tu pedido, contáctanos:
+                    <br>
+                    <strong>Email:</strong> soporte@techecommerce.com
+                    <br>
+                    <strong>WhatsApp:</strong> +57 300 123 4567
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Cancel Confirmation Modal -->
+<div class="modal fade" id="cancelModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Cancelar Pedido</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>¿Estás seguro de que deseas cancelar este pedido?</p>
+                <p class="text-muted small">
+                    {% if order.payment_status == 'completed' %}
+                    Si tu pago ya fue procesado, el reembolso tomará 3-5 días hábiles.
+                    {% endif %}
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    No, Mantener Pedido
+                </button>
+                <form method="post" action="{% url 'orders:cancel' order.order_number %}" style="display: inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger">
+                        Sí, Cancelar Pedido
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function confirmCancel(orderNumber) {
+    const modal = new bootstrap.Modal(document.getElementById('cancelModal'));
+    modal.show();
+}
+
+// Auto-refresh order status (optional)
+document.addEventListener('DOMContentLoaded', function() {
+    // Refresh status every 30 seconds for active orders
+    if (['pending', 'paid', 'processing', 'shipped'].includes('{{ order.status }}')) {
+        setInterval(function() {
+            // You could add HTMX here to refresh order status
+            // hx-get="{% url 'orders:status' order.order_number %}"
+        }, 30000);
+    }
+});
+</script>
+{% endblock %}

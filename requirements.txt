@@ -1,0 +1,10 @@
+# Tech Ecommerce - Requirements File
+# 
+# Este archivo incluye las dependencias para desarrollo local
+# Para producción usar: pip install -r requirements/production.txt
+# Para testing usar: pip install -r requirements/testing.txt
+
+-r requirements/development.txt
+
+# Dependencias adicionales para el entorno local completo
+# (Incluye herramientas de desarrollo, debugging y testing)

@@ -1,0 +1,359 @@
+{% extends "account/base_auth.html" %}
+{% load i18n %}
+{% load account socialaccount %}
+
+{% block title %}Crear Cuenta - Tech Ecommerce{% endblock %}
+
+{% block content %}
+<div class="text-center mb-4">
+    <h1 class="auth-title">¡Únete a Tech Ecommerce!</h1>
+    <p class="auth-subtitle">Crea tu cuenta y descubre la mejor tecnología</p>
+</div>
+
+<!-- Mostrar errores si los hay -->
+{% if form.errors %}
+    <div class="alert alert-danger-modern alert-modern">
+        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+        <strong>Por favor corrige los siguientes errores:</strong>
+        <ul class="mb-0 mt-2">
+            {% for field, errors in form.errors.items %}
+                {% for error in errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+            {% endfor %}
+        </ul>
+    </div>
+{% endif %}
+
+<!-- Mostrar mensajes -->
+{% if messages %}
+    {% for message in messages %}
+        <div class="alert alert-{{ message.tags }}-modern alert-modern">
+            <i class="bi bi-info-circle-fill me-2"></i>
+            {{ message }}
+        </div>
+    {% endfor %}
+{% endif %}
+
+<!-- Formulario de registro -->
+<form method="post" action="{% url 'account_signup' %}" class="needs-validation" novalidate>
+    {% csrf_token %}
+    
+    <!-- Campo de email -->
+    <div class="form-floating">
+        <input 
+            type="email" 
+            class="form-control" 
+            id="id_email" 
+            name="email" 
+            value="{{ form.email.value|default:'' }}"
+            placeholder="tu@email.com"
+            required
+            autocomplete="email"
+        >
+        <label for="id_email">
+            <i class="bi bi-envelope-fill me-2"></i>Correo Electrónico
+        </label>
+        <div class="invalid-feedback">
+            Por favor ingresa un email válido.
+        </div>
+        <div class="valid-feedback">
+            ¡Perfecto!
+        </div>
+    </div>
+    
+    <!-- Campo de usuario (si está habilitado) -->
+    {% if form.username %}
+    <div class="form-floating">
+        <input 
+            type="text" 
+            class="form-control" 
+            id="id_username" 
+            name="username" 
+            value="{{ form.username.value|default:'' }}"
+            placeholder="nombre_usuario"
+            required
+            autocomplete="username"
+            pattern="[a-zA-Z0-9_]+"
+        >
+        <label for="id_username">
+            <i class="bi bi-person-fill me-2"></i>Nombre de Usuario
+        </label>
+        <div class="invalid-feedback">
+            Solo letras, números y guiones bajos permitidos.
+        </div>
+        <div class="valid-feedback">
+            ¡Disponible!
+        </div>
+    </div>
+    {% endif %}
+    
+    <!-- Campo de contraseña -->
+    <div class="form-floating">
+        <input 
+            type="password" 
+            class="form-control" 
+            id="id_password1" 
+            name="password1"
+            placeholder="Contraseña"
+            required
+            autocomplete="new-password"
+            minlength="8"
+        >
+        <label for="id_password1">
+            <i class="bi bi-lock-fill me-2"></i>Contraseña
+        </label>
+        <div class="invalid-feedback">
+            La contraseña debe tener al menos 8 caracteres.
+        </div>
+    </div>
+    
+    <!-- Confirmación de contraseña -->
+    <div class="form-floating">
+        <input 
+            type="password" 
+            class="form-control" 
+            id="id_password2" 
+            name="password2"
+            placeholder="Confirmar Contraseña"
+            required
+            autocomplete="new-password"
+            minlength="8"
+        >
+        <label for="id_password2">
+            <i class="bi bi-lock-check-fill me-2"></i>Confirmar Contraseña
+        </label>
+        <div class="invalid-feedback">
+            Las contraseñas no coinciden.
+        </div>
+        <div class="valid-feedback">
+            ¡Las contraseñas coinciden!
+        </div>
+    </div>
+    
+    <!-- Indicador de fortaleza de contraseña -->
+    <div class="password-strength mb-3" style="display: none;">
+        <div class="d-flex justify-content-between small mb-1">
+            <span>Fortaleza de la contraseña:</span>
+            <span id="strength-text" class="fw-bold">Débil</span>
+        </div>
+        <div class="progress" style="height: 5px;">
+            <div id="strength-bar" class="progress-bar" role="progressbar" style="width: 0%"></div>
+        </div>
+    </div>
+    
+    <!-- Términos y condiciones -->
+    <div class="form-check mb-3">
+        <input 
+            class="form-check-input" 
+            type="checkbox" 
+            id="terms" 
+            required
+        >
+        <label class="form-check-label small" for="terms">
+            Acepto los 
+            <a href="#" class="auth-link">Términos y Condiciones</a> 
+            y la 
+            <a href="#" class="auth-link">Política de Privacidad</a>
+        </label>
+        <div class="invalid-feedback">
+            Debes aceptar los términos y condiciones.
+        </div>
+    </div>
+    
+    <!-- Botón de registro -->
+    <button type="submit" class="btn btn-auth-primary mb-3">
+        <i class="bi bi-person-plus-fill me-2"></i>
+        Crear Mi Cuenta
+    </button>
+</form>
+
+<!-- Divider -->
+<div class="auth-divider">
+    <span>o regístrate con</span>
+</div>
+
+<!-- Botones sociales (si están configurados) -->
+{% get_providers as socialaccount_providers %}
+{% if socialaccount_providers %}
+    <div class="social-login mb-3">
+        {% include "socialaccount/snippets/provider_list.html" with process="signup" %}
+    </div>
+{% else %}
+    <!-- Botones sociales estáticos para demostración -->
+    <div class="social-login mb-3">
+        <button type="button" class="btn btn-social">
+            <i class="bi bi-google me-2"></i>
+            Registrarse con Google
+        </button>
+        <button type="button" class="btn btn-social">
+            <i class="bi bi-facebook me-2"></i>
+            Registrarse con Facebook
+        </button>
+    </div>
+{% endif %}
+
+<!-- Divider -->
+<div class="auth-divider">
+    <span>¿Ya tienes cuenta?</span>
+</div>
+
+<!-- Enlace a login -->
+<div class="text-center">
+    <p class="mb-0">
+        ¿Ya eres miembro? 
+        <a href="{% url 'account_login' %}" class="auth-link">
+            <strong>Iniciar sesión aquí</strong>
+        </a>
+    </p>
+</div>
+
+<!-- Beneficios de registro -->
+<div class="mt-4 pt-3 border-top">
+    <h6 class="text-center mb-3 text-muted">Al crear tu cuenta obtienes:</h6>
+    <div class="row text-center">
+        <div class="col-4">
+            <i class="bi bi-gift text-success" style="font-size: 1.5rem;"></i>
+            <div class="small mt-1 text-muted">Ofertas Exclusivas</div>
+        </div>
+        <div class="col-4">
+            <i class="bi bi-heart text-danger" style="font-size: 1.5rem;"></i>
+            <div class="small mt-1 text-muted">Lista de Deseos</div>
+        </div>
+        <div class="col-4">
+            <i class="bi bi-truck text-info" style="font-size: 1.5rem;"></i>
+            <div class="small mt-1 text-muted">Envío Gratis</div>
+        </div>
+    </div>
+</div>
+
+<!-- Información de seguridad -->
+<div class="mt-3 text-center">
+    <small class="text-muted">
+        <i class="bi bi-shield-check me-1"></i>
+        Registro 100% seguro y gratuito
+    </small>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const passwordInput = document.getElementById('id_password1');
+    const confirmPasswordInput = document.getElementById('id_password2');
+    const strengthIndicator = document.querySelector('.password-strength');
+    const strengthBar = document.getElementById('strength-bar');
+    const strengthText = document.getElementById('strength-text');
+    
+    // Validación del formulario
+    const forms = document.querySelectorAll('.needs-validation');
+    
+    Array.prototype.slice.call(forms).forEach(function(form) {
+        form.addEventListener('submit', function(event) {
+            // Validar que las contraseñas coincidan
+            if (passwordInput.value !== confirmPasswordInput.value) {
+                confirmPasswordInput.setCustomValidity('Las contraseñas no coinciden');
+            } else {
+                confirmPasswordInput.setCustomValidity('');
+            }
+            
+            if (!form.checkValidity()) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
+            form.classList.add('was-validated');
+        }, false);
+    });
+    
+    // Indicador de fortaleza de contraseña
+    passwordInput.addEventListener('input', function() {
+        const password = this.value;
+        if (password.length > 0) {
+            strengthIndicator.style.display = 'block';
+            
+            let strength = 0;
+            let strengthLabel = 'Muy Débil';
+            let strengthClass = 'bg-danger';
+            
+            // Criterios de fortaleza
+            if (password.length >= 8) strength += 20;
+            if (password.length >= 12) strength += 10;
+            if (/[a-z]/.test(password)) strength += 20;
+            if (/[A-Z]/.test(password)) strength += 20;
+            if (/[0-9]/.test(password)) strength += 15;
+            if (/[^A-Za-z0-9]/.test(password)) strength += 15;
+            
+            // Determinar nivel
+            if (strength >= 80) {
+                strengthLabel = 'Muy Fuerte';
+                strengthClass = 'bg-success';
+            } else if (strength >= 60) {
+                strengthLabel = 'Fuerte';
+                strengthClass = 'bg-info';
+            } else if (strength >= 40) {
+                strengthLabel = 'Moderada';
+                strengthClass = 'bg-warning';
+            } else if (strength >= 20) {
+                strengthLabel = 'Débil';
+                strengthClass = 'bg-orange';
+            }
+            
+            strengthBar.style.width = strength + '%';
+            strengthBar.className = 'progress-bar ' + strengthClass;
+            strengthText.textContent = strengthLabel;
+        } else {
+            strengthIndicator.style.display = 'none';
+        }
+    });
+    
+    // Validar confirmación de contraseña en tiempo real
+    confirmPasswordInput.addEventListener('input', function() {
+        if (passwordInput.value !== this.value) {
+            this.setCustomValidity('Las contraseñas no coinciden');
+            this.classList.add('is-invalid');
+            this.classList.remove('is-valid');
+        } else if (this.value.length > 0) {
+            this.setCustomValidity('');
+            this.classList.remove('is-invalid');
+            this.classList.add('is-valid');
+        }
+    });
+    
+    // Efecto de escritura en el título
+    const title = document.querySelector('.auth-title');
+    if (title) {
+        const text = title.textContent;
+        title.textContent = '';
+        let i = 0;
+        
+        function typeWriter() {
+            if (i < text.length) {
+                title.textContent += text.charAt(i);
+                i++;
+                setTimeout(typeWriter, 50);
+            }
+        }
+        
+        setTimeout(typeWriter, 300);
+    }
+});
+</script>
+
+<style>
+.bg-orange {
+    background-color: #fd7e14 !important;
+}
+
+.form-control.is-valid {
+    border-color: var(--auth-success);
+}
+
+.form-control.is-invalid {
+    border-color: var(--auth-danger);
+}
+
+.password-strength {
+    transition: all 0.3s ease;
+}
+</style>
+{% endblock %}

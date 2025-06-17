@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confirmación de Pedido</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px 20px;
+            text-align: center;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 28px;
+        }
+        .content {
+            padding: 30px 20px;
+        }
+        .order-info {
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .order-summary {
+            background-color: #e7f3ff;
+            border-left: 4px solid #007bff;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        .items-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        .items-table th,
+        .items-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        .items-table th {
+            background-color: #f8f9fa;
+            font-weight: bold;
+        }
+        .total-row {
+            font-weight: bold;
+            background-color: #f8f9fa;
+        }
+        .status-badge {
+            background-color: #28a745;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        .button {
+            display: inline-block;
+            background-color: #007bff;
+            color: white;
+            padding: 12px 30px;
+            text-decoration: none;
+            border-radius: 5px;
+            margin: 10px 5px;
+            font-weight: bold;
+        }
+        .footer {
+            background-color: #f8f9fa;
+            padding: 20px;
+            text-align: center;
+            color: #666;
+            border-top: 1px solid #ddd;
+        }
+        .social-links {
+            margin: 15px 0;
+        }
+        .social-links a {
+            margin: 0 10px;
+            text-decoration: none;
+            color: #007bff;
+        }
+        @media only screen and (max-width: 600px) {
+            .container {
+                width: 100% !important;
+            }
+            .content {
+                padding: 20px 15px !important;
+            }
+            .items-table {
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>¡Pedido Confirmado!</h1>
+            <p>Gracias por tu compra en {{ company_name }}</p>
+        </div>
+
+        <!-- Content -->
+        <div class="content">
+            <h2>Hola {% if order.user %}{{ order.user.first_name }}{% else %}{{ order.get_full_name }}{% endif %},</h2>
+            
+            <p>¡Excelente noticia! Hemos recibido tu pedido y ya estamos trabajando para prepararlo.</p>
+
+            <!-- Order Information -->
+            <div class="order-info">
+                <h3 style="margin-top: 0; color: #007bff;">Información del Pedido</h3>
+                <table style="width: 100%; border-collapse: collapse;">
+                    <tr>
+                        <td style="padding: 8px 0; font-weight: bold;">Número de Pedido:</td>
+                        <td style="padding: 8px 0; color: #007bff; font-weight: bold;">#{{ order.order_number }}</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 8px 0; font-weight: bold;">Fecha:</td>
+                        <td style="padding: 8px 0;">{{ order.created_at|date:"d/m/Y H:i" }}</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 8px 0; font-weight: bold;">Estado:</td>
+                        <td style="padding: 8px 0;">
+                            <span class="status-badge">{{ order.get_status_display }}</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 8px 0; font-weight: bold;">Total:</td>
+                        <td style="padding: 8px 0; font-size: 18px; font-weight: bold; color: #28a745;">
+                            ${{ order.total_amount|floatformat:0 }} {{ order.currency }}
+                        </td>
+                    </tr>
+                </table>
+            </div>
+
+            <!-- Order Items -->
+            <h3 style="color: #007bff;">Productos Ordenados</h3>
+            <table class="items-table">
+                <thead>
+                    <tr>
+                        <th>Producto</th>
+                        <th style="text-align: center;">Cantidad</th>
+                        <th style="text-align: right;">Precio Unit.</th>
+                        <th style="text-align: right;">Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in order.items.all %}
+                    <tr>
+                        <td>
+                            <strong>{{ item.product_name }}</strong>
+                            {% if item.variant_info %}
+                                <br><small style="color: #666;">{{ item.variant_info }}</small>
+                            {% endif %}
+                        </td>
+                        <td style="text-align: center;">{{ item.quantity }}</td>
+                        <td style="text-align: right;">${{ item.unit_price|floatformat:0 }}</td>
+                        <td style="text-align: right; font-weight: bold;">${{ item.total_price|floatformat:0 }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="3" style="text-align: right; font-weight: bold;">Subtotal:</td>
+                        <td style="text-align: right; font-weight: bold;">${{ order.subtotal|floatformat:0 }}</td>
+                    </tr>
+                    <tr>
+                        <td colspan="3" style="text-align: right; font-weight: bold;">Envío:</td>
+                        <td style="text-align: right; font-weight: bold;">
+                            {% if order.shipping_cost > 0 %}
+                                ${{ order.shipping_cost|floatformat:0 }}
+                            {% else %}
+                                <span style="color: #28a745;">¡Gratis!</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="3" style="text-align: right; font-weight: bold;">IVA (19%):</td>
+                        <td style="text-align: right; font-weight: bold;">${{ order.tax_amount|floatformat:0 }}</td>
+                    </tr>
+                    <tr class="total-row">
+                        <td colspan="3" style="text-align: right; font-size: 18px;">TOTAL:</td>
+                        <td style="text-align: right; font-size: 18px; color: #28a745;">
+                            ${{ order.total_amount|floatformat:0 }} {{ order.currency }}
+                        </td>
+                    </tr>
+                </tfoot>
+            </table>
+
+            <!-- Shipping Information -->
+            <div class="order-summary">
+                <h3 style="margin-top: 0; color: #007bff;">Información de Envío</h3>
+                <p><strong>Dirección de Entrega:</strong></p>
+                <address style="font-style: normal; line-height: 1.4;">
+                    {{ order.get_shipping_address_display|linebreaks }}
+                </address>
+                {% if order.phone %}
+                <p><strong>Teléfono:</strong> {{ order.phone }}</p>
+                {% endif %}
+            </div>
+
+            <!-- Next Steps -->
+            <h3 style="color: #007bff;">¿Qué sigue?</h3>
+            <ul style="line-height: 1.8;">
+                <li><strong>Procesamiento:</strong> Prepararemos tu pedido en las próximas 24 horas</li>
+                <li><strong>Envío:</strong> Te notificaremos cuando tu pedido sea enviado</li>
+                <li><strong>Seguimiento:</strong> Podrás rastrear tu pedido en todo momento</li>
+                <li><strong>Entrega:</strong> Tiempo estimado: 3-5 días hábiles</li>
+            </ul>
+
+            <!-- Action Buttons -->
+            <div style="text-align: center; margin: 30px 0;">
+                <a href="{{ site_url }}/orders/{{ order.order_number }}/" class="button">
+                    Ver Pedido Completo
+                </a>
+                <a href="{{ site_url }}/orders/{{ order.order_number }}/track/" class="button" 
+                   style="background-color: #28a745;">
+                    Rastrear Pedido
+                </a>
+            </div>
+
+            <!-- Support Information -->
+            <div style="background-color: #fff3cd; border: 1px solid #ffeaa7; border-radius: 8px; padding: 20px; margin: 20px 0;">
+                <h4 style="margin-top: 0; color: #856404;">¿Necesitas Ayuda?</h4>
+                <p style="margin: 10px 0;">
+                    Si tienes alguna pregunta sobre tu pedido, no dudes en contactarnos:
+                </p>
+                <ul style="list-style: none; padding: 0;">
+                    <li style="margin: 8px 0;">
+                        <strong>Email:</strong> <a href="mailto:{{ support_email }}">{{ support_email }}</a>
+                    </li>
+                    <li style="margin: 8px 0;">
+                        <strong>Teléfono:</strong> +57 (1) 234-5678
+                    </li>
+                    <li style="margin: 8px 0;">
+                        <strong>WhatsApp:</strong> +57 300 123 4567
+                    </li>
+                    <li style="margin: 8px 0;">
+                        <strong>Horarios:</strong> Lunes a Viernes 8:00 AM - 6:00 PM
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <p><strong>{{ company_name }}</strong></p>
+            <p>Tu tienda de tecnología de confianza</p>
+            
+            <div class="social-links">
+                <a href="#">Facebook</a> |
+                <a href="#">Instagram</a> |
+                <a href="#">Twitter</a> |
+                <a href="#">YouTube</a>
+            </div>
+            
+            <p style="font-size: 12px; color: #999; margin-top: 20px;">
+                Este es un email automático, por favor no responder directamente a este mensaje.
+                <br>
+                Si tienes alguna pregunta, contáctanos en {{ support_email }}
+            </p>
+            
+            <p style="font-size: 11px; color: #999;">
+                © 2025 {{ company_name }}. Todos los derechos reservados.
+            </p>
+        </div>
+    </div>
+</body>
+</html>

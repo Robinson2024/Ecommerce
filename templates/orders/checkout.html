@@ -1,0 +1,341 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Checkout - Tech Ecommerce{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <!-- Progress Bar -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="d-flex justify-content-center">
+                <div class="progress-checkout">
+                    <div class="step active">
+                        <div class="step-number">1</div>
+                        <div class="step-label">Carrito</div>
+                    </div>
+                    <div class="step-line"></div>
+                    <div class="step active">
+                        <div class="step-number">2</div>
+                        <div class="step-label">Checkout</div>
+                    </div>
+                    <div class="step-line"></div>
+                    <div class="step">
+                        <div class="step-number">3</div>
+                        <div class="step-label">Confirmación</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <form method="post" x-data="{ processing: false }">
+        {% csrf_token %}
+        <div class="row">
+            <!-- Información del cliente y envío -->
+            <div class="col-lg-8">
+                <!-- Información del Cliente -->
+                <div class="card shadow-sm mb-4">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0">
+                            <i class="bi bi-person-fill"></i>
+                            Información del Cliente
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.first_name.id_for_label }}" class="form-label">{{ form.first_name.label }}</label>
+                                {{ form.first_name }}
+                                {% if form.first_name.errors %}
+                                    <div class="text-danger small">{{ form.first_name.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.last_name.id_for_label }}" class="form-label">{{ form.last_name.label }}</label>
+                                {{ form.last_name }}
+                                {% if form.last_name.errors %}
+                                    <div class="text-danger small">{{ form.last_name.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.email.id_for_label }}" class="form-label">{{ form.email.label }}</label>
+                                {{ form.email }}
+                                {% if form.email.errors %}
+                                    <div class="text-danger small">{{ form.email.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.phone.id_for_label }}" class="form-label">{{ form.phone.label }}</label>
+                                {{ form.phone }}
+                                {% if form.phone.errors %}
+                                    <div class="text-danger small">{{ form.phone.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Dirección de Envío -->
+                <div class="card shadow-sm mb-4">
+                    <div class="card-header bg-success text-white">
+                        <h5 class="mb-0">
+                            <i class="bi bi-geo-alt-fill"></i>
+                            Dirección de Envío
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <label for="{{ form.address_line1.id_for_label }}" class="form-label">{{ form.address_line1.label }}</label>
+                            {{ form.address_line1 }}
+                            {% if form.address_line1.errors %}
+                                <div class="text-danger small">{{ form.address_line1.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="mb-3">
+                            <label for="{{ form.address_line2.id_for_label }}" class="form-label">{{ form.address_line2.label }}</label>
+                            {{ form.address_line2 }}
+                            {% if form.address_line2.errors %}
+                                <div class="text-danger small">{{ form.address_line2.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <label for="{{ form.city.id_for_label }}" class="form-label">{{ form.city.label }}</label>
+                                {{ form.city }}
+                                {% if form.city.errors %}
+                                    <div class="text-danger small">{{ form.city.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label for="{{ form.state.id_for_label }}" class="form-label">{{ form.state.label }}</label>
+                                {{ form.state }}
+                                {% if form.state.errors %}
+                                    <div class="text-danger small">{{ form.state.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label for="{{ form.postal_code.id_for_label }}" class="form-label">{{ form.postal_code.label }}</label>
+                                {{ form.postal_code }}
+                                {% if form.postal_code.errors %}
+                                    <div class="text-danger small">{{ form.postal_code.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="{{ form.country.id_for_label }}" class="form-label">{{ form.country.label }}</label>
+                            {{ form.country }}
+                            {% if form.country.errors %}
+                                <div class="text-danger small">{{ form.country.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Notas del Pedido -->
+                <div class="card shadow-sm mb-4">
+                    <div class="card-header bg-info text-white">
+                        <h5 class="mb-0">
+                            <i class="bi bi-chat-left-text"></i>
+                            Notas del Pedido
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <label for="{{ form.notes.id_for_label }}" class="form-label">{{ form.notes.label }}</label>
+                            {{ form.notes }}
+                            {% if form.notes.errors %}
+                                <div class="text-danger small">{{ form.notes.errors.0 }}</div>
+                            {% endif %}
+                            <div class="form-text">Instrucciones especiales de entrega, referencias, etc.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Resumen del Pedido -->
+            <div class="col-lg-4">
+                <div class="card shadow-sm sticky-top" style="top: 2rem;">
+                    <div class="card-header bg-warning text-dark">
+                        <h5 class="mb-0">
+                            <i class="bi bi-receipt"></i>
+                            Resumen del Pedido
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <!-- Items del carrito -->
+                        <div class="mb-3">
+                            <h6 class="text-muted mb-3">Productos ({{ total_items }} items)</h6>
+                            {% for item in items %}
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <div class="flex-grow-1">
+                                        <div class="fw-bold small">{{ item.product.name|truncatechars:25 }}</div>
+                                        <div class="text-muted small">{{ item.quantity }}x ${{ item.price|floatformat:0 }}</div>
+                                    </div>
+                                    <div class="text-end">
+                                        <span class="fw-bold">${{ item.get_total_price|floatformat:0 }}</span>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+
+                        <hr>
+
+                        <!-- Cálculos -->
+                        <div class="d-flex justify-content-between mb-2">
+                            <span>Subtotal:</span>
+                            <span>${{ total_price|floatformat:0 }}</span>
+                        </div>
+                        
+                        <div class="d-flex justify-content-between mb-2">
+                            <span>Envío:</span>
+                            <span>
+                                {% if shipping_cost > 0 %}
+                                    ${{ shipping_cost|floatformat:0 }}
+                                {% else %}
+                                    <span class="text-success">¡Gratis!</span>
+                                {% endif %}
+                            </span>
+                        </div>
+
+                        <hr>                        <div class="d-flex justify-content-between fw-bold h5">
+                            <span>Total:</span>
+                            <span class="text-primary">${{ final_total|floatformat:0 }}</span>
+                        </div>
+
+                        <!-- Payment Security Notice -->
+                        <div class="alert alert-success mt-3">
+                            <small>
+                                <i class="bi bi-shield-check"></i>
+                                Transacciones seguras con encriptación SSL de 256 bits
+                            </small>
+                        </div>
+
+                        <!-- Botón de continuar a pago -->
+                        <div class="d-grid gap-2 mt-4">
+                            <button type="submit" 
+                                    class="btn btn-primary btn-lg"
+                                    x-bind:disabled="processing"
+                                    x-on:click="processing = true">
+                                <span x-show="!processing">
+                                    <i class="bi bi-arrow-right"></i>
+                                    Continuar al Pago
+                                </span>
+                                <span x-show="processing">
+                                    <div class="spinner-border spinner-border-sm me-2"></div>
+                                    Procesando...
+                                </span>
+                            </button>
+                            
+                            <a href="{% url 'cart:detail' %}" class="btn btn-outline-secondary">
+                                <i class="bi bi-arrow-left"></i>
+                                Volver al Carrito
+                            </a>
+                        </div>
+
+                        <!-- Métodos de pago aceptados -->
+                        <div class="mt-4 text-center">
+                            <small class="text-muted d-block mb-2">Métodos de pago aceptados:</small>
+                            <div class="row text-center">
+                                <div class="col-3">
+                                    <i class="bi bi-credit-card text-primary fs-4"></i>
+                                    <small class="d-block text-muted">Tarjetas</small>
+                                </div>
+                                <div class="col-3">
+                                    <i class="bi bi-paypal text-warning fs-4"></i>
+                                    <small class="d-block text-muted">PayPal</small>
+                                </div>
+                                <div class="col-3">
+                                    <i class="bi bi-bank text-info fs-4"></i>
+                                    <small class="d-block text-muted">Transferencia</small>
+                                </div>
+                                <div class="col-3">
+                                    <i class="bi bi-arrow-return-left text-warning fs-4"></i>
+                                    <small class="d-block text-muted">30 días devolución</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<style>
+/* Progress Bar Styles */
+.progress-checkout {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 2rem;
+}
+
+.step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.step-number {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: #e9ecef;
+    color: #6c757d;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    margin-bottom: 8px;
+}
+
+.step.active .step-number {
+    background-color: var(--bs-primary);
+    color: white;
+}
+
+.step-label {
+    font-size: 0.875rem;
+    color: #6c757d;
+}
+
+.step.active .step-label {
+    color: var(--bs-primary);
+    font-weight: 600;
+}
+
+.step-line {
+    width: 60px;
+    height: 2px;
+    background-color: #e9ecef;
+    margin: 0 1rem;
+    margin-top: -16px;
+}
+
+/* Form Styles */
+.form-control, .form-select {
+    border-radius: 0.5rem;
+    border: 1px solid #dee2e6;
+    padding: 0.625rem 0.875rem;
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: var(--bs-primary);
+    box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.15);
+}
+
+.card {
+    border: none;
+    border-radius: 1rem;
+}
+
+.card-header {
+    border-radius: 1rem 1rem 0 0 !important;
+    border-bottom: 1px solid rgba(255,255,255,0.2);
+}
+</style>
+{% endblock %}

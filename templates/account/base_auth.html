@@ -1,0 +1,430 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Autenticación - Tech Ecommerce{% endblock %}</title>
+    
+    <!-- Meta tags -->
+    <meta name="description" content="Accede a tu cuenta Tech Ecommerce o crea una nueva. La mejor tecnología al mejor precio.">
+    <meta name="keywords" content="login, registro, cuenta, tech ecommerce">
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --auth-primary: #667eea;
+            --auth-secondary: #764ba2;
+            --auth-accent: #f093fb;
+            --auth-success: #00b894;
+            --auth-warning: #fdcb6e;
+            --auth-danger: #e74c3c;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, var(--auth-primary) 0%, var(--auth-secondary) 100%);
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+        
+        /* Fondo animado */
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            animation: float 20s ease-in-out infinite;
+            z-index: 0;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(180deg); }
+        }
+        
+        /* Container principal */
+        .auth-container {
+            position: relative;
+            z-index: 1;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem 1rem;
+        }
+        
+        /* Card principal */
+        .auth-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            box-shadow: 
+                0 20px 40px rgba(0, 0, 0, 0.1),
+                0 8px 16px rgba(0, 0, 0, 0.05),
+                inset 0 1px 0 rgba(255, 255, 255, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            overflow: hidden;
+            max-width: 900px;
+            width: 100%;
+            position: relative;
+        }
+        
+        /* Lado izquierdo - Branding */
+        .auth-brand {
+            background: linear-gradient(135deg, var(--auth-primary) 0%, var(--auth-secondary) 100%);
+            color: white;
+            padding: 3rem;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .auth-brand::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23ffffff' fill-opacity='0.1'%3E%3Cpath d='M50 15L85 85 15 85z'/%3E%3C/g%3E%3C/svg%3E");
+            animation: brandFloat 30s linear infinite;
+        }
+        
+        @keyframes brandFloat {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .auth-brand-content {
+            position: relative;
+            z-index: 2;
+        }
+        
+        .brand-logo {
+            font-size: 3rem;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(45deg, #fff, #f1f3f4);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+        }
+        
+        /* Lado derecho - Formulario */
+        .auth-form {
+            padding: 3rem;
+        }
+        
+        .auth-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #2d3748;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, var(--auth-primary), var(--auth-secondary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        
+        .auth-subtitle {
+            color: #718096;
+            margin-bottom: 2rem;
+            font-weight: 500;
+        }
+        
+        /* Formulario moderno */
+        .form-floating {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-floating > .form-control {
+            border: 2px solid #e2e8f0;
+            border-radius: 16px;
+            padding: 1rem 1.5rem;
+            height: auto;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.8);
+        }
+        
+        .form-floating > .form-control:focus {
+            border-color: var(--auth-primary);
+            box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.15);
+            background: white;
+        }
+        
+        .form-floating > label {
+            color: #718096;
+            font-weight: 500;
+            padding: 1rem 1.5rem;
+        }
+        
+        /* Botón principal */
+        .btn-auth-primary {
+            background: linear-gradient(135deg, var(--auth-primary) 0%, var(--auth-secondary) 100%);
+            border: none;
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 16px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            width: 100%;
+        }
+        
+        .btn-auth-primary::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s ease;
+        }
+        
+        .btn-auth-primary:hover::before {
+            left: 100%;
+        }
+        
+        .btn-auth-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+        }
+        
+        /* Enlaces */
+        .auth-link {
+            color: var(--auth-primary);
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .auth-link:hover {
+            color: var(--auth-secondary);
+            text-decoration: underline;
+        }
+        
+        /* Divider */
+        .auth-divider {
+            position: relative;
+            text-align: center;
+            margin: 2rem 0;
+            color: #a0aec0;
+            font-weight: 500;
+        }
+        
+        .auth-divider::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, #e2e8f0, transparent);
+        }
+        
+        .auth-divider span {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 0 1rem;
+        }
+        
+        /* Botón social */
+        .btn-social {
+            border: 2px solid #e2e8f0;
+            background: white;
+            color: #4a5568;
+            padding: 0.75rem 1.5rem;
+            border-radius: 12px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            width: 100%;
+            margin-bottom: 1rem;
+        }
+        
+        .btn-social:hover {
+            border-color: var(--auth-primary);
+            color: var(--auth-primary);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* Mensajes de error */
+        .alert-modern {
+            border: none;
+            border-radius: 12px;
+            padding: 1rem 1.5rem;
+            margin-bottom: 1.5rem;
+            font-weight: 500;
+        }
+        
+        .alert-danger-modern {
+            background: linear-gradient(135deg, #fef5f5, #fed7d7);
+            color: #c53030;
+            border-left: 4px solid #e53e3e;
+        }
+        
+        .alert-success-modern {
+            background: linear-gradient(135deg, #f0fff4, #c6f6d5);
+            color: #2f855a;
+            border-left: 4px solid #38a169;
+        }
+        
+        /* Back to home */
+        .back-to-home {
+            position: absolute;
+            top: 2rem;
+            left: 2rem;
+            z-index: 10;
+        }
+        
+        .btn-back {
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 50px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+        
+        .btn-back:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+            color: white;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .auth-card {
+                margin: 1rem;
+                border-radius: 20px;
+            }
+            
+            .auth-brand, .auth-form {
+                padding: 2rem;
+            }
+            
+            .brand-logo {
+                font-size: 2rem;
+            }
+            
+            .auth-title {
+                font-size: 1.5rem;
+            }
+        }
+        
+        /* Animaciones de entrada */
+        .auth-card {
+            animation: slideInUp 0.6s ease-out;
+        }
+        
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+    
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <!-- Botón de regreso -->
+    <div class="back-to-home">
+        <a href="/" class="btn btn-back">
+            <i class="bi bi-arrow-left me-2"></i>Volver al inicio
+        </a>
+    </div>
+
+    <div class="auth-container">
+        <div class="auth-card">
+            <div class="row g-0 h-100">
+                <!-- Lado izquierdo - Branding -->
+                <div class="col-lg-5 d-none d-lg-block">
+                    <div class="auth-brand h-100 d-flex flex-column justify-content-center">
+                        <div class="auth-brand-content text-center">
+                            <div class="brand-logo">
+                                <i class="bi bi-cpu-fill"></i>
+                            </div>
+                            <h2 class="h3 mb-3 fw-bold">Tech Ecommerce</h2>
+                            <p class="mb-4 opacity-90">
+                                La mejor tecnología al mejor precio. 
+                                Únete a miles de usuarios satisfechos.
+                            </p>
+                            <div class="row text-center">
+                                <div class="col-4">
+                                    <div class="mb-2">
+                                        <i class="bi bi-shield-check" style="font-size: 2rem;"></i>
+                                    </div>
+                                    <small class="opacity-75">Compra Segura</small>
+                                </div>
+                                <div class="col-4">
+                                    <div class="mb-2">
+                                        <i class="bi bi-truck" style="font-size: 2rem;"></i>
+                                    </div>
+                                    <small class="opacity-75">Envío Gratis</small>
+                                </div>
+                                <div class="col-4">
+                                    <div class="mb-2">
+                                        <i class="bi bi-headset" style="font-size: 2rem;"></i>
+                                    </div>
+                                    <small class="opacity-75">Soporte 24/7</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Lado derecho - Formulario -->
+                <div class="col-lg-7">
+                    <div class="auth-form h-100 d-flex flex-column justify-content-center">
+                        {% block content %}{% endblock %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        // Animaciones y efectos
+        document.addEventListener('DOMContentLoaded', function() {
+            // Efecto de enfoque automático
+            const firstInput = document.querySelector('input[type="text"], input[type="email"]');
+            if (firstInput) {
+                setTimeout(() => firstInput.focus(), 500);
+            }
+            
+            // Efecto parallax suave en el fondo
+            document.addEventListener('mousemove', function(e) {
+                const x = e.clientX / window.innerWidth;
+                const y = e.clientY / window.innerHeight;
+                
+                document.body.style.backgroundPosition = `${x * 10}px ${y * 10}px`;
+            });
+        });
+    </script>
+    
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

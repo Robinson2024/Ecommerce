@@ -1,0 +1,629 @@
+{% extends 'base_modern.html' %}
+{% load static %}
+
+{% block title %}Pago Exitoso - Tech Ecommerce{% endblock %}
+
+{% block extra_css %}
+<style>
+:root {
+    --success-primary: #00b894;
+    --success-secondary: #00cec9;
+    --success-accent: #81ecec;
+    --success-dark: #00a085;
+}
+
+.success-container {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    padding: 2rem 0;
+    position: relative;
+    overflow: hidden;
+}
+
+.success-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.1'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    animation: float 20s ease-in-out infinite;
+}
+
+.success-hero {
+    text-align: center;
+    padding: 4rem 2rem;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(20px);
+    border-radius: 30px;
+    margin-bottom: 3rem;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+    position: relative;
+    overflow: hidden;
+}
+
+.success-hero::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(0, 184, 148, 0.1) 0%, transparent 70%);
+    animation: rotate 10s linear infinite;
+}
+
+.success-animation {
+    width: 150px;
+    height: 150px;
+    background: linear-gradient(135deg, var(--success-primary), var(--success-secondary));
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 2rem;
+    box-shadow: 0 20px 50px rgba(0, 184, 148, 0.3);
+    position: relative;
+    z-index: 2;
+    animation: successPop 1s ease 0.5s both;
+}
+
+.success-animation::before {
+    content: '';
+    position: absolute;
+    width: 120%;
+    height: 120%;
+    border: 3px solid var(--success-accent);
+    border-radius: 50%;
+    animation: ripple 2s ease-out infinite;
+}
+
+.success-animation i {
+    font-size: 5rem;
+    color: white;
+    animation: checkmarkDraw 0.8s ease 0.8s both;
+}
+
+.success-title {
+    font-size: 3.5rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, var(--success-primary), var(--success-secondary));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 1rem;
+    position: relative;
+    z-index: 2;
+    animation: slideUp 0.8s ease 1s both;
+}
+
+.success-subtitle {
+    color: #6c757d;
+    font-size: 1.3rem;
+    margin-bottom: 2rem;
+    position: relative;
+    z-index: 2;
+    animation: slideUp 0.8s ease 1.2s both;
+}
+
+.payment-details {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 25px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+    animation: slideUp 0.8s ease 1.4s both;
+}
+
+.detail-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 0;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.detail-row:last-child {
+    border-bottom: 3px solid var(--success-primary);
+    font-weight: bold;
+    font-size: 1.3rem;
+    color: var(--success-primary);
+    margin-top: 1rem;
+    padding-top: 1.5rem;
+}
+
+.detail-label {
+    font-weight: 600;
+    color: #495057;
+}
+
+.detail-value {
+    color: #6c757d;
+}
+
+.receipt-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    margin: 2rem 0;
+    flex-wrap: wrap;
+}
+
+.btn-modern {
+    padding: 1rem 2rem;
+    border-radius: 15px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    border: none;
+    display: inline-flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+.btn-success-modern {
+    background: linear-gradient(135deg, var(--success-primary), var(--success-secondary));
+    color: white;
+    box-shadow: 0 8px 25px rgba(0, 184, 148, 0.3);
+}
+
+.btn-success-modern:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 15px 35px rgba(0, 184, 148, 0.4);
+    color: white;
+}
+
+.btn-outline-modern {
+    background: rgba(255, 255, 255, 0.9);
+    color: var(--success-primary);
+    border: 2px solid var(--success-primary);
+    backdrop-filter: blur(10px);
+}
+
+.btn-outline-modern:hover {
+    background: var(--success-primary);
+    color: white;
+    transform: translateY(-3px);
+}
+
+.next-steps {
+    background: linear-gradient(135deg, rgba(0, 184, 148, 0.1), rgba(0, 206, 201, 0.1));
+    border: 2px solid var(--success-primary);
+    border-radius: 20px;
+    padding: 2rem;
+    text-align: center;
+    animation: slideUp 0.8s ease 1.6s both;
+}
+
+.next-steps h5 {
+    color: var(--success-primary);
+    margin-bottom: 1.5rem;
+}
+
+.steps-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 2rem;
+    margin-top: 2rem;
+}
+
+.step-card {
+    background: rgba(255, 255, 255, 0.8);
+    padding: 1.5rem;
+    border-radius: 15px;
+    text-align: center;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(0, 184, 148, 0.2);
+    transition: all 0.3s ease;
+}
+
+.step-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 30px rgba(0, 184, 148, 0.2);
+}
+
+.step-icon {
+    width: 60px;
+    height: 60px;
+    background: var(--success-primary);
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1rem;
+    color: white;
+    font-size: 1.5rem;
+}
+
+.confetti {
+    position: fixed;
+    width: 10px;
+    height: 10px;
+    background: var(--success-primary);
+    top: -10px;
+    z-index: 9999;
+    pointer-events: none;
+    border-radius: 50%;
+}
+
+@keyframes successPop {
+    0% {
+        transform: scale(0);
+        opacity: 0;
+    }
+    50% {
+        transform: scale(1.2);
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+@keyframes checkmarkDraw {
+    0% {
+        transform: scale(0) rotate(-45deg);
+        opacity: 0;
+    }
+    100% {
+        transform: scale(1) rotate(0deg);
+        opacity: 1;
+    }
+}
+
+@keyframes ripple {
+    0% {
+        transform: scale(0.8);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(1.5);
+        opacity: 0;
+    }
+}
+
+@keyframes slideUp {
+    0% {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes confettiFall {
+    0% {
+        transform: translateY(-10px) rotate(0deg);
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(100vh) rotate(360deg);
+        opacity: 0;
+    }
+}
+
+@keyframes rotate {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-20px); }
+}
+
+@media (max-width: 768px) {
+    .success-container {
+        padding: 1rem 0;
+    }
+    
+    .success-hero {
+        padding: 2rem 1rem;
+        margin-bottom: 2rem;
+    }
+    
+    .success-title {
+        font-size: 2.5rem;
+    }
+    
+    .success-animation {
+        width: 100px;
+        height: 100px;
+    }
+    
+    .success-animation i {
+        font-size: 3rem;
+    }
+    
+    .payment-details {
+        padding: 1.5rem;
+    }
+    
+    .receipt-actions {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .btn-modern {
+        width: 100%;
+        max-width: 300px;
+        justify-content: center;
+    }
+    
+    .steps-grid {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="success-container">
+    <div class="container-fluid px-4">
+        <!-- Hero de éxito -->
+        <div class="success-hero">
+            <div class="success-animation">
+                <i class="bi bi-check-lg"></i>
+            </div>
+            <h1 class="success-title">¡Pago Exitoso!</h1>
+            <p class="success-subtitle">
+                Tu pago ha sido procesado correctamente.<br>
+                ¡Gracias por tu compra!
+            </p>
+        </div>
+
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <!-- Detalles del pago -->
+                <div class="payment-details">
+                    <h4 class="mb-4 text-center">
+                        <i class="bi bi-receipt me-2"></i>
+                        Detalles del Pago
+                    </h4>
+                    
+                    <div class="detail-row">
+                        <span class="detail-label">Número de Transacción:</span>
+                        <span class="detail-value">#{{ transaction_id|default:"TXN-"|add:order.order_number }}</span>
+                    </div>
+                    
+                    <div class="detail-row">
+                        <span class="detail-label">Fecha del Pago:</span>
+                        <span class="detail-value">{{ payment_date|default:order.created|date:"d/m/Y H:i" }}</span>
+                    </div>
+                    
+                    <div class="detail-row">
+                        <span class="detail-label">Método de Pago:</span>
+                        <span class="detail-value">{{ payment_method|default:"Tarjeta de Crédito" }}</span>
+                    </div>
+                    
+                    <div class="detail-row">
+                        <span class="detail-label">Estado del Pago:</span>
+                        <span class="detail-value">
+                            <span class="badge bg-success">Completado</span>
+                        </span>
+                    </div>
+                    
+                    <div class="detail-row">
+                        <span class="detail-label">Pedido #:</span>
+                        <span class="detail-value">{{ order.order_number }}</span>
+                    </div>
+                    
+                    <div class="detail-row">
+                        <span class="detail-label fs-5">Total Pagado:</span>
+                        <span class="detail-value fs-4 fw-bold">${{ order.total_price|floatformat:0 }}</span>
+                    </div>
+                </div>
+
+                <!-- Acciones del recibo -->
+                <div class="receipt-actions">
+                    <button onclick="window.print()" class="btn btn-success-modern">
+                        <i class="bi bi-printer me-2"></i>
+                        Imprimir Recibo
+                    </button>
+                    <a href="{% url 'orders:confirmation' order.order_number %}" class="btn btn-outline-modern">
+                        <i class="bi bi-eye me-2"></i>
+                        Ver Detalles del Pedido
+                    </a>
+                    <button onclick="downloadReceipt()" class="btn btn-outline-modern">
+                        <i class="bi bi-download me-2"></i>
+                        Descargar PDF
+                    </button>
+                </div>
+
+                <!-- Próximos pasos -->
+                <div class="next-steps">
+                    <h5>
+                        <i class="bi bi-list-check me-2"></i>
+                        ¿Qué sigue ahora?
+                    </h5>
+                    <p class="mb-4">
+                        Tu pedido está siendo procesado. Te mantendremos informado en cada paso del proceso.
+                    </p>
+                    
+                    <div class="steps-grid">
+                        <div class="step-card">
+                            <div class="step-icon">
+                                <i class="bi bi-envelope-check"></i>
+                            </div>
+                            <h6>Confirmación por Email</h6>
+                            <p class="mb-0 small text-muted">
+                                Recibirás un email con todos los detalles de tu compra
+                            </p>
+                        </div>
+                        
+                        <div class="step-card">
+                            <div class="step-icon">
+                                <i class="bi bi-box-seam"></i>
+                            </div>
+                            <h6>Preparación del Pedido</h6>
+                            <p class="mb-0 small text-muted">
+                                Nuestro equipo preparará tu pedido con cuidado
+                            </p>
+                        </div>
+                        
+                        <div class="step-card">
+                            <div class="step-icon">
+                                <i class="bi bi-truck"></i>
+                            </div>
+                            <h6>Envío</h6>
+                            <p class="mb-0 small text-muted">
+                                Te notificaremos cuando tu pedido esté en camino
+                            </p>
+                        </div>
+                        
+                        <div class="step-card">
+                            <div class="step-icon">
+                                <i class="bi bi-house-check"></i>
+                            </div>
+                            <h6>Entrega</h6>
+                            <p class="mb-0 small text-muted">
+                                Recibirás tu pedido en 3-5 días hábiles
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Botones de navegación -->
+                <div class="text-center mt-4">
+                    <div class="receipt-actions">
+                        <a href="{% url 'products:list' %}" class="btn btn-success-modern">
+                            <i class="bi bi-shop me-2"></i>
+                            Seguir Comprando
+                        </a>
+                        <a href="{% url 'core:home' %}" class="btn btn-outline-modern">
+                            <i class="bi bi-house me-2"></i>
+                            Ir al Inicio
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Crear efecto confetti
+    function createConfetti() {
+        const colors = ['#00b894', '#00cec9', '#81ecec', '#74b9ff', '#6c5ce7'];
+        
+        for (let i = 0; i < 100; i++) {
+            setTimeout(() => {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti';
+                confetti.style.left = Math.random() * 100 + '%';
+                confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+                confetti.style.animationDuration = (Math.random() * 3 + 2) + 's';
+                confetti.style.animationName = 'confettiFall';
+                confetti.style.animationTimingFunction = 'ease-out';
+                confetti.style.animationFillMode = 'forwards';
+                
+                document.body.appendChild(confetti);
+                
+                setTimeout(() => {
+                    confetti.remove();
+                }, 5000);
+            }, i * 50);
+        }
+    }
+    
+    // Lanzar confetti después de las animaciones iniciales
+    setTimeout(createConfetti, 1500);
+    
+    // Función para descargar recibo
+    window.downloadReceipt = function() {
+        // Simular descarga de PDF
+        const link = document.createElement('a');
+        link.href = '#'; // Aquí iría la URL real del PDF
+        link.download = `recibo-${order.order_number}.pdf`;
+        link.click();
+        
+        // Mostrar notificación
+        showNotification('El recibo se está descargando...', 'success');
+    };
+    
+    // Función para mostrar notificaciones
+    function showNotification(message, type = 'info') {
+        const toast = document.createElement('div');
+        toast.className = `toast align-items-center text-white bg-${type === 'success' ? 'success' : 'primary'} border-0`;
+        toast.setAttribute('role', 'alert');
+        toast.style.position = 'fixed';
+        toast.style.top = '20px';
+        toast.style.right = '20px';
+        toast.style.zIndex = '9999';
+        toast.innerHTML = `
+            <div class="d-flex">
+                <div class="toast-body">
+                    <i class="bi bi-${type === 'success' ? 'check-circle' : 'info-circle'} me-2"></i>
+                    ${message}
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+            </div>
+        `;
+        
+        document.body.appendChild(toast);
+        
+        const bsToast = new bootstrap.Toast(toast);
+        bsToast.show();
+        
+        toast.addEventListener('hidden.bs.toast', () => {
+            toast.remove();
+        });
+    }
+    
+    // Efecto de sonido de éxito (opcional)
+    function playSuccessSound() {
+        // Crear un sonido simple usando Web Audio API
+        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        const oscillator = audioContext.createOscillator();
+        const gainNode = audioContext.createGain();
+        
+        oscillator.connect(gainNode);
+        gainNode.connect(audioContext.destination);
+        
+        oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
+        oscillator.frequency.exponentialRampToValueAtTime(400, audioContext.currentTime + 0.1);
+        
+        gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
+        
+        oscillator.start(audioContext.currentTime);
+        oscillator.stop(audioContext.currentTime + 0.3);
+    }
+    
+    // Reproducir sonido después de un momento
+    setTimeout(() => {
+        try {
+            playSuccessSound();
+        } catch (e) {
+            // Ignorar errores de audio
+        }
+    }, 1000);
+    
+    // Animación de entrada para las cards
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.style.opacity = '1';
+                entry.target.style.transform = 'translateY(0)';
+            }
+        });
+    });
+    
+    // Observar elementos para animaciones
+    document.querySelectorAll('.step-card').forEach((card, index) => {
+        card.style.opacity = '0';
+        card.style.transform = 'translateY(20px)';
+        card.style.transition = `opacity 0.6s ease ${index * 0.1}s, transform 0.6s ease ${index * 0.1}s`;
+        observer.observe(card);
+    });
+});
+</script>
+{% endblock %}

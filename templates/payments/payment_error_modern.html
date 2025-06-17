@@ -1,0 +1,715 @@
+{% extends 'base_modern.html' %}
+{% load static %}
+
+{% block title %}Error en el Pago - Tech Ecommerce{% endblock %}
+
+{% block extra_css %}
+<style>
+:root {
+    --error-primary: #e84393;
+    --error-secondary: #fd79a8;
+    --error-warning: #fdcb6e;
+    --error-info: #74b9ff;
+    --error-dark: #d63384;
+}
+
+.error-container {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    padding: 2rem 0;
+    position: relative;
+    overflow: hidden;
+}
+
+.error-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.1'%3E%3Cpath d='M30 30l10-10M30 30l-10 10M30 30l10 10M30 30l-10-10'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    animation: float 20s ease-in-out infinite;
+}
+
+.error-hero {
+    text-align: center;
+    padding: 4rem 2rem;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(20px);
+    border-radius: 30px;
+    margin-bottom: 3rem;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+    position: relative;
+    overflow: hidden;
+}
+
+.error-hero::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(232, 67, 147, 0.1) 0%, transparent 70%);
+    animation: rotate 10s linear infinite;
+}
+
+.error-animation {
+    width: 150px;
+    height: 150px;
+    background: linear-gradient(135deg, var(--error-primary), var(--error-secondary));
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 2rem;
+    box-shadow: 0 20px 50px rgba(232, 67, 147, 0.3);
+    position: relative;
+    z-index: 2;
+    animation: errorShake 0.8s ease 0.5s both;
+}
+
+.error-animation::before {
+    content: '';
+    position: absolute;
+    width: 120%;
+    height: 120%;
+    border: 3px solid var(--error-secondary);
+    border-radius: 50%;
+    animation: errorPulse 2s ease-out infinite;
+}
+
+.error-animation i {
+    font-size: 5rem;
+    color: white;
+    animation: iconBounce 0.6s ease 0.8s both;
+}
+
+.error-title {
+    font-size: 3.5rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, var(--error-primary), var(--error-secondary));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 1rem;
+    position: relative;
+    z-index: 2;
+    animation: slideUp 0.8s ease 1s both;
+}
+
+.error-subtitle {
+    color: #6c757d;
+    font-size: 1.3rem;
+    margin-bottom: 2rem;
+    position: relative;
+    z-index: 2;
+    animation: slideUp 0.8s ease 1.2s both;
+}
+
+.error-code {
+    background: linear-gradient(135deg, rgba(232, 67, 147, 0.1), rgba(253, 121, 168, 0.1));
+    border: 2px solid var(--error-primary);
+    color: var(--error-primary);
+    padding: 1rem 2rem;
+    border-radius: 25px;
+    font-weight: 600;
+    font-size: 1.1rem;
+    display: inline-block;
+    margin-bottom: 2rem;
+    position: relative;
+    z-index: 2;
+    animation: slideUp 0.8s ease 1.4s both;
+}
+
+.error-details {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 25px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+    animation: slideUp 0.8s ease 1.6s both;
+}
+
+.error-reasons {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 25px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+    animation: slideUp 0.8s ease 1.8s both;
+}
+
+.reason-item {
+    display: flex;
+    align-items: flex-start;
+    padding: 1rem;
+    background: rgba(232, 67, 147, 0.05);
+    border-radius: 15px;
+    margin-bottom: 1rem;
+    border-left: 4px solid var(--error-primary);
+    transition: all 0.3s ease;
+}
+
+.reason-item:hover {
+    background: rgba(232, 67, 147, 0.1);
+    transform: translateX(5px);
+}
+
+.reason-icon {
+    width: 40px;
+    height: 40px;
+    background: var(--error-primary);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 1rem;
+    color: white;
+    font-size: 1.2rem;
+    flex-shrink: 0;
+}
+
+.solution-card {
+    background: linear-gradient(135deg, rgba(116, 185, 255, 0.1), rgba(116, 185, 255, 0.05));
+    border: 2px solid var(--error-info);
+    border-radius: 20px;
+    padding: 2rem;
+    text-align: center;
+    margin-bottom: 2rem;
+    animation: slideUp 0.8s ease 2s both;
+}
+
+.solution-card h5 {
+    color: var(--error-info);
+    margin-bottom: 1.5rem;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    margin: 2rem 0;
+    flex-wrap: wrap;
+}
+
+.btn-modern {
+    padding: 1rem 2rem;
+    border-radius: 15px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    border: none;
+    display: inline-flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+.btn-primary-modern {
+    background: linear-gradient(135deg, var(--error-info), #0984e3);
+    color: white;
+    box-shadow: 0 8px 25px rgba(116, 185, 255, 0.3);
+}
+
+.btn-primary-modern:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 15px 35px rgba(116, 185, 255, 0.4);
+    color: white;
+}
+
+.btn-warning-modern {
+    background: linear-gradient(135deg, var(--error-warning), #e17055);
+    color: white;
+    box-shadow: 0 8px 25px rgba(253, 203, 110, 0.3);
+}
+
+.btn-warning-modern:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 15px 35px rgba(253, 203, 110, 0.4);
+    color: white;
+}
+
+.btn-outline-modern {
+    background: rgba(255, 255, 255, 0.9);
+    color: #6c757d;
+    border: 2px solid #6c757d;
+    backdrop-filter: blur(10px);
+}
+
+.btn-outline-modern:hover {
+    background: #6c757d;
+    color: white;
+    transform: translateY(-3px);
+}
+
+.help-section {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 25px;
+    padding: 2rem;
+    text-align: center;
+    animation: slideUp 0.8s ease 2.2s both;
+}
+
+.contact-methods {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+    margin-top: 2rem;
+}
+
+.contact-method {
+    background: rgba(255, 255, 255, 0.8);
+    padding: 1.5rem;
+    border-radius: 15px;
+    text-align: center;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+.contact-method:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+}
+
+.contact-icon {
+    width: 50px;
+    height: 50px;
+    background: var(--error-info);
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1rem;
+    color: white;
+    font-size: 1.3rem;
+}
+
+@keyframes errorShake {
+    0%, 100% {
+        transform: translateX(0);
+    }
+    10%, 30%, 50%, 70%, 90% {
+        transform: translateX(-5px);
+    }
+    20%, 40%, 60%, 80% {
+        transform: translateX(5px);
+    }
+}
+
+@keyframes errorPulse {
+    0% {
+        transform: scale(0.8);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(1.5);
+        opacity: 0;
+    }
+}
+
+@keyframes iconBounce {
+    0% {
+        transform: scale(0);
+    }
+    50% {
+        transform: scale(1.2);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+@keyframes slideUp {
+    0% {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes rotate {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-20px); }
+}
+
+@media (max-width: 768px) {
+    .error-container {
+        padding: 1rem 0;
+    }
+    
+    .error-hero {
+        padding: 2rem 1rem;
+        margin-bottom: 2rem;
+    }
+    
+    .error-title {
+        font-size: 2.5rem;
+    }
+    
+    .error-animation {
+        width: 100px;
+        height: 100px;
+    }
+    
+    .error-animation i {
+        font-size: 3rem;
+    }
+    
+    .error-details, .error-reasons, .solution-card, .help-section {
+        padding: 1.5rem;
+    }
+    
+    .action-buttons {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .btn-modern {
+        width: 100%;
+        max-width: 300px;
+        justify-content: center;
+    }
+    
+    .contact-methods {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="error-container">
+    <div class="container-fluid px-4">
+        <!-- Hero de error -->
+        <div class="error-hero">
+            <div class="error-animation">
+                <i class="bi bi-exclamation-triangle-fill"></i>
+            </div>
+            <h1 class="error-title">Error en el Pago</h1>
+            <p class="error-subtitle">
+                Lo sentimos, no pudimos procesar tu pago.<br>
+                Pero no te preocupes, ¡podemos solucionarlo!
+            </p>
+            {% if error_code %}
+            <div class="error-code">
+                Código de Error: {{ error_code }}
+            </div>
+            {% endif %}
+        </div>
+
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <!-- Detalles del error -->
+                <div class="error-details">
+                    <h4 class="mb-4 text-center">
+                        <i class="bi bi-info-circle me-2"></i>
+                        ¿Qué pasó?
+                    </h4>
+                    
+                    <div class="text-center mb-4">
+                        <p class="lead">
+                            {% if error_message %}
+                                {{ error_message }}
+                            {% else %}
+                                Tu pago no pudo ser procesado en este momento. Esto puede ocurrir por varias razones, pero la mayoría tienen solución fácil.
+                            {% endif %}
+                        </p>
+                    </div>
+                    
+                    {% if order %}
+                    <div class="row text-center">
+                        <div class="col-md-4 mb-3">
+                            <strong>Pedido:</strong><br>
+                            <span class="text-primary">#{{ order.order_number }}</span>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <strong>Monto:</strong><br>
+                            <span class="text-success fs-5">${{ order.total_price|floatformat:0 }}</span>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <strong>Fecha:</strong><br>
+                            <span class="text-muted">{{ order.created|date:"d/m/Y H:i" }}</span>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+
+                <!-- Posibles razones -->
+                <div class="error-reasons">
+                    <h5 class="mb-4">
+                        <i class="bi bi-list-ul me-2"></i>
+                        Posibles razones del error:
+                    </h5>
+                    
+                    <div class="reason-item">
+                        <div class="reason-icon">
+                            <i class="bi bi-credit-card-2-back"></i>
+                        </div>
+                        <div>
+                            <h6 class="mb-1">Datos de tarjeta incorrectos</h6>
+                            <p class="mb-0 text-muted">
+                                Verifica que el número, fecha de vencimiento o CVC sean correctos.
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <div class="reason-item">
+                        <div class="reason-icon">
+                            <i class="bi bi-wallet2"></i>
+                        </div>
+                        <div>
+                            <h6 class="mb-1">Fondos insuficientes</h6>
+                            <p class="mb-0 text-muted">
+                                Tu tarjeta o cuenta puede no tener saldo suficiente para la transacción.
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <div class="reason-item">
+                        <div class="reason-icon">
+                            <i class="bi bi-shield-exclamation"></i>
+                        </div>
+                        <div>
+                            <h6 class="mb-1">Transacción bloqueada</h6>
+                            <p class="mb-0 text-muted">
+                                Tu banco puede haber bloqueado la transacción por seguridad.
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <div class="reason-item">
+                        <div class="reason-icon">
+                            <i class="bi bi-wifi-off"></i>
+                        </div>
+                        <div>
+                            <h6 class="mb-1">Problema de conexión</h6>
+                            <p class="mb-0 text-muted">
+                                Una conexión inestable puede haber interrumpido el proceso.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Solución recomendada -->
+                <div class="solution-card">
+                    <h5>
+                        <i class="bi bi-lightbulb me-2"></i>
+                        Solución Recomendada
+                    </h5>
+                    <p class="mb-4">
+                        La mayoría de problemas de pago se resuelven simplemente intentando nuevamente. 
+                        Te recomendamos verificar los datos de tu tarjeta y intentar el pago otra vez.
+                    </p>
+                    
+                    <div class="action-buttons">
+                        <a href="{% url 'payments:method' %}" class="btn btn-primary-modern">
+                            <i class="bi bi-arrow-clockwise me-2"></i>
+                            Intentar Nuevamente
+                        </a>
+                        <a href="{% url 'cart:detail' %}" class="btn btn-warning-modern">
+                            <i class="bi bi-cart3 me-2"></i>
+                            Volver al Carrito
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Métodos de pago alternativos -->
+                <div class="error-details">
+                    <h5 class="mb-4 text-center">
+                        <i class="bi bi-credit-card me-2"></i>
+                        Métodos de Pago Alternativos
+                    </h5>
+                    
+                    <div class="row">
+                        <div class="col-md-3 col-6 mb-3 text-center">
+                            <div class="p-3 bg-light rounded">
+                                <i class="bi bi-paypal fs-2 text-primary mb-2"></i>
+                                <div class="small">PayPal</div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-6 mb-3 text-center">
+                            <div class="p-3 bg-light rounded">
+                                <i class="bi bi-google fs-2 text-warning mb-2"></i>
+                                <div class="small">Google Pay</div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-6 mb-3 text-center">
+                            <div class="p-3 bg-light rounded">
+                                <i class="bi bi-apple fs-2 text-dark mb-2"></i>
+                                <div class="small">Apple Pay</div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-6 mb-3 text-center">
+                            <div class="p-3 bg-light rounded">
+                                <i class="bi bi-bank fs-2 text-success mb-2"></i>
+                                <div class="small">Transferencia</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="text-center mt-3">
+                        <p class="text-muted">
+                            Puedes probar con cualquiera de estos métodos de pago como alternativa.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Sección de ayuda -->
+                <div class="help-section">
+                    <h5 class="mb-4">
+                        <i class="bi bi-question-circle me-2"></i>
+                        ¿Necesitas ayuda adicional?
+                    </h5>
+                    <p class="mb-4">
+                        Si el problema persiste, nuestro equipo de soporte está aquí para ayudarte. 
+                        Contáctanos y resolveremos tu problema rápidamente.
+                    </p>
+                    
+                    <div class="contact-methods">
+                        <div class="contact-method">
+                            <div class="contact-icon">
+                                <i class="bi bi-chat-dots"></i>
+                            </div>
+                            <h6>Chat en Vivo</h6>
+                            <p class="mb-3 small text-muted">Disponible 24/7</p>
+                            <button class="btn btn-primary-modern btn-sm">
+                                Iniciar Chat
+                            </button>
+                        </div>
+                        
+                        <div class="contact-method">
+                            <div class="contact-icon">
+                                <i class="bi bi-envelope"></i>
+                            </div>
+                            <h6>Email</h6>
+                            <p class="mb-3 small text-muted">soporte@techecommerce.com</p>
+                            <a href="mailto:soporte@techecommerce.com" class="btn btn-outline-modern btn-sm">
+                                Enviar Email
+                            </a>
+                        </div>
+                        
+                        <div class="contact-method">
+                            <div class="contact-icon">
+                                <i class="bi bi-telephone"></i>
+                            </div>
+                            <h6>Teléfono</h6>
+                            <p class="mb-3 small text-muted">+1 (555) 123-4567</p>
+                            <a href="tel:+15551234567" class="btn btn-outline-modern btn-sm">
+                                Llamar Ahora
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Botones de navegación -->
+                <div class="text-center mt-4">
+                    <div class="action-buttons">
+                        <a href="{% url 'core:home' %}" class="btn btn-outline-modern">
+                            <i class="bi bi-house me-2"></i>
+                            Ir al Inicio
+                        </a>
+                        <a href="{% url 'products:list' %}" class="btn btn-outline-modern">
+                            <i class="bi bi-shop me-2"></i>
+                            Ver Productos
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Animación de entrada para los elementos
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.style.opacity = '1';
+                entry.target.style.transform = 'translateY(0)';
+            }
+        });
+    });
+    
+    // Observar elementos para animaciones
+    document.querySelectorAll('.reason-item, .contact-method').forEach((item, index) => {
+        item.style.opacity = '0';
+        item.style.transform = 'translateY(20px)';
+        item.style.transition = `opacity 0.6s ease ${index * 0.1}s, transform 0.6s ease ${index * 0.1}s`;
+        observer.observe(item);
+    });
+    
+    // Función para mostrar chat en vivo (simulado)
+    document.querySelector('.contact-method button')?.addEventListener('click', function() {
+        alert('Chat en vivo se abrirá en breve...\n\nPor el momento, puedes contactarnos por email o teléfono.');
+    });
+    
+    // Efecto de shake para llamar la atención al botón principal
+    setTimeout(() => {
+        const tryAgainBtn = document.querySelector('.btn-primary-modern');
+        if (tryAgainBtn) {
+            tryAgainBtn.style.animation = 'errorShake 0.5s ease';
+            setTimeout(() => {
+                tryAgainBtn.style.animation = '';
+            }, 500);
+        }
+    }, 3000);
+    
+    // Función para mostrar notificaciones
+    function showNotification(message, type = 'info') {
+        const toast = document.createElement('div');
+        toast.className = `toast align-items-center text-white bg-${type} border-0`;
+        toast.setAttribute('role', 'alert');
+        toast.style.position = 'fixed';
+        toast.style.top = '20px';
+        toast.style.right = '20px';
+        toast.style.zIndex = '9999';
+        toast.innerHTML = `
+            <div class="d-flex">
+                <div class="toast-body">
+                    <i class="bi bi-info-circle me-2"></i>
+                    ${message}
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+            </div>
+        `;
+        
+        document.body.appendChild(toast);
+        
+        const bsToast = new bootstrap.Toast(toast);
+        bsToast.show();
+        
+        toast.addEventListener('hidden.bs.toast', () => {
+            toast.remove();
+        });
+    }
+      // Mostrar tip después de un momento
+    setTimeout(() => {
+            showNotification('💡 Tip: Verifica que tu tarjeta esté habilitada para compras en línea', 'info');
+    }, 5000);
+      // Analytics tracking
+    if (typeof gtag !== 'undefined') {
+        // gtag event tracking disabled in template to avoid syntax errors
+        // gtag('event', 'payment_failed', { event_category: 'ecommerce', event_label: 'payment_error', value: 0 });
+    }
+});
+</script>
+{% endblock %}

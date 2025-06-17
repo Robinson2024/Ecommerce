@@ -1,0 +1,24 @@
+# ========================================
+# DEPENDENCIAS DE TESTING AVANZADO
+# ========================================
+# Herramientas especializadas para testing intensivo, CI/CD y análisis
+# Incluye todas las dependencias base + herramientas de testing profesional
+
+-r base.txt
+
+# Core Testing Framework - Framework principal de testing
+pytest==8.4.0                              # Framework moderno de testing
+pytest-django==4.11.1                      # Integración específica con Django
+pytest-cov==6.2.1                          # Análisis de cobertura de código
+pytest-mock==3.14.0                        # Mocking y patching para tests
+pytest-benchmark==4.0.0                    # Testing de performance y benchmarks
+factory-boy==3.3.1                         # Fábrica de objetos para datos de prueba
+faker==30.3.0                              # Datos falsos realistas para testing
+model-bakery==1.19.5                       # Alternativa a factory-boy para modelos Django
+
+# Coverage and Testing Tools - Herramientas de cobertura
+coverage==7.6.4                            # Análisis detallado de cobertura de código
+pytest-xdist==3.6.0                        # Ejecución de tests en paralelo
+
+# Load Testing - Testing de carga y rendimiento
+locust==2.29.1                             # Framework de load testing distribuido

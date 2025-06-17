@@ -1,0 +1,260 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Pago Exitoso - Tech Ecommerce{% endblock %}
+
+{% block extra_css %}
+<style>
+    .success-container {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 60vh;
+        display: flex;
+        align-items: center;
+    }
+    .success-card {
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        overflow: hidden;
+    }
+    .success-icon {
+        background: linear-gradient(135deg, #28a745, #20c997);
+        color: white;
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1rem;
+        animation: bounce 2s infinite;
+    }
+    @keyframes bounce {
+        0%, 20%, 60%, 100% { transform: translateY(0); }
+        40% { transform: translateY(-10px); }
+        80% { transform: translateY(-5px); }
+    }
+    .order-details {
+        background: #f8f9fa;
+        border-radius: 15px;
+        padding: 1.5rem;
+        margin: 1rem 0;
+    }
+    .tracking-info {
+        background: linear-gradient(135deg, #17a2b8, #138496);
+        color: white;
+        border-radius: 15px;
+        padding: 1.5rem;
+    }
+    .next-steps {
+        background: #fff3cd;
+        border: 1px solid #ffeaa7;
+        border-radius: 15px;
+        padding: 1.5rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="success-container">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="success-card">
+                    <div class="card-body text-center p-5">
+                        <!-- Success Icon -->
+                        <div class="success-icon">
+                            <i class="bi bi-check-lg fs-1"></i>
+                        </div>
+                        
+                        <!-- Success Message -->
+                        <h1 class="text-success mb-3">¡Pago Exitoso!</h1>
+                        <p class="lead text-muted mb-4">
+                            Tu pedido ha sido procesado correctamente y recibirás un email de confirmación en breve.
+                        </p>
+                        
+                        <!-- Order Details -->
+                        <div class="order-details">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h5 class="text-primary">
+                                        <i class="bi bi-receipt"></i>
+                                        Número de Orden
+                                    </h5>
+                                    <p class="fs-4 fw-bold text-dark mb-3">{{ order.order_number }}</p>
+                                </div>
+                                <div class="col-md-6">
+                                    <h5 class="text-primary">
+                                        <i class="bi bi-currency-dollar"></i>
+                                        Total Pagado
+                                    </h5>
+                                    <p class="fs-4 fw-bold text-success mb-3">${{ order.total_amount|floatformat:0 }}</p>
+                                </div>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h6 class="text-muted">Método de Pago:</h6>
+                                    <p class="mb-2">
+                                        {% if order.payment_method == 'stripe' %}
+                                            <i class="bi bi-credit-card"></i> Tarjeta de Crédito/Débito
+                                        {% elif order.payment_method == 'paypal' %}
+                                            <i class="bi bi-paypal"></i> PayPal
+                                        {% endif %}
+                                    </p>
+                                </div>
+                                <div class="col-md-6">
+                                    <h6 class="text-muted">Fecha de Compra:</h6>
+                                    <p class="mb-2">{{ order.created_at|date:"d/m/Y H:i" }}</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Order Items Summary -->
+                        <div class="mt-4">
+                            <h5 class="text-primary mb-3">
+                                <i class="bi bi-box-seam"></i>
+                                Productos Ordenados
+                            </h5>
+                            <div class="row">
+                                {% for item in order.items.all %}
+                                <div class="col-md-6 mb-3">
+                                    <div class="card border-0 bg-light">
+                                        <div class="card-body p-3">
+                                            <h6 class="card-title mb-1">{{ item.product_name }}</h6>
+                                            <p class="card-text small text-muted mb-2">
+                                                Cantidad: {{ item.quantity }} × ${{ item.unit_price|floatformat:0 }}
+                                            </p>
+                                            <p class="card-text fw-bold text-success">
+                                                Total: ${{ item.total_price|floatformat:0 }}
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        
+                        <!-- Tracking Info -->
+                        <div class="tracking-info mt-4">
+                            <h5 class="mb-3">
+                                <i class="bi bi-truck"></i>
+                                Información de Envío
+                            </h5>
+                            <div class="row text-start">
+                                <div class="col-md-8">
+                                    <h6 class="text-white-50">Dirección de Envío:</h6>
+                                    <address class="text-white">
+                                        {{ order.get_shipping_address_display|linebreaks }}
+                                    </address>
+                                </div>
+                                <div class="col-md-4">
+                                    <h6 class="text-white-50">Estado:</h6>
+                                    <span class="badge bg-warning fs-6">{{ order.get_status_display }}</span>
+                                    {% if order.tracking_number %}
+                                    <h6 class="text-white-50 mt-3">Tracking:</h6>
+                                    <p class="text-white fw-bold">{{ order.tracking_number }}</p>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Next Steps -->
+                        <div class="next-steps mt-4">
+                            <h5 class="text-warning mb-3">
+                                <i class="bi bi-info-circle"></i>
+                                ¿Qué sigue?
+                            </h5>
+                            <ul class="list-unstyled text-start">
+                                <li class="mb-2">
+                                    <i class="bi bi-envelope text-primary"></i>
+                                    <strong>Email de confirmación:</strong> Recibirás un email con los detalles de tu pedido
+                                </li>
+                                <li class="mb-2">
+                                    <i class="bi bi-gear text-primary"></i>
+                                    <strong>Procesamiento:</strong> Tu pedido será procesado en las próximas 24 horas
+                                </li>
+                                <li class="mb-2">
+                                    <i class="bi bi-truck text-primary"></i>
+                                    <strong>Envío:</strong> Te notificaremos cuando tu pedido sea enviado
+                                </li>
+                                <li class="mb-2">
+                                    <i class="bi bi-search text-primary"></i>
+                                    <strong>Seguimiento:</strong> Podrás rastrear tu pedido en todo momento
+                                </li>
+                            </ul>
+                        </div>
+                        
+                        <!-- Action Buttons -->
+                        <div class="mt-5">
+                            <div class="row g-3">
+                                <div class="col-md-4">
+                                    <a href="{% url 'orders:detail' order.order_number %}" 
+                                       class="btn btn-primary btn-lg w-100">
+                                        <i class="bi bi-eye"></i>
+                                        Ver Pedido
+                                    </a>
+                                </div>
+                                <div class="col-md-4">
+                                    <a href="{% url 'products:list' %}" 
+                                       class="btn btn-outline-primary btn-lg w-100">
+                                        <i class="bi bi-arrow-left"></i>
+                                        Seguir Comprando
+                                    </a>
+                                </div>
+                                <div class="col-md-4">
+                                    <button onclick="window.print()" 
+                                            class="btn btn-outline-secondary btn-lg w-100">
+                                        <i class="bi bi-printer"></i>
+                                        Imprimir
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Support Info -->
+                        <div class="alert alert-info mt-4">
+                            <h6 class="alert-heading">
+                                <i class="bi bi-headset"></i>
+                                ¿Necesitas Ayuda?
+                            </h6>
+                            <p class="mb-0">
+                                Si tienes alguna pregunta sobre tu pedido, contáctanos:
+                                <br>
+                                <strong>Email:</strong> soporte@techecommerce.com
+                                <br>
+                                <strong>Teléfono:</strong> +57 (1) 234-5678
+                                <br>
+                                <strong>WhatsApp:</strong> +57 300 123 4567
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Auto-scroll to success message
+    setTimeout(() => {
+        document.querySelector('.success-icon').scrollIntoView({
+            behavior: 'smooth',
+            block: 'center'
+        });
+    }, 100);
+    
+    // Confetti effect (optional)
+    if (typeof confetti !== 'undefined') {
+        confetti({
+            particleCount: 100,
+            spread: 70,
+            origin: { y: 0.6 }
+        });
+    }
+});
+</script>
+{% endblock %}

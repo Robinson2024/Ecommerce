@@ -1,0 +1,22 @@
+# ========================================
+# DEPENDENCIAS DE PRODUCCIÓN
+# ========================================
+# Optimizaciones y herramientas específicas para entorno de producción
+# Incluye todas las dependencias base + optimizaciones de producción
+
+-r base.txt
+
+# Production Web Server - Servidor web para producción
+gunicorn==23.0.0                           # Servidor WSGI de alto rendimiento
+# whitenoise ya está incluido en base.txt para servir archivos estáticos
+
+# Monitoring & Performance - Monitoreo y rendimiento
+newrelic==10.2.0                           # APM (Application Performance Monitoring)
+django-cachalot==2.6.3                     # Cache automático inteligente del ORM
+
+# Security - Seguridad adicional
+django-security==0.21.0                    # Herramientas de seguridad para Django
+
+# Performance & Compression - Rendimiento y compresión
+django-compressor==4.5.1                   # Compresión y minificación de CSS/JS
+brotli==1.1.0                              # Algoritmo de compresión Brotli (mejor que gzip)

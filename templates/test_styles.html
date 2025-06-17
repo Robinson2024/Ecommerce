@@ -1,0 +1,95 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Test Estilos Futuristas - Tech Ecommerce{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="hero-tech text-center mb-5">
+        <h1 class="display-1">🚀 TECH ECOMMERCE</h1>
+        <p class="lead">Prueba de estilos futuristas aplicados</p>
+        <button class="btn btn-modern btn-lg me-3">Botón Futurista</button>
+        <button class="btn btn-tech btn-lg">Botón Tech</button>
+    </div>
+
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card card-modern">
+                <div class="card-body">
+                    <h5 class="card-title text-glow">Card Futurista</h5>
+                    <p class="card-text">Esta es una card con efectos glassmorphism y hover 3D.</p>
+                    <a href="#" class="btn btn-primary">Ver más</a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="product-card">
+                <div class="product-image">
+                    <img src="https://via.placeholder.com/300x250/0099cc/ffffff?text=TECH+PRODUCT" alt="Producto Tech" class="img-fluid">
+                </div>
+                <div class="product-info">
+                    <h5 class="product-title">Producto Tecnológico</h5>
+                    <div class="product-price">$999.99 <span class="product-price-old">$1299.99</span></div>
+                    <button class="btn btn-modern btn-sm mt-2">Añadir al carrito</button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <form class="card card-modern">
+                <div class="card-body">
+                    <h5 class="card-title">Formulario Tech</h5>
+                    <div class="mb-3">
+                        <label class="form-label">Email Futurista</label>
+                        <input type="email" class="form-control" placeholder="usuario@techecommerce.com">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Contraseña Cyber</label>
+                        <input type="password" class="form-control" placeholder="••••••••">
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">Login Futurista</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <div class="row mt-5">
+        <div class="col-12">
+            <div class="alert alert-info">
+                <i class="bi bi-info-circle"></i> Alerta con estilo futurista - Info
+            </div>
+            <div class="alert alert-success">
+                <i class="bi bi-check-circle"></i> Alerta con estilo futurista - Success
+            </div>
+            <div class="alert alert-warning">
+                <i class="bi bi-exclamation-triangle"></i> Alerta con estilo futurista - Warning
+            </div>
+            <div class="alert alert-danger">
+                <i class="bi bi-x-circle"></i> Alerta con estilo futurista - Danger
+            </div>
+        </div>
+    </div>
+    
+    <div class="row mt-5">
+        <div class="col-12">
+            <h2 class="text-center mb-4">Badges y Estados</h2>
+            <div class="text-center">
+                <span class="badge badge-modern me-2">Primary</span>
+                <span class="badge badge-secondary me-2">Secondary</span>
+                <span class="badge badge-success me-2">Success</span>
+                <span class="badge badge-warning me-2">Warning</span>
+                <span class="badge badge-danger me-2">Danger</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+/* Test adicional para asegurar que los estilos se aplican */
+.test-cyber-bg {
+    background: var(--tech-dark);
+    color: var(--text-primary);
+}
+</style>
+{% endblock %}

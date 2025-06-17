@@ -1,0 +1,846 @@
+{% extends 'base_modern.html' %}
+{% load static %}
+{% load custom_filters %}
+{% load math_filters %}
+
+{% block title %}Checkout - Tech Ecommerce{% endblock %}
+
+{% block extra_css %}
+<style>
+:root {
+    --checkout-primary: #6c5ce7;
+    --checkout-secondary: #a29bfe;
+    --checkout-success: #00b894;
+    --checkout-warning: #fdcb6e;
+    --checkout-info: #74b9ff;
+    --checkout-danger: #e84393;
+}
+
+.checkout-container {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    padding: 2rem 0;
+}
+
+.progress-checkout {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 3rem;
+    padding: 2rem;
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(15px);
+    border-radius: 20px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+}
+
+.step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    position: relative;
+}
+
+.step-number {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: #e9ecef;
+    color: #6c757d;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 1.2rem;
+    transition: all 0.3s ease;
+    border: 3px solid transparent;
+}
+
+.step.active .step-number {
+    background: var(--checkout-primary);
+    color: white;
+    border-color: var(--checkout-secondary);
+    box-shadow: 0 8px 25px rgba(108, 92, 231, 0.3);
+    transform: scale(1.1);
+}
+
+.step.completed .step-number {
+    background: var(--checkout-success);
+    color: white;
+    border-color: var(--checkout-success);
+}
+
+.step-label {
+    margin-top: 0.5rem;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #6c757d;
+    transition: color 0.3s ease;
+}
+
+.step.active .step-label {
+    color: var(--checkout-primary);
+    font-weight: bold;
+}
+
+.step-line {
+    width: 80px;
+    height: 2px;
+    background: #e9ecef;
+    margin: 0 1rem;
+    border-radius: 1px;
+    position: relative;
+    overflow: hidden;
+}
+
+.step-line.active::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    background: var(--checkout-success);
+    animation: fillLine 0.8s ease;
+}
+
+@keyframes fillLine {
+    0% { width: 0%; }
+    100% { width: 100%; }
+}
+
+.checkout-card {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 25px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+.checkout-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+}
+
+.card-header-modern {
+    background: linear-gradient(135deg, var(--checkout-primary), var(--checkout-secondary));
+    color: white;
+    padding: 1.5rem;
+    border-radius: 20px 20px 0 0;
+    margin: -2rem -2rem 2rem -2rem;
+    display: flex;
+    align-items: center;
+    box-shadow: 0 8px 25px rgba(108, 92, 231, 0.2);
+}
+
+.card-header-modern h5 {
+    margin: 0;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+}
+
+.card-header-modern i {
+    font-size: 1.5rem;
+    margin-right: 0.75rem;
+}
+
+.form-control-modern {
+    border: 2px solid rgba(108, 92, 231, 0.1);
+    border-radius: 15px;
+    padding: 0.75rem 1rem;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(5px);
+}
+
+.form-control-modern:focus {
+    border-color: var(--checkout-primary);
+    box-shadow: 0 0 0 0.2rem rgba(108, 92, 231, 0.15);
+    background: white;
+}
+
+.form-label-modern {
+    font-weight: 600;
+    color: #495057;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+}
+
+.form-label-modern i {
+    margin-right: 0.5rem;
+    color: var(--checkout-primary);
+}
+
+.order-summary-card {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.85));
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 25px;
+    padding: 2rem;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    position: sticky;
+    top: 100px;
+}
+
+.order-item {
+    display: flex;
+    align-items: center;
+    padding: 1rem;
+    background: rgba(255, 255, 255, 0.7);
+    border-radius: 15px;
+    margin-bottom: 1rem;
+    transition: all 0.3s ease;
+}
+
+.order-item:hover {
+    background: rgba(255, 255, 255, 0.9);
+    transform: translateX(5px);
+}
+
+.order-item-image {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 10px;
+    margin-right: 1rem;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.summary-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.summary-row:last-child {
+    border-bottom: 2px solid var(--checkout-primary);
+    font-weight: bold;
+    font-size: 1.3rem;
+    color: var(--checkout-primary);
+    margin-top: 1rem;
+    padding-top: 1rem;
+}
+
+.btn-place-order {
+    background: linear-gradient(135deg, var(--checkout-success), #00a085);
+    border: none;
+    padding: 1.2rem 2rem;
+    border-radius: 15px;
+    color: white;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: all 0.3s ease;
+    box-shadow: 0 8px 25px rgba(0, 184, 148, 0.3);
+    width: 100%;
+    font-size: 1.1rem;
+}
+
+.btn-place-order:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 15px 35px rgba(0, 184, 148, 0.4);
+    color: white;
+}
+
+.btn-place-order:disabled {
+    background: #6c757d;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+.processing-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(108, 92, 231, 0.9);
+    backdrop-filter: blur(10px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+}
+
+.processing-overlay.show {
+    opacity: 1;
+    visibility: visible;
+}
+
+.processing-spinner {
+    width: 80px;
+    height: 80px;
+    border: 4px solid rgba(255, 255, 255, 0.3);
+    border-left: 4px solid white;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 2rem;
+}
+
+.processing-text {
+    color: white;
+    font-size: 1.5rem;
+    font-weight: 600;
+    text-align: center;
+}
+
+.secure-checkout-badge {
+    background: linear-gradient(135deg, var(--checkout-success), #00a085);
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border-radius: 25px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 1.5rem 0;
+    box-shadow: 0 8px 25px rgba(0, 184, 148, 0.2);
+}
+
+.payment-methods {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 1rem;
+    flex-wrap: wrap;
+}
+
+.payment-method {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 50px;
+    height: 35px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+}
+
+.payment-method:hover {
+    transform: translateY(-3px);
+}
+
+.error-message {
+    background: rgba(232, 67, 147, 0.1);
+    border: 1px solid rgba(232, 67, 147, 0.3);
+    color: var(--checkout-danger);
+    padding: 0.75rem 1rem;
+    border-radius: 10px;
+    margin-top: 0.5rem;
+    font-size: 0.9rem;
+}
+
+@media (max-width: 768px) {
+    .checkout-container {
+        padding: 1rem 0;
+    }
+    
+    .checkout-card {
+        padding: 1.5rem;
+        margin-bottom: 1rem;
+    }
+    
+    .card-header-modern {
+        padding: 1rem;
+        margin: -1.5rem -1.5rem 1.5rem -1.5rem;
+    }
+    
+    .progress-checkout {
+        padding: 1rem;
+        margin-bottom: 2rem;
+    }
+    
+    .step-line {
+        width: 40px;
+        margin: 0 0.5rem;
+    }
+    
+    .step-label {
+        font-size: 0.8rem;
+    }
+    
+    .order-summary-card {
+        position: static;
+        margin-top: 2rem;
+    }
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.form-floating-modern {
+    position: relative;
+    margin-bottom: 1.5rem;
+}
+
+.form-floating-modern .form-control-modern {
+    padding: 1rem 1rem 0.25rem 1rem;
+    height: auto;
+}
+
+.form-floating-modern .form-label-modern {
+    position: absolute;
+    top: 0;
+    left: 1rem;
+    padding: 0.75rem 0 0 0;
+    font-size: 0.85rem;
+    opacity: 0.8;
+    pointer-events: none;
+    transition: all 0.3s ease;
+}
+
+.form-floating-modern .form-control-modern:focus ~ .form-label-modern,
+.form-floating-modern .form-control-modern:not(:placeholder-shown) ~ .form-label-modern {
+    transform: translateY(-0.25rem);
+    font-size: 0.75rem;
+    opacity: 1;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="checkout-container">
+    <!-- Processing overlay -->
+    <div id="processing-overlay" class="processing-overlay">
+        <div class="processing-spinner"></div>
+        <div class="processing-text">
+            Procesando tu pedido...<br>
+            <small>Por favor, no cierres esta ventana</small>
+        </div>
+    </div>
+
+    <div class="container-fluid px-4">
+        <!-- Progress Bar -->
+        <div class="progress-checkout">
+            <div class="step completed">
+                <div class="step-number">
+                    <i class="bi bi-check"></i>
+                </div>
+                <div class="step-label">Carrito</div>
+            </div>
+            <div class="step-line active"></div>
+            <div class="step active">
+                <div class="step-number">2</div>
+                <div class="step-label">Checkout</div>
+            </div>
+            <div class="step-line"></div>
+            <div class="step">
+                <div class="step-number">3</div>
+                <div class="step-label">Confirmación</div>
+            </div>
+        </div>
+
+        <form method="post" id="checkout-form" novalidate>
+            {% csrf_token %}
+            <div class="row">
+                <!-- Información del cliente y envío -->
+                <div class="col-lg-8">
+                    <!-- Información del Cliente -->
+                    <div class="checkout-card">
+                        <div class="card-header-modern">
+                            <h5>
+                                <i class="bi bi-person-fill"></i>
+                                Información del Cliente
+                            </h5>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-floating-modern">
+                                    {% if form.first_name.value %}
+                                        <input type="text" class="form-control form-control-modern" 
+                                               id="{{ form.first_name.id_for_label }}" 
+                                               name="{{ form.first_name.name }}"
+                                               value="{{ form.first_name.value }}"
+                                               placeholder="Nombres">
+                                    {% else %}
+                                        {{ form.first_name|add_class:"form-control form-control-modern" }}
+                                    {% endif %}
+                                    <label for="{{ form.first_name.id_for_label }}" class="form-label-modern">
+                                        <i class="bi bi-person"></i>{{ form.first_name.label }}
+                                    </label>
+                                    {% for error in form.first_name.errors %}
+                                        <div class="error-message">{{ error }}</div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-floating-modern">
+                                    {% if form.last_name.value %}
+                                        <input type="text" class="form-control form-control-modern" 
+                                               id="{{ form.last_name.id_for_label }}" 
+                                               name="{{ form.last_name.name }}"
+                                               value="{{ form.last_name.value }}"
+                                               placeholder="Apellidos">
+                                    {% else %}
+                                        {{ form.last_name|add_class:"form-control form-control-modern" }}
+                                    {% endif %}
+                                    <label for="{{ form.last_name.id_for_label }}" class="form-label-modern">
+                                        <i class="bi bi-person"></i>{{ form.last_name.label }}
+                                    </label>
+                                    {% for error in form.last_name.errors %}
+                                        <div class="error-message">{{ error }}</div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-floating-modern">
+                                    {% if form.email.value %}
+                                        <input type="email" class="form-control form-control-modern" 
+                                               id="{{ form.email.id_for_label }}" 
+                                               name="{{ form.email.name }}"
+                                               value="{{ form.email.value }}"
+                                               placeholder="Email">
+                                    {% else %}
+                                        {{ form.email|add_class:"form-control form-control-modern" }}
+                                    {% endif %}
+                                    <label for="{{ form.email.id_for_label }}" class="form-label-modern">
+                                        <i class="bi bi-envelope"></i>{{ form.email.label }}
+                                    </label>
+                                    {% for error in form.email.errors %}
+                                        <div class="error-message">{{ error }}</div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-floating-modern">
+                                    {% if form.phone.value %}
+                                        <input type="tel" class="form-control form-control-modern" 
+                                               id="{{ form.phone.id_for_label }}" 
+                                               name="{{ form.phone.name }}"
+                                               value="{{ form.phone.value }}"
+                                               placeholder="Teléfono">
+                                    {% else %}
+                                        {{ form.phone|add_class:"form-control form-control-modern" }}
+                                    {% endif %}
+                                    <label for="{{ form.phone.id_for_label }}" class="form-label-modern">
+                                        <i class="bi bi-telephone"></i>{{ form.phone.label }}
+                                    </label>
+                                    {% for error in form.phone.errors %}
+                                        <div class="error-message">{{ error }}</div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Información de Envío -->
+                    <div class="checkout-card">
+                        <div class="card-header-modern">
+                            <h5>
+                                <i class="bi bi-geo-alt-fill"></i>
+                                Información de Envío
+                            </h5>
+                        </div>
+                        
+                        <div class="form-floating-modern">
+                            {{ form.address_line1|add_class:"form-control form-control-modern" }}
+                            <label for="{{ form.address_line1.id_for_label }}" class="form-label-modern">
+                                <i class="bi bi-house"></i>{{ form.address_line1.label }}
+                            </label>
+                            {% for error in form.address_line1.errors %}
+                                <div class="error-message">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                        
+                        <div class="form-floating-modern">
+                            {{ form.address_line2|add_class:"form-control form-control-modern" }}
+                            <label for="{{ form.address_line2.id_for_label }}" class="form-label-modern">
+                                <i class="bi bi-building"></i>{{ form.address_line2.label }}
+                            </label>
+                            {% for error in form.address_line2.errors %}
+                                <div class="error-message">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-floating-modern">
+                                    {{ form.city|add_class:"form-control form-control-modern" }}
+                                    <label for="{{ form.city.id_for_label }}" class="form-label-modern">
+                                        <i class="bi bi-pin-map"></i>{{ form.city.label }}
+                                    </label>
+                                    {% for error in form.city.errors %}
+                                        <div class="error-message">{{ error }}</div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-floating-modern">
+                                    {{ form.state|add_class:"form-control form-control-modern" }}
+                                    <label for="{{ form.state.id_for_label }}" class="form-label-modern">
+                                        <i class="bi bi-map"></i>{{ form.state.label }}
+                                    </label>
+                                    {% for error in form.state.errors %}
+                                        <div class="error-message">{{ error }}</div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-floating-modern">
+                                    {{ form.postal_code|add_class:"form-control form-control-modern" }}
+                                    <label for="{{ form.postal_code.id_for_label }}" class="form-label-modern">
+                                        <i class="bi bi-mailbox2"></i>{{ form.postal_code.label }}
+                                    </label>
+                                    {% for error in form.postal_code.errors %}
+                                        <div class="error-message">{{ error }}</div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-floating-modern">
+                            {{ form.country|add_class:"form-control form-control-modern" }}
+                            <label for="{{ form.country.id_for_label }}" class="form-label-modern">
+                                <i class="bi bi-globe"></i>{{ form.country.label }}
+                            </label>
+                            {% for error in form.country.errors %}
+                                <div class="error-message">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <!-- Notas del Pedido -->
+                    <div class="checkout-card">
+                        <div class="card-header-modern">
+                            <h5>
+                                <i class="bi bi-chat-left-text"></i>
+                                Notas del Pedido
+                            </h5>
+                        </div>
+                        
+                        <div class="form-floating-modern">
+                            {{ form.notes|add_class:"form-control form-control-modern" }}
+                            <label for="{{ form.notes.id_for_label }}" class="form-label-modern">
+                                <i class="bi bi-sticky"></i>{{ form.notes.label }}
+                            </label>
+                            {% for error in form.notes.errors %}
+                                <div class="error-message">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Resumen del Pedido -->
+                <div class="col-lg-4">
+                    <div class="order-summary-card">
+                        <h4 class="mb-4 text-center">
+                            <i class="bi bi-receipt me-2"></i>
+                            Resumen del Pedido
+                        </h4>
+                        
+                        <!-- Items del pedido -->
+                        {% for item in cart.items.all %}
+                        <div class="order-item">
+                            {% if item.product.image %}
+                                <img src="{{ item.product.image.url }}" 
+                                     alt="{{ item.product.name }}" 
+                                     class="order-item-image">
+                            {% else %}
+                                <div class="order-item-image bg-light d-flex align-items-center justify-content-center">
+                                    <i class="bi bi-image text-muted"></i>
+                                </div>
+                            {% endif %}
+                            <div class="flex-grow-1">
+                                <h6 class="mb-1">{{ item.product.name }}</h6>
+                                <small class="text-muted">Cantidad: {{ item.quantity }}</small>
+                                <div class="fw-bold text-primary">
+                                    ${{ item.get_total_price|floatformat:0 }}
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                        
+                        <hr class="my-3">
+                        
+                        <!-- Resumen de costos -->
+                        <div class="summary-row">
+                            <span>Subtotal</span>
+                            <span class="fw-bold">${{ cart.get_total_price|floatformat:0 }}</span>
+                        </div>
+                        
+                        <div class="summary-row">
+                            <span>Envío</span>
+                            <span class="text-success fw-bold">Gratis</span>
+                        </div>
+                        
+                        <div class="summary-row">
+                            <span>Impuestos</span>
+                            <span>$0</span>
+                        </div>
+                        
+                        <div class="summary-row">
+                            <span class="fs-5">Total</span>
+                            <span class="fs-4 fw-bold">${{ cart.get_total_price|floatformat:0 }}</span>
+                        </div>
+                        
+                        <!-- Secure checkout badge -->
+                        <div class="secure-checkout-badge">
+                            <i class="bi bi-shield-check me-2"></i>
+                            Checkout Seguro SSL
+                        </div>
+                        
+                        <!-- Botón de checkout -->
+                        <button type="submit" class="btn btn-place-order" id="place-order-btn">
+                            <i class="bi bi-credit-card me-2"></i>
+                            Realizar Pedido
+                        </button>
+                        
+                        <!-- Métodos de pago -->
+                        <div class="text-center mt-3">
+                            <small class="text-muted d-block mb-2">Métodos de pago seguros</small>
+                            <div class="payment-methods">
+                                <div class="payment-method">
+                                    <i class="bi bi-credit-card-2-front text-primary"></i>
+                                </div>
+                                <div class="payment-method">
+                                    <i class="bi bi-paypal text-primary"></i>
+                                </div>
+                                <div class="payment-method">
+                                    <i class="bi bi-apple text-dark"></i>
+                                </div>
+                                <div class="payment-method">
+                                    <i class="bi bi-google text-primary"></i>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="text-center mt-3">
+                            <a href="{% url 'cart:detail' %}" class="text-decoration-none">
+                                <i class="bi bi-arrow-left me-1"></i>
+                                Volver al Carrito
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('checkout-form');
+    const placeOrderBtn = document.getElementById('place-order-btn');
+    const processingOverlay = document.getElementById('processing-overlay');
+    
+    // Validación del formulario
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        // Validar campos requeridos
+        const requiredFields = form.querySelectorAll('[required]');
+        let isValid = true;
+        
+        requiredFields.forEach(field => {
+            const errorDiv = field.parentNode.querySelector('.error-message');
+            if (errorDiv) {
+                errorDiv.remove();
+            }
+            
+            if (!field.value.trim()) {
+                isValid = false;
+                const error = document.createElement('div');
+                error.className = 'error-message';
+                error.textContent = 'Este campo es requerido';
+                field.parentNode.appendChild(error);
+                field.classList.add('is-invalid');
+            } else {
+                field.classList.remove('is-invalid');
+            }
+        });
+        
+        // Validar email
+        const emailField = form.querySelector('input[type="email"]');
+        if (emailField && emailField.value) {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(emailField.value)) {
+                isValid = false;
+                const error = document.createElement('div');
+                error.className = 'error-message';
+                error.textContent = 'Por favor ingresa un email válido';
+                emailField.parentNode.appendChild(error);
+                emailField.classList.add('is-invalid');
+            }
+        }
+        
+        if (isValid) {
+            // Mostrar overlay de procesamiento
+            processingOverlay.classList.add('show');
+            placeOrderBtn.disabled = true;
+            
+            // Simular tiempo de procesamiento y enviar formulario
+            setTimeout(() => {
+                form.submit();
+            }, 1000);
+        } else {
+            // Scroll al primer error
+            const firstError = form.querySelector('.error-message');
+            if (firstError) {
+                firstError.scrollIntoView({ 
+                    behavior: 'smooth', 
+                    block: 'center' 
+                });
+            }
+        }
+    });
+    
+    // Limpiar errores cuando el usuario empiece a escribir
+    const inputs = form.querySelectorAll('input, textarea, select');
+    inputs.forEach(input => {
+        input.addEventListener('input', function() {
+            const errorDiv = this.parentNode.querySelector('.error-message');
+            if (errorDiv) {
+                errorDiv.remove();
+                this.classList.remove('is-invalid');
+            }
+        });
+    });
+    
+    // Animaciones de entrada
+    const cards = document.querySelectorAll('.checkout-card');
+    cards.forEach((card, index) => {
+        card.style.opacity = '0';
+        card.style.transform = 'translateY(30px)';
+        
+        setTimeout(() => {
+            card.style.transition = 'all 0.6s ease';
+            card.style.opacity = '1';
+            card.style.transform = 'translateY(0)';
+        }, index * 200);
+    });
+    
+    // Efecto de escritura en los labels
+    const labels = document.querySelectorAll('.form-label-modern');
+    labels.forEach(label => {
+        const input = label.previousElementSibling;
+        if (input && input.value) {
+            label.style.transform = 'translateY(-0.25rem)';
+            label.style.fontSize = '0.75rem';
+            label.style.opacity = '1';
+        }
+    });
+});
+</script>
+{% endblock %}

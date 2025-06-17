@@ -1,0 +1,84 @@
+<!-- mini_cart_content.html - Contenido del mini carrito -->
+{% if items %}
+    <div class="mini-cart">
+        <h6 class="mb-3">
+            <i class="bi bi-cart3"></i>
+            Tu Carrito ({{ total_items }} items)
+        </h6>
+        
+        <!-- Items del mini carrito -->
+        <div class="mini-cart-items" style="max-height: 300px; overflow-y: auto;">
+            {% for item in items|slice:":5" %}
+                <div class="mini-cart-item d-flex align-items-center mb-3 p-2 rounded">
+                    <!-- Imagen pequeña -->
+                    <div class="flex-shrink-0 me-2">
+                        {% if item.product.get_main_image %}
+                            <img src="{{ item.product.get_main_image.image.url }}" 
+                                 alt="{{ item.product.name }}"
+                                 style="width: 40px; height: 40px; object-fit: cover; border-radius: 0.25rem;">
+                        {% else %}
+                            <div class="bg-light d-flex align-items-center justify-content-center" 
+                                 style="width: 40px; height: 40px; border-radius: 0.25rem;">
+                                <i class="bi bi-image text-muted"></i>
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Info del producto -->
+                    <div class="flex-grow-1 me-2">
+                        <div class="fw-bold small">{{ item.product.name|truncatechars:25 }}</div>
+                        <div class="text-muted small">
+                            {{ item.quantity }}x ${{ item.price|floatformat:0 }}
+                        </div>
+                        {% if item.variant %}
+                            <div class="text-muted small">
+                                {% for attr_value in item.variant.attribute_values.all %}
+                                    {{ attr_value.value }}{% if not forloop.last %}, {% endif %}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Precio total -->
+                    <div class="text-primary fw-bold small">
+                        ${{ item.get_total_price|floatformat:0 }}
+                    </div>
+                </div>
+            {% endfor %}
+            
+            {% if items|length > 5 %}
+                <div class="text-center text-muted small">
+                    Y {{ items|length|add:-5 }} producto{{ items|length|add:-5|pluralize }} más...
+                </div>
+            {% endif %}
+        </div>
+        
+        <hr class="my-3">
+        
+        <!-- Total -->
+        <div class="d-flex justify-content-between fw-bold mb-3">
+            <span>Total:</span>
+            <span class="text-primary">${{ total_price|floatformat:0 }}</span>
+        </div>
+          <!-- Botones de acción -->
+        <div class="d-grid gap-2">
+            <a href="{% url 'cart:detail' %}" class="btn btn-primary btn-sm">
+                <i class="bi bi-cart-check"></i>
+                Ver Carrito Completo
+            </a>
+            <a href="{% url 'orders:checkout' %}" class="btn btn-success btn-sm">
+                <i class="bi bi-credit-card"></i>
+                Finalizar Compra
+            </a>
+        </div>
+    </div>
+{% else %}
+    <div class="text-center py-3">
+        <i class="bi bi-cart-x text-muted" style="font-size: 2rem;"></i>
+        <p class="text-muted mb-3 mt-2">Tu carrito está vacío</p>
+        <a href="{% url 'products:list' %}" class="btn btn-primary btn-sm">
+            <i class="bi bi-shop"></i>
+            Ir a la Tienda
+        </a>
+    </div>
+{% endif %}

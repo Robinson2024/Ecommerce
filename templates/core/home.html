@@ -1,0 +1,711 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load math_filters %}
+{% load custom_filters %}
+
+{% block title %}Inicio - Tech Ecommerce{% endblock %}
+
+{% block extra_css %}
+<style>
+    .gradient-bg {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+    .hero-pattern {
+        background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.1'%3E%3Ccircle cx='30' cy='30' r='1'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    }
+    .product-card {
+        transition: all 0.3s ease;
+        border: none;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    .product-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+    }
+    .feature-icon {
+        width: 60px;
+        height: 60px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        margin: 0 auto 1rem;
+    }
+    .stats-counter {
+        font-size: 2.5rem;
+        font-weight: bold;
+        color: #667eea;
+    }
+    .testimonial-card {
+        background: white;
+        border-radius: 15px;
+        padding: 2rem;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        margin: 1rem;
+    }
+    .floating-cart {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        z-index: 1000;
+        animation: bounce 2s infinite;
+    }
+    @keyframes bounce {
+        0%, 20%, 60%, 100% { transform: translateY(0); }
+        40% { transform: translateY(-10px); }
+        80% { transform: translateY(-5px); }
+    }
+    .section-divider {
+        height: 100px;
+        background: linear-gradient(to right, transparent, #667eea, transparent);
+        margin: 4rem 0;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Hero Section Mejorado -->
+<section class="gradient-bg hero-pattern text-white py-5" style="min-height: 80vh;">
+    <div class="container">
+        <div class="row align-items-center min-vh-50">
+            <div class="col-lg-6" data-aos="fade-right">
+                <div class="badge bg-warning text-dark mb-3 px-3 py-2">
+                    🎉 ¡Nuevos productos disponibles!
+                </div>
+                <h1 class="display-3 fw-bold mb-4 text-white">
+                    Tecnología de 
+                    <span class="text-warning">Vanguardia</span>
+                </h1>
+                <p class="lead mb-4 text-white-75">
+                    Descubre los últimos productos tecnológicos con la mejor calidad y precios increíbles.
+                    <strong>Envío gratis a toda Colombia</strong> en compras superiores a $100.000.
+                </p>
+                
+                <!-- Stats rápidas -->
+                <div class="row text-center mb-4">
+                    <div class="col-4">
+                        <div class="stats-counter text-warning">500+</div>
+                        <small>Productos</small>
+                    </div>
+                    <div class="col-4">
+                        <div class="stats-counter text-warning">50K+</div>
+                        <small>Clientes</small>
+                    </div>
+                    <div class="col-4">
+                        <div class="stats-counter text-warning">99%</div>
+                        <small>Satisfacción</small>
+                    </div>
+                </div>
+
+                <!-- Botones mejorados -->
+                <div class="d-flex flex-wrap gap-3">
+                    <a href="{% url 'products:list' %}" 
+                       class="btn btn-warning btn-lg px-5 py-3 fw-bold text-dark">
+                        <i class="bi bi-shop me-2"></i>
+                        Explorar Tienda
+                    </a>
+                    <a href="#ofertas" 
+                       class="btn btn-outline-light btn-lg px-5 py-3 fw-bold">
+                        <i class="bi bi-tag-fill me-2"></i>
+                        Ver Ofertas
+                    </a>
+                    <button class="btn btn-light btn-lg px-4 py-3" 
+                            data-bs-toggle="modal" 
+                            data-bs-target="#videoModal">
+                        <i class="bi bi-play-fill me-2"></i>
+                        Ver Demo
+                    </button>
+                </div>
+
+                <!-- Características destacadas -->
+                <div class="row mt-5">
+                    <div class="col-md-4 text-center">
+                        <i class="bi bi-truck fs-2 text-warning mb-2"></i>
+                        <small class="d-block">Envío Gratis</small>
+                    </div>
+                    <div class="col-md-4 text-center">
+                        <i class="bi bi-shield-check fs-2 text-warning mb-2"></i>
+                        <small class="d-block">Garantía 2 años</small>
+                    </div>
+                    <div class="col-md-4 text-center">
+                        <i class="bi bi-headset fs-2 text-warning mb-2"></i>
+                        <small class="d-block">Soporte 24/7</small>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-6" data-aos="fade-left">
+                <div class="position-relative">
+                    <!-- Imagen hero moderna -->
+                    <div class="bg-white rounded-4 p-4 shadow-lg">
+                        <div class="row g-3">
+                            <div class="col-6">
+                                <div class="bg-primary rounded-3 p-4 text-center text-white">
+                                    <i class="bi bi-laptop display-4"></i>
+                                    <h6 class="mt-2">Laptops</h6>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="bg-success rounded-3 p-4 text-center text-white">
+                                    <i class="bi bi-phone display-4"></i>
+                                    <h6 class="mt-2">Móviles</h6>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="bg-warning rounded-3 p-4 text-center text-dark">
+                                    <i class="bi bi-headphones display-4"></i>
+                                    <h6 class="mt-2">Audio</h6>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="bg-danger rounded-3 p-4 text-center text-white">
+                                    <i class="bi bi-camera display-4"></i>
+                                    <h6 class="mt-2">Cámaras</h6>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Elementos flotantes -->
+                    <div class="position-absolute top-0 start-0 translate-middle">
+                        <div class="bg-warning rounded-circle p-3">
+                            <i class="bi bi-lightning-fill text-dark fs-4"></i>
+                        </div>
+                    </div>
+                    <div class="position-absolute bottom-0 end-0 translate-middle">
+                        <div class="bg-primary rounded-circle p-3">
+                            <i class="bi bi-star-fill text-white fs-4"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Productos Destacados -->
+<section class="py-5 bg-light" id="ofertas">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="display-5 fw-bold">Productos Destacados</h2>
+            <p class="lead text-muted">Los productos más populares de nuestra tienda</p>
+            <div class="d-flex justify-content-center gap-3 mb-4">
+                <button class="btn btn-outline-primary" data-filter="all">Todos</button>
+                <button class="btn btn-outline-primary" data-filter="laptops">Laptops</button>
+                <button class="btn btn-outline-primary" data-filter="phones">Móviles</button>
+                <button class="btn btn-outline-primary" data-filter="audio">Audio</button>
+            </div>
+        </div>
+        
+        <div class="row g-4">
+            {% if latest_products %}
+                {% for product in latest_products %}
+                <div class="col-lg-3 col-md-6" data-aos="fade-up" data-aos-delay="{{ forloop.counter0|add:1|multiply:100 }}">
+                    <div class="card product-card h-100 position-relative overflow-hidden">
+                        {% if product.stock == 0 %}
+                        <div class="position-absolute top-0 end-0 bg-danger text-white px-2 py-1 small">
+                            Agotado
+                        </div>
+                        {% elif product.offer_price %}
+                        <div class="position-absolute top-0 end-0 bg-success text-white px-2 py-1 small">
+                            Oferta
+                        </div>
+                        {% endif %}
+                        
+                        <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 200px;">
+                            {% if product.image %}
+                                <img src="{{ product.image.url }}" alt="{{ product.name }}" class="img-fluid" style="max-height: 180px;">
+                            {% else %}
+                                <i class="bi bi-laptop display-4 text-primary"></i>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="card-body d-flex flex-column">
+                            <h6 class="card-title fw-bold">{{ product.name }}</h6>
+                            <p class="card-text text-muted small flex-grow-1">
+                                {{ product.description|truncatewords:10 }}
+                            </p>
+                            
+                            <!-- Rating -->
+                            <div class="mb-2">
+                                <div class="text-warning">
+                                    {% for i in "12345" %}
+                                        <i class="bi bi-star-fill"></i>
+                                    {% endfor %}
+                                </div>
+                                <small class="text-muted">({{ product.reviews_count|default:0 }} reseñas)</small>
+                            </div>
+                            
+                            <!-- Precio -->
+                            <div class="price-section mb-3">
+                                {% if product.offer_price %}
+                                    <span class="h5 text-success fw-bold">${{ product.offer_price|floatformat:0 }}</span>
+                                    <span class="text-muted text-decoration-line-through ms-2">${{ product.price|floatformat:0 }}</span>
+                                    <small class="badge bg-danger ms-2">
+                                        -{{ product.discount_percentage|floatformat:0 }}%
+                                    </small>
+                                {% else %}
+                                    <span class="h5 text-primary fw-bold">${{ product.price|floatformat:0 }}</span>
+                                {% endif %}
+                            </div>
+                            
+                            <!-- Botones -->
+                            <div class="d-grid gap-2">
+                                {% if product.stock > 0 %}
+                                    <button type="button" 
+                                            class="btn btn-primary btn-add-to-cart"
+                                            hx-post="{% url 'cart:add' %}"
+                                            hx-vals='{"product_id": "{{ product.id }}", "quantity": "1"}'
+                                            hx-target="#cart-messages"
+                                            hx-swap="beforeend"
+                                            hx-indicator="#loading-indicator">
+                                        <i class="bi bi-cart-plus me-1"></i>
+                                        Agregar al Carrito
+                                    </button>
+                                    <a href="{% url 'products:detail' product.slug %}" class="btn btn-outline-secondary btn-sm">
+                                        <i class="bi bi-eye me-1"></i>
+                                        Ver Detalles
+                                    </a>
+                                {% else %}
+                                    <button class="btn btn-secondary" disabled>
+                                        <i class="bi bi-x-circle me-1"></i>
+                                        No Disponible
+                                    </button>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <div class="col-12 text-center">
+                    <div class="alert alert-info">
+                        <i class="bi bi-info-circle me-2"></i>
+                        No hay productos disponibles en este momento.
+                        <a href="/admin/" target="_blank" class="alert-link">Agregar productos desde el admin</a>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+        
+        <!-- Ver todos los productos -->
+        <div class="text-center mt-5">
+            <a href="{% url 'products:list' %}" class="btn btn-outline-primary btn-lg">
+                <i class="bi bi-grid me-2"></i>
+                Ver Todos los Productos
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- Estadísticas -->
+<section class="py-5">
+    <div class="container">
+        <div class="row text-center g-4">
+            <div class="col-md-3" data-aos="fade-up" data-aos-delay="100">
+                <div class="p-4">
+                    <div class="feature-icon mx-auto mb-3">
+                        <i class="bi bi-box-seam fs-1"></i>
+                    </div>
+                    <h3 class="display-4 fw-bold text-primary">{{ total_products|default:"0" }}</h3>
+                    <p class="text-muted">Productos Disponibles</p>
+                </div>
+            </div>
+            <div class="col-md-3" data-aos="fade-up" data-aos-delay="200">
+                <div class="p-4">
+                    <div class="feature-icon mx-auto mb-3">
+                        <i class="bi bi-people fs-1"></i>
+                    </div>
+                    <h3 class="display-4 fw-bold text-success">50K+</h3>
+                    <p class="text-muted">Clientes Satisfechos</p>
+                </div>
+            </div>
+            <div class="col-md-3" data-aos="fade-up" data-aos-delay="300">
+                <div class="p-4">
+                    <div class="feature-icon mx-auto mb-3">
+                        <i class="bi bi-headset fs-1"></i>
+                    </div>
+                    <h3 class="display-4 fw-bold text-info">24/7</h3>
+                    <p class="text-muted">Soporte Técnico</p>
+                </div>
+            </div>
+            <div class="col-md-3" data-aos="fade-up" data-aos-delay="400">
+                <div class="p-4">
+                    <div class="feature-icon mx-auto mb-3">
+                        <i class="bi bi-star fs-1"></i>
+                    </div>
+                    <h3 class="display-4 fw-bold text-warning">4.9★</h3>
+                    <p class="text-muted">Calificación Promedio</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Características Principales -->
+<section class="py-5 bg-primary text-white">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6" data-aos="fade-right">
+                <h2 class="display-5 fw-bold mb-4">¿Por qué elegir Tech Ecommerce?</h2>
+                <div class="row g-4">
+                    <div class="col-md-6">
+                        <div class="d-flex align-items-start">
+                            <div class="bg-warning rounded-circle p-2 me-3">
+                                <i class="bi bi-truck text-dark"></i>
+                            </div>
+                            <div>
+                                <h6 class="fw-bold">Envío Gratuito</h6>
+                                <small>En compras superiores a $100.000</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="d-flex align-items-start">
+                            <div class="bg-warning rounded-circle p-2 me-3">
+                                <i class="bi bi-shield-check text-dark"></i>
+                            </div>
+                            <div>
+                                <h6 class="fw-bold">Garantía Extendida</h6>
+                                <small>2 años en todos los productos</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="d-flex align-items-start">
+                            <div class="bg-warning rounded-circle p-2 me-3">
+                                <i class="bi bi-arrow-clockwise text-dark"></i>
+                            </div>
+                            <div>
+                                <h6 class="fw-bold">Devolución Fácil</h6>
+                                <small>30 días para cambios</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="d-flex align-items-start">
+                            <div class="bg-warning rounded-circle p-2 me-3">
+                                <i class="bi bi-credit-card text-dark"></i>
+                            </div>
+                            <div>
+                                <h6 class="fw-bold">Pago Seguro</h6>
+                                <small>Encriptación SSL 256-bit</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-4">
+                    <a href="{% url 'products:list' %}" class="btn btn-warning btn-lg me-3">
+                        <i class="bi bi-shop me-2"></i>
+                        Comenzar a Comprar
+                    </a>
+                    <a href="#testimonials" class="btn btn-outline-light">
+                        <i class="bi bi-chat-quote me-2"></i>
+                        Ver Reseñas
+                    </a>
+                </div>
+            </div>
+            <div class="col-lg-6" data-aos="fade-left">
+                <div class="row g-3">
+                    <div class="col-6">
+                        <div class="bg-white rounded-3 p-4 text-center text-primary shadow">
+                            <i class="bi bi-lightning-charge display-4"></i>
+                            <h6 class="mt-2 text-dark">Ultra Rápido</h6>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="bg-white rounded-3 p-4 text-center text-success shadow">
+                            <i class="bi bi-lock-fill display-4"></i>
+                            <h6 class="mt-2 text-dark">100% Seguro</h6>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="bg-white rounded-3 p-4 text-center text-warning shadow">
+                            <i class="bi bi-award-fill display-4"></i>
+                            <h6 class="mt-2 text-dark">Calidad Premium</h6>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="bg-white rounded-3 p-4 text-center text-info shadow">
+                            <i class="bi bi-globe display-4"></i>
+                            <h6 class="mt-2 text-dark">Envío Nacional</h6>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Testimoniales -->
+<section class="py-5 bg-light" id="testimonials">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="display-5 fw-bold">Lo que dicen nuestros clientes</h2>
+            <p class="lead text-muted">Más de 50,000 clientes confían en nosotros</p>
+        </div>
+        <div class="row g-4">
+            <div class="col-md-4" data-aos="fade-up" data-aos-delay="100">
+                <div class="testimonial-card text-center">
+                    <div class="mb-3">
+                        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60' viewBox='0 0 24 24' fill='%23007bff'%3E%3Cpath d='M12 2C13.1 2 14 2.9 14 4C14 5.1 13.1 6 12 6C10.9 6 10 5.1 10 4C10 2.9 10.9 2 12 2ZM21 9V7L15 7.5V9C15 11.8 12.8 14 10 14S5 11.8 5 9V7.5L-1 7V9C-1 14.5 3.5 19 9 19H15C20.5 19 25 14.5 25 9Z'/%3E%3C/svg%3E" 
+                             class="rounded-circle mb-3" alt="Cliente">
+                    </div>
+                    <h6 class="fw-bold">María González</h6>
+                    <div class="text-warning mb-2">
+                        ★★★★★
+                    </div>
+                    <p class="text-muted">"Excelente servicio y productos de calidad. Mi laptop llegó super rápido y en perfecto estado."</p>
+                </div>
+            </div>
+            <div class="col-md-4" data-aos="fade-up" data-aos-delay="200">
+                <div class="testimonial-card text-center">
+                    <div class="mb-3">
+                        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60' viewBox='0 0 24 24' fill='%23007bff'%3E%3Cpath d='M12 2C13.1 2 14 2.9 14 4C14 5.1 13.1 6 12 6C10.9 6 10 5.1 10 4C10 2.9 10.9 2 12 2ZM21 9V7L15 7.5V9C15 11.8 12.8 14 10 14S5 11.8 5 9V7.5L-1 7V9C-1 14.5 3.5 19 9 19H15C20.5 19 25 14.5 25 9Z'/%3E%3C/svg%3E" 
+                             class="rounded-circle mb-3" alt="Cliente">
+                    </div>
+                    <h6 class="fw-bold">Carlos Rodríguez</h6>
+                    <div class="text-warning mb-2">
+                        ★★★★★
+                    </div>
+                    <p class="text-muted">"Precio increíble y atención al cliente excepcional. Definitivamente volveré a comprar."</p>
+                </div>
+            </div>
+            <div class="col-md-4" data-aos="fade-up" data-aos-delay="300">
+                <div class="testimonial-card text-center">
+                    <div class="mb-3">
+                        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60' viewBox='0 0 24 24' fill='%23007bff'%3E%3Cpath d='M12 2C13.1 2 14 2.9 14 4C14 5.1 13.1 6 12 6C10.9 6 10 5.1 10 4C10 2.9 10.9 2 12 2ZM21 9V7L15 7.5V9C15 11.8 12.8 14 10 14S5 11.8 5 9V7.5L-1 7V9C-1 14.5 3.5 19 9 19H15C20.5 19 25 14.5 25 9Z'/%3E%3C/svg%3E" 
+                             class="rounded-circle mb-3" alt="Cliente">
+                    </div>
+                    <h6 class="fw-bold">Ana Martínez</h6>
+                    <div class="text-warning mb-2">
+                        ★★★★★
+                    </div>
+                    <p class="text-muted">"La mejor experiencia de compra online. Todo llegó como esperaba y el soporte técnico es genial."</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Newsletter -->
+<section class="py-5 gradient-bg">
+    <div class="container text-center text-white">
+        <div class="row justify-content-center">
+            <div class="col-lg-6">
+                <h2 class="display-5 fw-bold mb-4">¡Mantente al día!</h2>
+                <p class="lead mb-4">Recibe ofertas exclusivas, nuevos productos y noticias tecnológicas</p>
+                <form class="row g-2 justify-content-center" id="newsletter-form">
+                    <div class="col-md-8">
+                        <input type="email" 
+                               class="form-control form-control-lg" 
+                               placeholder="Tu email aquí..."
+                               required>
+                    </div>
+                    <div class="col-md-4">
+                        <button type="submit" 
+                                class="btn btn-warning btn-lg w-100">
+                            <i class="bi bi-envelope me-2"></i>
+                            Suscribirse
+                        </button>
+                    </div>
+                </form>
+                <small class="d-block mt-2 opacity-75">
+                    * No spam, solo ofertas increíbles 😊
+                </small>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+<!-- Modal de Video Demo -->
+<div class="modal fade" id="videoModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Tech Ecommerce - Demo</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="ratio ratio-16x9">
+                    <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" 
+                            title="Demo Video" 
+                            allowfullscreen></iframe>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Floating Cart -->
+<div class="floating-cart">
+    <a href="{% url 'cart:detail' %}" 
+       class="btn btn-primary rounded-circle p-3 shadow-lg position-relative">
+        <i class="bi bi-cart3 fs-4"></i>
+        <span id="cart-count" 
+              class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+            {{ cart_total_items|default:0 }}
+        </span>
+    </a>
+</div>
+
+<!-- Messages for HTMX -->
+<div id="cart-messages" class="position-fixed top-0 start-50 translate-middle-x" 
+     style="z-index: 9999; margin-top: 100px;">
+</div>
+
+{% block extra_js %}
+<!-- AOS Animation Library -->
+<link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+
+<script>
+// Initialize AOS animations
+AOS.init({
+    duration: 800,
+    easing: 'ease-in-out',
+    once: true
+});
+
+// Product filter functionality
+document.addEventListener('DOMContentLoaded', function() {
+    const filterButtons = document.querySelectorAll('[data-filter]');
+    const productCards = document.querySelectorAll('.product-card');
+    
+    filterButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            // Update active button
+            filterButtons.forEach(btn => btn.classList.remove('active'));
+            this.classList.add('active');
+            
+            const filter = this.getAttribute('data-filter');
+            
+            // Filter products (simplified - in real app, this would be HTMX)
+            productCards.forEach(card => {
+                if (filter === 'all' || card.dataset.category === filter) {
+                    card.closest('.col-lg-3').style.display = 'block';
+                } else {
+                    card.closest('.col-lg-3').style.display = 'none';
+                }
+            });
+        });
+    });
+    
+    // Newsletter form
+    const newsletterForm = document.getElementById('newsletter-form');
+    if (newsletterForm) {
+        newsletterForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const email = this.querySelector('input[type="email"]').value;
+            
+            // Simulate newsletter signup
+            if (email) {
+                // Show success message
+                const successMsg = document.createElement('div');
+                successMsg.className = 'alert alert-success mt-3';
+                successMsg.innerHTML = `
+                    <i class="bi bi-check-circle me-2"></i>
+                    ¡Gracias! Te has suscrito exitosamente con ${email}
+                `;
+                
+                this.insertAdjacentElement('afterend', successMsg);
+                this.reset();
+                
+                // Remove message after 5 seconds
+                setTimeout(() => {
+                    successMsg.remove();
+                }, 5000);
+            }
+        });
+    }
+    
+    // Add to cart animation
+    document.addEventListener('htmx:afterRequest', function(event) {
+        if (event.detail.xhr.status === 200 && event.target.classList.contains('btn-add-to-cart')) {
+            // Success animation
+            const button = event.target;
+            const originalText = button.innerHTML;
+            
+            button.innerHTML = '<i class="bi bi-check-circle me-1"></i> ¡Agregado!';
+            button.classList.remove('btn-primary');
+            button.classList.add('btn-success');
+            
+            setTimeout(() => {
+                button.innerHTML = originalText;
+                button.classList.remove('btn-success');
+                button.classList.add('btn-primary');
+            }, 2000);
+            
+            // Auto-hide success messages
+            setTimeout(() => {
+                const alerts = document.querySelectorAll('#cart-messages .alert');
+                alerts.forEach(alert => {
+                    alert.classList.add('fade');
+                    setTimeout(() => alert.remove(), 300);
+                });
+            }, 3000);
+        }
+    });
+    
+    // Smooth scrolling for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            const target = document.querySelector(this.getAttribute('href'));
+            if (target) {
+                target.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }
+        });
+    });
+    
+    // Counter animation
+    function animateCounters() {
+        const counters = document.querySelectorAll('.stats-counter');
+        counters.forEach(counter => {
+            const target = parseInt(counter.textContent.replace(/\D/g, ''));
+            const increment = target / 100;
+            let current = 0;
+            
+            const timer = setInterval(() => {
+                current += increment;
+                if (current >= target) {
+                    current = target;
+                    clearInterval(timer);
+                }
+                
+                if (counter.textContent.includes('+')) {
+                    counter.textContent = Math.floor(current) + '+';
+                } else if (counter.textContent.includes('%')) {
+                    counter.textContent = Math.floor(current) + '%';
+                } else if (counter.textContent.includes('★')) {
+                    counter.textContent = (current / 10).toFixed(1) + '★';
+                } else {
+                    counter.textContent = Math.floor(current);
+                }
+            }, 20);
+        });
+    }
+    
+    // Trigger counter animation when section is visible
+    const statsSection = document.querySelector('.stats-counter');
+    if (statsSection) {
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    animateCounters();
+                    observer.unobserve(entry.target);
+                }
+            });
+        });
+        
+        observer.observe(statsSection.closest('section'));
+    }
+});
+</script>
+{% endblock %}

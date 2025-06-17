@@ -1,0 +1,444 @@
+{% extends 'base_modern.html' %}
+{% load static %}
+
+{% block title %}Página No Encontrada - Tech Ecommerce{% endblock %}
+
+{% block extra_css %}
+<style>
+:root {
+    --error-primary: #e74c3c;
+    --error-secondary: #f39c12;
+    --error-accent: #3498db;
+}
+
+.error-container {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 0;
+    position: relative;
+    overflow: hidden;
+}
+
+.error-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.1'%3E%3Cpath d='M30 20l10 10-10 10-10-10z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    animation: float 20s ease-in-out infinite;
+}
+
+.error-card {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(20px);
+    border-radius: 30px;
+    padding: 4rem 3rem;
+    text-align: center;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+    max-width: 600px;
+    width: 100%;
+    position: relative;
+    overflow: hidden;
+    animation: slideUp 0.8s ease;
+}
+
+.error-card::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(231, 76, 60, 0.1) 0%, transparent 70%);
+    animation: rotate 15s linear infinite;
+}
+
+.error-number {
+    font-size: 8rem;
+    font-weight: 900;
+    background: linear-gradient(135deg, var(--error-primary), var(--error-secondary));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 1rem;
+    position: relative;
+    z-index: 2;
+    text-shadow: 0 0 30px rgba(231, 76, 60, 0.3);
+}
+
+.error-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #2c3e50;
+    margin-bottom: 1rem;
+    position: relative;
+    z-index: 2;
+}
+
+.error-subtitle {
+    font-size: 1.2rem;
+    color: #7f8c8d;
+    margin-bottom: 3rem;
+    position: relative;
+    z-index: 2;
+}
+
+.search-section {
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    padding: 2rem;
+    margin: 2rem 0;
+    position: relative;
+    z-index: 2;
+}
+
+.search-box {
+    position: relative;
+    margin-bottom: 1.5rem;
+}
+
+.search-input {
+    width: 100%;
+    padding: 1rem 3rem 1rem 1.5rem;
+    border: 2px solid rgba(52, 152, 219, 0.3);
+    border-radius: 15px;
+    font-size: 1.1rem;
+    background: white;
+    transition: all 0.3s ease;
+}
+
+.search-input:focus {
+    outline: none;
+    border-color: var(--error-accent);
+    box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.15);
+}
+
+.search-button {
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: linear-gradient(135deg, var(--error-accent), #2980b9);
+    border: none;
+    border-radius: 10px;
+    padding: 0.75rem 1rem;
+    color: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.search-button:hover {
+    transform: translateY(-50%) scale(1.05);
+}
+
+.action-buttons {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+    position: relative;
+    z-index: 2;
+}
+
+.btn-modern {
+    padding: 1rem 2rem;
+    border-radius: 15px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    border: none;
+    display: inline-flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+.btn-primary-modern {
+    background: linear-gradient(135deg, var(--error-accent), #2980b9);
+    color: white;
+    box-shadow: 0 8px 25px rgba(52, 152, 219, 0.3);
+}
+
+.btn-primary-modern:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 15px 35px rgba(52, 152, 219, 0.4);
+    color: white;
+}
+
+.btn-secondary-modern {
+    background: linear-gradient(135deg, var(--error-secondary), #e67e22);
+    color: white;
+    box-shadow: 0 8px 25px rgba(243, 156, 18, 0.3);
+}
+
+.btn-secondary-modern:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 15px 35px rgba(243, 156, 18, 0.4);
+    color: white;
+}
+
+.suggestions {
+    margin-top: 2rem;
+    position: relative;
+    z-index: 2;
+}
+
+.suggestion-links {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-top: 1rem;
+}
+
+.suggestion-link {
+    background: rgba(255, 255, 255, 0.8);
+    border: 1px solid rgba(52, 152, 219, 0.3);
+    border-radius: 20px;
+    padding: 0.5rem 1rem;
+    color: var(--error-accent);
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(5px);
+}
+
+.suggestion-link:hover {
+    background: var(--error-accent);
+    color: white;
+    transform: translateY(-2px);
+}
+
+.floating-elements {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    overflow: hidden;
+}
+
+.floating-icon {
+    position: absolute;
+    color: rgba(255, 255, 255, 0.1);
+    font-size: 2rem;
+    animation: floatAround 20s linear infinite;
+}
+
+@keyframes slideUp {
+    0% {
+        opacity: 0;
+        transform: translateY(50px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes rotate {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-20px); }
+}
+
+@keyframes floatAround {
+    0% {
+        transform: translateX(-100px) translateY(0px) rotate(0deg);
+    }
+    25% {
+        transform: translateX(100vw) translateY(-100px) rotate(90deg);
+    }
+    50% {
+        transform: translateX(100vw) translateY(100vh) rotate(180deg);
+    }
+    75% {
+        transform: translateX(-100px) translateY(100vh) rotate(270deg);
+    }
+    100% {
+        transform: translateX(-100px) translateY(0px) rotate(360deg);
+    }
+}
+
+@media (max-width: 768px) {
+    .error-card {
+        padding: 2rem 1.5rem;
+        margin: 1rem;
+    }
+    
+    .error-number {
+        font-size: 5rem;
+    }
+    
+    .error-title {
+        font-size: 1.8rem;
+    }
+    
+    .action-buttons {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .btn-modern {
+        width: 100%;
+        max-width: 250px;
+        justify-content: center;
+    }
+    
+    .suggestion-links {
+        justify-content: center;
+    }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="error-container">
+    <!-- Elementos flotantes decorativos -->
+    <div class="floating-elements">
+        <i class="floating-icon bi bi-question-circle" style="top: 10%; left: 10%; animation-delay: 0s;"></i>
+        <i class="floating-icon bi bi-search" style="top: 20%; right: 15%; animation-delay: 5s;"></i>
+        <i class="floating-icon bi bi-house" style="bottom: 30%; left: 20%; animation-delay: 10s;"></i>
+        <i class="floating-icon bi bi-arrow-left" style="bottom: 20%; right: 10%; animation-delay: 15s;"></i>
+    </div>
+
+    <div class="error-card">
+        <!-- Número de error -->
+        <div class="error-number">404</div>
+        
+        <!-- Título y descripción -->
+        <h1 class="error-title">¡Oops! Página no encontrada</h1>
+        <p class="error-subtitle">
+            La página que estás buscando no existe o ha sido movida.<br>
+            Pero no te preocupes, te ayudamos a encontrar lo que necesitas.
+        </p>
+        
+        <!-- Sección de búsqueda -->
+        <div class="search-section">
+            <h5 class="mb-3">¿Qué estabas buscando?</h5>
+            <div class="search-box">
+                <input type="text" 
+                       class="search-input" 
+                       placeholder="Buscar productos, categorías..."
+                       id="error-search">
+                <button class="search-button" onclick="performSearch()">
+                    <i class="bi bi-search"></i>
+                </button>
+            </div>
+            <small class="text-muted">
+                Intenta buscar el producto o categoría que necesitas
+            </small>
+        </div>
+        
+        <!-- Botones de acción -->
+        <div class="action-buttons">
+            <a href="{% url 'core:home' %}" class="btn-modern btn-primary-modern">
+                <i class="bi bi-house me-2"></i>
+                Ir al Inicio
+            </a>
+            <a href="{% url 'products:list' %}" class="btn-modern btn-secondary-modern">
+                <i class="bi bi-shop me-2"></i>
+                Ver Productos
+            </a>
+        </div>
+        
+        <!-- Sugerencias -->
+        <div class="suggestions">
+            <h6 class="text-muted">Páginas populares:</h6>
+            <div class="suggestion-links">
+                <a href="{% url 'products:list' %}?category=laptops" class="suggestion-link">Laptops</a>
+                <a href="{% url 'products:list' %}?category=smartphones" class="suggestion-link">Smartphones</a>
+                <a href="{% url 'products:list' %}?category=gaming" class="suggestion-link">Gaming</a>
+                <a href="{% url 'cart:detail' %}" class="suggestion-link">Mi Carrito</a>
+                <a href="{% url 'core:home' %}#ofertas" class="suggestion-link">Ofertas</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.getElementById('error-search');
+    
+    // Función de búsqueda
+    window.performSearch = function() {
+        const query = searchInput.value.trim();
+        if (query) {
+            window.location.href = `{% url 'products:list' %}?q=${encodeURIComponent(query)}`;
+        }
+    };
+    
+    // Búsqueda con Enter
+    searchInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            performSearch();
+        }
+    });
+    
+    // Auto-focus en el input
+    searchInput.focus();
+    
+    // Efecto de escritura automática
+    const suggestions = ['laptop gaming', 'smartphone', 'auriculares', 'tablet', 'accesorios'];
+    let currentSuggestion = 0;
+    let currentChar = 0;
+    let isDeleting = false;
+    
+    function typeEffect() {
+        const current = suggestions[currentSuggestion];
+        
+        if (!isDeleting) {
+            searchInput.placeholder = `Buscar ${current.substring(0, currentChar + 1)}...`;
+            currentChar++;
+            
+            if (currentChar === current.length) {
+                isDeleting = true;
+                setTimeout(typeEffect, 2000);
+                return;
+            }
+        } else {
+            searchInput.placeholder = `Buscar ${current.substring(0, currentChar)}...`;
+            currentChar--;
+            
+            if (currentChar === 0) {
+                isDeleting = false;
+                currentSuggestion = (currentSuggestion + 1) % suggestions.length;
+            }
+        }
+        
+        setTimeout(typeEffect, isDeleting ? 50 : 100);
+    }
+    
+    // Iniciar efecto después de 2 segundos
+    setTimeout(typeEffect, 2000);
+    
+    // Animación de entrada para elementos
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.style.opacity = '1';
+                entry.target.style.transform = 'translateY(0)';
+            }
+        });
+    });
+    
+    // Tracking del error 404
+    if (typeof gtag !== 'undefined') {
+        gtag('event', 'page_not_found', {
+            'event_category': 'error',
+            'event_label': window.location.pathname
+        });
+    }
+});
+</script>
+{% endblock %}

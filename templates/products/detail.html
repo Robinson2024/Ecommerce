@@ -1,0 +1,198 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ product.name }} - Tech Ecommerce{% endblock %}
+
+{% block meta_description %}{{ product.meta_description|default:product.short_description|default:product.description|truncatewords:25 }}{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <!-- Breadcrumb -->
+    <nav class="flex mb-8" aria-label="Breadcrumb">
+        <ol class="inline-flex items-center space-x-1 md:space-x-3">
+            <li class="inline-flex items-center">
+                <a href="{% url 'core:home' %}" class="text-gray-700 hover:text-blue-600">
+                    Inicio
+                </a>
+            </li>
+            <li>
+                <div class="flex items-center">
+                    <span class="mx-2 text-gray-400">/</span>
+                    <a href="{% url 'products:list' %}" class="text-gray-700 hover:text-blue-600">
+                        Productos
+                    </a>
+                </div>
+            </li>
+            {% if product.category %}
+            <li>
+                <div class="flex items-center">
+                    <span class="mx-2 text-gray-400">/</span>
+                    <a href="{% url 'products:list' %}?category={{ product.category.slug }}" class="text-gray-700 hover:text-blue-600">
+                        {{ product.category.name }}
+                    </a>
+                </div>
+            </li>
+            {% endif %}
+            <li aria-current="page">
+                <div class="flex items-center">
+                    <span class="mx-2 text-gray-400">/</span>
+                    <span class="text-gray-500">{{ product.name|truncatewords:5 }}</span>
+                </div>
+            </li>
+        </ol>
+    </nav>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+        <!-- Galería de imágenes -->
+        <div class="space-y-4">
+            <!-- Imagen principal -->
+            <div class="aspect-square bg-white rounded-lg border border-gray-200 overflow-hidden">
+                {% if product.featured_image %}
+                <img id="main-image" 
+                     src="{{ product.featured_image.url }}" 
+                     alt="{{ product.name }}" 
+                     class="w-full h-full object-cover">
+                {% else %}
+                <div class="w-full h-full bg-gradient-to-br from-blue-100 to-blue-200 flex items-center justify-center">
+                    <div class="text-center">
+                        <svg class="mx-auto w-24 h-24 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clip-rule="evenodd"></path>
+                        </svg>
+                        <p class="text-gray-500 mt-2">Sin imagen</p>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Información del producto -->
+        <div class="space-y-6">
+            <!-- Header -->
+            <div>
+                <!-- Categoría y marca -->
+                <div class="flex items-center gap-4 mb-2">
+                    {% if product.category %}
+                    <a href="{% url 'products:list' %}?category={{ product.category.slug }}" 
+                       class="text-sm text-blue-600 hover:text-blue-800 font-medium">
+                        {{ product.category.name }}
+                    </a>
+                    {% endif %}
+                    {% if product.brand %}
+                    <span class="text-gray-300">|</span>
+                    <a href="{% url 'products:list' %}?brand={{ product.brand.slug }}" 
+                       class="text-sm text-blue-600 hover:text-blue-800 font-medium">
+                        {{ product.brand.name }}
+                    </a>
+                    {% endif %}
+                </div>
+                
+                <h1 class="text-3xl font-bold text-gray-900 mb-2">{{ product.name }}</h1>
+                
+                {% if product.sku %}
+                <p class="text-sm text-gray-500">SKU: {{ product.sku }}</p>
+                {% endif %}
+            </div>
+            
+            <!-- Badges -->
+            <div class="flex flex-wrap gap-2">
+                {% if product.is_featured %}
+                <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-yellow-100 text-yellow-800">
+                    ⭐ Destacado
+                </span>
+                {% endif %}
+                
+                {% if product.is_on_sale %}
+                <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-red-100 text-red-800">
+                    🔥 Oferta -{{ product.discount_percentage }}%
+                </span>
+                {% endif %}
+                
+                {% if not product.is_in_stock %}
+                <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-gray-100 text-gray-800">
+                    ❌ Sin stock
+                </span>
+                {% elif product.is_low_stock %}
+                <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-orange-100 text-orange-800">
+                    ⚠️ Pocas unidades
+                </span>
+                {% endif %}
+            </div>
+
+            <!-- Precios -->
+            <div class="border-t border-b border-gray-200 py-6">
+                {% if product.is_on_sale %}
+                <div class="flex items-center gap-4 mb-2">
+                    <span class="text-4xl font-bold text-green-600">
+                        ${{ product.price|floatformat:0 }}
+                    </span>
+                    <span class="text-2xl text-gray-500 line-through">
+                        ${{ product.compare_price|floatformat:0 }}
+                    </span>
+                </div>
+                {% else %}
+                <span class="text-4xl font-bold text-gray-900">
+                    ${{ product.price|floatformat:0 }}
+                </span>
+                {% endif %}
+            </div>
+
+            <!-- Descripción corta -->
+            {% if product.short_description %}
+            <div>
+                <p class="text-lg text-gray-700 leading-relaxed">{{ product.short_description }}</p>
+            </div>
+            {% endif %}
+
+            <!-- Stock y disponibilidad -->
+            {% if product.track_inventory %}
+            <div class="bg-gray-50 rounded-lg p-4">
+                <h3 class="font-semibold text-gray-900 mb-2">Disponibilidad</h3>
+                {% if product.is_in_stock %}
+                <div class="flex items-center text-green-600">
+                    <span class="font-medium">✓ En stock</span>
+                    <span class="ml-2 text-gray-600">({{ product.stock_quantity }} disponibles)</span>
+                </div>
+                {% else %}
+                <div class="flex items-center text-red-600">
+                    <span class="font-medium">✗ Sin stock</span>
+                </div>
+                {% endif %}
+            </div>
+            {% endif %}
+
+            <!-- Botones de acción -->
+            <div class="space-y-4">
+                {% if product.is_in_stock %}
+                <div class="flex gap-4">
+                    <button class="flex-1 px-8 py-4 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 focus:ring-4 focus:ring-blue-200 transition-colors">
+                        🛒 Agregar al carrito
+                    </button>
+                    <button class="px-4 py-4 border border-gray-300 rounded-lg hover:bg-gray-50 focus:ring-4 focus:ring-gray-200 transition-colors">
+                        ❤️
+                    </button>
+                </div>
+                <button class="w-full px-8 py-3 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 focus:ring-4 focus:ring-green-200 transition-colors">
+                    ⚡ Comprar ahora
+                </button>
+                {% else %}
+                <button disabled class="w-full px-8 py-4 bg-gray-300 text-gray-500 font-semibold rounded-lg cursor-not-allowed">
+                    Sin stock
+                </button>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Descripción detallada -->
+    {% if product.description %}
+    <div class="mt-16 border-t border-gray-200 pt-16">
+        <div class="max-w-4xl">
+            <h2 class="text-2xl font-bold text-gray-900 mb-6">Descripción del producto</h2>
+            <div class="prose prose-lg max-w-none text-gray-700">
+                {{ product.description|linebreaks }}
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

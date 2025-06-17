@@ -1,0 +1,933 @@
+{% extends 'base_modern.html' %}
+{% load static %}
+
+{% block title %}Método de Pago - Tech Ecommerce{% endblock %}
+
+{% block extra_css %}
+<style>
+:root {
+    --payment-primary: #6c5ce7;
+    --payment-secondary: #a29bfe;
+    --payment-success: #00b894;
+    --payment-warning: #fdcb6e;
+    --payment-danger: #e84393;
+    --payment-info: #74b9ff;
+}
+
+.payment-container {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    padding: 2rem 0;
+    position: relative;
+    overflow: hidden;
+}
+
+.payment-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.1'%3E%3Cpath d='M30 30c2.2 0 4-1.8 4-4s-1.8-4-4-4-4 1.8-4 4 1.8 4 4 4zm0 2c-3.3 0-6-2.7-6-6s2.7-6 6-6 6 2.7 6 6-2.7 6-6 6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    animation: float 20s ease-in-out infinite;
+}
+
+.payment-header {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(20px);
+    border-radius: 25px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    text-align: center;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+    position: relative;
+    overflow: hidden;
+}
+
+.payment-header::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(108, 92, 231, 0.1) 0%, transparent 70%);
+    animation: rotate 15s linear infinite;
+}
+
+.payment-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, var(--payment-primary), var(--payment-secondary));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 0.5rem;
+    position: relative;
+    z-index: 2;
+}
+
+.payment-subtitle {
+    color: #6c757d;
+    font-size: 1.1rem;
+    position: relative;
+    z-index: 2;
+}
+
+.payment-card {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 25px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+.payment-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+}
+
+.payment-methods-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.payment-method {
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(10px);
+    border: 2px solid rgba(108, 92, 231, 0.2);
+    border-radius: 20px;
+    padding: 2rem 1rem;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.payment-method::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(45deg, transparent, rgba(108, 92, 231, 0.1), transparent);
+    transform: rotate(45deg);
+    transition: all 0.3s ease;
+    opacity: 0;
+}
+
+.payment-method:hover::before {
+    animation: shimmer 0.8s ease;
+    opacity: 1;
+}
+
+.payment-method:hover {
+    border-color: var(--payment-primary);
+    transform: translateY(-5px);
+    box-shadow: 0 15px 35px rgba(108, 92, 231, 0.2);
+}
+
+.payment-method.active {
+    border-color: var(--payment-primary);
+    background: linear-gradient(135deg, rgba(108, 92, 231, 0.1), rgba(162, 155, 254, 0.1));
+    transform: scale(1.02);
+    box-shadow: 0 15px 35px rgba(108, 92, 231, 0.3);
+}
+
+.payment-method.active::after {
+    content: '✓';
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    background: var(--payment-success);
+    color: white;
+    border-radius: 50%;
+    width: 25px;
+    height: 25px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 0.9rem;
+}
+
+.payment-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    color: var(--payment-primary);
+    transition: all 0.3s ease;
+}
+
+.payment-method:hover .payment-icon {
+    transform: scale(1.1);
+    color: var(--payment-secondary);
+}
+
+.payment-method-name {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #495057;
+}
+
+.payment-method-desc {
+    font-size: 0.9rem;
+    color: #6c757d;
+}
+
+.payment-form {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 25px;
+    padding: 2rem;
+    margin-top: 2rem;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+    display: none;
+    animation: slideUp 0.5s ease;
+}
+
+.payment-form.active {
+    display: block;
+}
+
+.form-control-modern {
+    border: 2px solid rgba(108, 92, 231, 0.2);
+    border-radius: 15px;
+    padding: 1rem;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(5px);
+}
+
+.form-control-modern:focus {
+    border-color: var(--payment-primary);
+    box-shadow: 0 0 0 0.2rem rgba(108, 92, 231, 0.15);
+    background: white;
+}
+
+.form-label-modern {
+    font-weight: 600;
+    color: #495057;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+}
+
+.form-label-modern i {
+    margin-right: 0.5rem;
+    color: var(--payment-primary);
+}
+
+.card-visual {
+    background: linear-gradient(135deg, var(--payment-primary), var(--payment-secondary));
+    border-radius: 20px;
+    padding: 2rem;
+    color: white;
+    margin-bottom: 2rem;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 15px 35px rgba(108, 92, 231, 0.3);
+}
+
+.card-visual::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+    animation: cardShine 3s ease-in-out infinite;
+}
+
+.card-number {
+    font-family: 'Courier New', monospace;
+    font-size: 1.5rem;
+    letter-spacing: 2px;
+    margin-bottom: 1rem;
+}
+
+.card-info {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 1rem;
+    font-size: 0.9rem;
+}
+
+.amount-summary {
+    background: linear-gradient(135deg, var(--payment-success), #00a085);
+    color: white;
+    border-radius: 20px;
+    padding: 2rem;
+    text-align: center;
+    box-shadow: 0 15px 35px rgba(0, 184, 148, 0.3);
+    position: sticky;
+    top: 100px;
+}
+
+.amount-value {
+    font-size: 3rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+.amount-label {
+    font-size: 1.2rem;
+    opacity: 0.9;
+    margin-bottom: 1rem;
+}
+
+.security-features {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    margin: 2rem 0;
+    flex-wrap: wrap;
+}
+
+.security-badge {
+    background: rgba(0, 184, 148, 0.1);
+    border: 2px solid var(--payment-success);
+    color: var(--payment-success);
+    padding: 0.75rem 1.5rem;
+    border-radius: 25px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    backdrop-filter: blur(10px);
+}
+
+.security-badge i {
+    margin-right: 0.5rem;
+    font-size: 1.2rem;
+}
+
+.btn-pay {
+    background: linear-gradient(135deg, var(--payment-success), #00a085);
+    border: none;
+    padding: 1.2rem 2rem;
+    border-radius: 15px;
+    color: white;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: all 0.3s ease;
+    box-shadow: 0 8px 25px rgba(0, 184, 148, 0.3);
+    width: 100%;
+    font-size: 1.1rem;
+}
+
+.btn-pay:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 15px 35px rgba(0, 184, 148, 0.4);
+    color: white;
+}
+
+.btn-pay:disabled {
+    background: #6c757d;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+.processing-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(108, 92, 231, 0.9);
+    backdrop-filter: blur(10px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+}
+
+.processing-overlay.show {
+    opacity: 1;
+    visibility: visible;
+}
+
+.processing-animation {
+    width: 100px;
+    height: 100px;
+    border: 4px solid rgba(255, 255, 255, 0.3);
+    border-left: 4px solid white;
+    border-radius: 50%;
+    animation: processingSpin 1s linear infinite;
+    margin-bottom: 2rem;
+}
+
+.processing-text {
+    color: white;
+    font-size: 1.5rem;
+    font-weight: 600;
+    text-align: center;
+}
+
+@keyframes slideUp {
+    0% {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes shimmer {
+    0% {
+        transform: translateX(-100%) rotate(45deg);
+    }
+    100% {
+        transform: translateX(200%) rotate(45deg);
+    }
+}
+
+@keyframes cardShine {
+    0%, 100% {
+        transform: translateX(-200%) translateY(-200%);
+    }
+    50% {
+        transform: translateX(200%) translateY(200%);
+    }
+}
+
+@keyframes processingSpin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+@keyframes rotate {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-20px); }
+}
+
+@media (max-width: 768px) {
+    .payment-container {
+        padding: 1rem 0;
+    }
+    
+    .payment-header {
+        padding: 1.5rem;
+        margin-bottom: 1rem;
+    }
+    
+    .payment-title {
+        font-size: 2rem;
+    }
+    
+    .payment-card {
+        padding: 1.5rem;
+        margin-bottom: 1rem;
+    }
+    
+    .payment-methods-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+    
+    .security-features {
+        flex-direction: column;
+        align-items: center;
+        gap: 1rem;
+    }
+    
+    .amount-summary {
+        position: static;
+        margin-top: 2rem;
+    }
+    
+    .amount-value {
+        font-size: 2rem;
+    }
+    
+    .card-info {
+        grid-template-columns: 1fr;
+        gap: 0.5rem;
+    }
+}
+
+.error-message {
+    background: rgba(232, 67, 147, 0.1);
+    border: 1px solid rgba(232, 67, 147, 0.3);
+    color: var(--payment-danger);
+    padding: 0.75rem 1rem;
+    border-radius: 10px;
+    margin-top: 0.5rem;
+    font-size: 0.9rem;
+}
+
+.success-message {
+    background: rgba(0, 184, 148, 0.1);
+    border: 1px solid rgba(0, 184, 148, 0.3);
+    color: var(--payment-success);
+    padding: 0.75rem 1rem;
+    border-radius: 10px;
+    margin-top: 0.5rem;
+    font-size: 0.9rem;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="payment-container">
+    <!-- Processing overlay -->
+    <div id="processing-overlay" class="processing-overlay">
+        <div class="processing-animation"></div>
+        <div class="processing-text">
+            Procesando tu pago...<br>
+            <small>Por favor, no cierres esta ventana</small>
+        </div>
+    </div>
+
+    <div class="container-fluid px-4">
+        <!-- Header -->
+        <div class="payment-header">
+            <h1 class="payment-title">Método de Pago</h1>
+            <p class="payment-subtitle">Selecciona tu método de pago preferido</p>
+        </div>
+
+        <div class="row">
+            <!-- Métodos de pago -->
+            <div class="col-lg-8">
+                <div class="payment-card">
+                    <h4 class="mb-4">
+                        <i class="bi bi-credit-card me-2"></i>
+                        Elige tu método de pago
+                    </h4>
+                    
+                    <div class="payment-methods-grid">
+                        <!-- Tarjeta de Crédito/Débito -->
+                        <div class="payment-method" data-method="card">
+                            <div class="payment-icon">
+                                <i class="bi bi-credit-card-2-front"></i>
+                            </div>
+                            <div class="payment-method-name">Tarjeta</div>
+                            <div class="payment-method-desc">Crédito o Débito</div>
+                        </div>
+                        
+                        <!-- PayPal -->
+                        <div class="payment-method" data-method="paypal">
+                            <div class="payment-icon">
+                                <i class="bi bi-paypal"></i>
+                            </div>
+                            <div class="payment-method-name">PayPal</div>
+                            <div class="payment-method-desc">Pago seguro</div>
+                        </div>
+                        
+                        <!-- Google Pay -->
+                        <div class="payment-method" data-method="google-pay">
+                            <div class="payment-icon">
+                                <i class="bi bi-google"></i>
+                            </div>
+                            <div class="payment-method-name">Google Pay</div>
+                            <div class="payment-method-desc">Pago rápido</div>
+                        </div>
+                        
+                        <!-- Apple Pay -->
+                        <div class="payment-method" data-method="apple-pay">
+                            <div class="payment-icon">
+                                <i class="bi bi-apple"></i>
+                            </div>
+                            <div class="payment-method-name">Apple Pay</div>
+                            <div class="payment-method-desc">Touch ID</div>
+                        </div>
+                    </div>
+
+                    <!-- Formulario de tarjeta -->
+                    <div id="card-form" class="payment-form">
+                        <h5 class="mb-4">
+                            <i class="bi bi-credit-card me-2"></i>
+                            Información de la Tarjeta
+                        </h5>
+                        
+                        <!-- Visualización de tarjeta -->
+                        <div class="card-visual">
+                            <div class="card-number" id="card-display">**** **** **** ****</div>
+                            <div class="card-info">
+                                <div>
+                                    <div style="font-size: 0.8rem; opacity: 0.8;">TITULAR</div>
+                                    <div id="name-display">NOMBRE APELLIDO</div>
+                                </div>
+                                <div>
+                                    <div style="font-size: 0.8rem; opacity: 0.8;">VENCE</div>
+                                    <div id="expiry-display">MM/AA</div>
+                                </div>
+                                <div>
+                                    <div style="font-size: 0.8rem; opacity: 0.8;">CVC</div>
+                                    <div id="cvc-display">***</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <form id="payment-form" method="post">
+                            {% csrf_token %}
+                            <div class="row">
+                                <div class="col-12 mb-3">
+                                    <label for="card-number" class="form-label-modern">
+                                        <i class="bi bi-credit-card"></i>
+                                        Número de Tarjeta
+                                    </label>
+                                    <input type="text" class="form-control form-control-modern" 
+                                           id="card-number" name="card_number" 
+                                           placeholder="1234 5678 9012 3456"
+                                           maxlength="19" required>
+                                </div>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="card-name" class="form-label-modern">
+                                        <i class="bi bi-person"></i>
+                                        Nombre del Titular
+                                    </label>
+                                    <input type="text" class="form-control form-control-modern" 
+                                           id="card-name" name="card_name" 
+                                           placeholder="Nombre como aparece en la tarjeta"
+                                           required>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="card-email" class="form-label-modern">
+                                        <i class="bi bi-envelope"></i>
+                                        Email
+                                    </label>
+                                    <input type="email" class="form-control form-control-modern" 
+                                           id="card-email" name="card_email" 
+                                           placeholder="tu@email.com"
+                                           required>
+                                </div>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-4 mb-3">
+                                    <label for="card-expiry" class="form-label-modern">
+                                        <i class="bi bi-calendar"></i>
+                                        Vencimiento
+                                    </label>
+                                    <input type="text" class="form-control form-control-modern" 
+                                           id="card-expiry" name="card_expiry" 
+                                           placeholder="MM/AA"
+                                           maxlength="5" required>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label for="card-cvc" class="form-label-modern">
+                                        <i class="bi bi-shield-check"></i>
+                                        CVC
+                                    </label>
+                                    <input type="text" class="form-control form-control-modern" 
+                                           id="card-cvc" name="card_cvc" 
+                                           placeholder="123"
+                                           maxlength="4" required>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label for="card-postal" class="form-label-modern">
+                                        <i class="bi bi-mailbox"></i>
+                                        Código Postal
+                                    </label>
+                                    <input type="text" class="form-control form-control-modern" 
+                                           id="card-postal" name="card_postal" 
+                                           placeholder="12345"
+                                           required>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Otros métodos de pago -->
+                    <div id="paypal-form" class="payment-form">
+                        <div class="text-center py-4">
+                            <i class="bi bi-paypal display-1 text-primary mb-3"></i>
+                            <h5>Serás redirigido a PayPal</h5>
+                            <p class="text-muted">
+                                Después de hacer clic en "Pagar", serás redirigido a PayPal 
+                                para completar tu compra de forma segura.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div id="google-pay-form" class="payment-form">
+                        <div class="text-center py-4">
+                            <i class="bi bi-google display-1 text-warning mb-3"></i>
+                            <h5>Google Pay</h5>
+                            <p class="text-muted">
+                                Usa tu cuenta de Google para pagar de forma rápida y segura.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div id="apple-pay-form" class="payment-form">
+                        <div class="text-center py-4">
+                            <i class="bi bi-apple display-1 text-dark mb-3"></i>
+                            <h5>Apple Pay</h5>
+                            <p class="text-muted">
+                                Usa Touch ID o Face ID para completar tu pago.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Características de seguridad -->
+                    <div class="security-features">
+                        <div class="security-badge">
+                            <i class="bi bi-shield-fill-check"></i>
+                            SSL Seguro
+                        </div>
+                        <div class="security-badge">
+                            <i class="bi bi-lock-fill"></i>
+                            Encriptado
+                        </div>
+                        <div class="security-badge">
+                            <i class="bi bi-credit-card-2-back"></i>
+                            PCI Compliant
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Resumen del pedido -->
+            <div class="col-lg-4">
+                <div class="amount-summary">
+                    <div class="amount-value">${{ order.total_price|floatformat:0 }}</div>
+                    <div class="amount-label">Total a Pagar</div>
+                    
+                    <div class="text-start mt-3" style="opacity: 0.9;">
+                        <div class="d-flex justify-content-between mb-2">
+                            <span>Subtotal:</span>
+                            <span>${{ order.total_price|floatformat:0 }}</span>
+                        </div>
+                        <div class="d-flex justify-content-between mb-2">
+                            <span>Envío:</span>
+                            <span>Gratis</span>
+                        </div>
+                        <div class="d-flex justify-content-between mb-3">
+                            <span>Impuestos:</span>
+                            <span>$0</span>
+                        </div>
+                        <hr style="border-color: rgba(255,255,255,0.3);">
+                        <div class="d-flex justify-content-between fw-bold fs-5">
+                            <span>Total:</span>
+                            <span>${{ order.total_price|floatformat:0 }}</span>
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-pay mt-4" id="pay-button" disabled>
+                        <i class="bi bi-credit-card me-2"></i>
+                        Pagar Ahora
+                    </button>
+                    
+                    <div class="text-center mt-3" style="opacity: 0.8;">
+                        <small>
+                            <i class="bi bi-shield-check me-1"></i>
+                            Tu información está protegida
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const paymentMethods = document.querySelectorAll('.payment-method');
+    const paymentForms = document.querySelectorAll('.payment-form');
+    const payButton = document.getElementById('pay-button');
+    const processingOverlay = document.getElementById('processing-overlay');
+    
+    // Selección de método de pago
+    paymentMethods.forEach(method => {
+        method.addEventListener('click', function() {
+            // Remover clases activas
+            paymentMethods.forEach(m => m.classList.remove('active'));
+            paymentForms.forEach(f => f.classList.remove('active'));
+            
+            // Activar método seleccionado
+            this.classList.add('active');
+            const methodType = this.dataset.method;
+            const form = document.getElementById(methodType + '-form');
+            if (form) {
+                form.classList.add('active');
+            }
+            
+            // Habilitar botón de pago
+            payButton.disabled = false;
+            
+            // Cambiar texto del botón según el método
+            const methodName = this.querySelector('.payment-method-name').textContent;
+            payButton.innerHTML = `<i class="bi bi-credit-card me-2"></i>Pagar con ${methodName}`;
+        });
+    });
+    
+    // Formateo en tiempo real para tarjeta
+    const cardNumber = document.getElementById('card-number');
+    const cardName = document.getElementById('card-name');
+    const cardExpiry = document.getElementById('card-expiry');
+    const cardCvc = document.getElementById('card-cvc');
+    
+    const cardDisplay = document.getElementById('card-display');
+    const nameDisplay = document.getElementById('name-display');
+    const expiryDisplay = document.getElementById('expiry-display');
+    const cvcDisplay = document.getElementById('cvc-display');
+    
+    if (cardNumber) {
+        cardNumber.addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\s/g, '').replace(/[^0-9]/gi, '');
+            let formattedInputValue = value.match(/.{1,4}/g)?.join(' ') || value;
+            e.target.value = formattedInputValue;
+            
+            // Actualizar visualización
+            cardDisplay.textContent = formattedInputValue || '**** **** **** ****';
+        });
+    }
+    
+    if (cardName) {
+        cardName.addEventListener('input', function(e) {
+            nameDisplay.textContent = e.target.value.toUpperCase() || 'NOMBRE APELLIDO';
+        });
+    }
+    
+    if (cardExpiry) {
+        cardExpiry.addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            if (value.length >= 2) {
+                value = value.substring(0, 2) + '/' + value.substring(2, 4);
+            }
+            e.target.value = value;
+            expiryDisplay.textContent = value || 'MM/AA';
+        });
+    }
+    
+    if (cardCvc) {
+        cardCvc.addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            e.target.value = value;
+            cvcDisplay.textContent = '*'.repeat(value.length) || '***';
+        });
+    }
+    
+    // Procesamiento del pago
+    payButton.addEventListener('click', function(e) {
+        e.preventDefault();
+        
+        const activeMethod = document.querySelector('.payment-method.active');
+        if (!activeMethod) {
+            alert('Por favor selecciona un método de pago');
+            return;
+        }
+        
+        const methodType = activeMethod.dataset.method;
+        
+        // Validar formulario de tarjeta si está activo
+        if (methodType === 'card') {
+            const form = document.getElementById('payment-form');
+            const requiredFields = form.querySelectorAll('[required]');
+            let isValid = true;
+            
+            requiredFields.forEach(field => {
+                const errorDiv = field.parentNode.querySelector('.error-message');
+                if (errorDiv) {
+                    errorDiv.remove();
+                }
+                
+                if (!field.value.trim()) {
+                    isValid = false;
+                    const error = document.createElement('div');
+                    error.className = 'error-message';
+                    error.textContent = 'Este campo es requerido';
+                    field.parentNode.appendChild(error);
+                    field.classList.add('is-invalid');
+                } else {
+                    field.classList.remove('is-invalid');
+                }
+            });
+            
+            // Validaciones específicas
+            if (cardNumber.value && cardNumber.value.replace(/\s/g, '').length < 13) {
+                isValid = false;
+                const error = document.createElement('div');
+                error.className = 'error-message';
+                error.textContent = 'Número de tarjeta inválido';
+                cardNumber.parentNode.appendChild(error);
+            }
+            
+            if (!isValid) {
+                return;
+            }
+        }
+        
+        // Mostrar overlay de procesamiento
+        processingOverlay.classList.add('show');
+        payButton.disabled = true;
+        
+        // Simular procesamiento del pago
+        setTimeout(() => {
+            // Aquí iría la lógica real de procesamiento del pago
+            // Por ahora, redirigimos a la página de éxito
+            window.location.href = "{% url 'payments:success' %}";
+        }, 3000);
+    });
+    
+    // Limpiar errores cuando el usuario empiece a escribir
+    const inputs = document.querySelectorAll('input');
+    inputs.forEach(input => {
+        input.addEventListener('input', function() {
+            const errorDiv = this.parentNode.querySelector('.error-message');
+            if (errorDiv) {
+                errorDiv.remove();
+                this.classList.remove('is-invalid');
+            }
+        });
+    });
+    
+    // Animaciones de entrada
+    const cards = document.querySelectorAll('.payment-card');
+    cards.forEach((card, index) => {
+        card.style.opacity = '0';
+        card.style.transform = 'translateY(30px)';
+        
+        setTimeout(() => {
+            card.style.transition = 'all 0.6s ease';
+            card.style.opacity = '1';
+            card.style.transform = 'translateY(0)';
+        }, index * 200);
+    });
+    
+    // Efecto de hover en métodos de pago
+    paymentMethods.forEach(method => {
+        method.addEventListener('mouseenter', function() {
+            if (!this.classList.contains('active')) {
+                this.style.transform = 'translateY(-5px) scale(1.02)';
+            }
+        });
+        
+        method.addEventListener('mouseleave', function() {
+            if (!this.classList.contains('active')) {
+                this.style.transform = '';
+            }
+        });
+    });
+});
+</script>
+{% endblock %}

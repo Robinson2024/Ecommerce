@@ -1,0 +1,839 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ product.name }} - Tech Ecommerce{% endblock %}
+
+{% block meta_description %}{{ product.meta_description|default:product.short_description|default:product.description|truncatewords:25 }}{% endblock %}
+
+{% block extra_css %}
+<style>
+    .product-gallery {
+        position: sticky;
+        top: 100px;
+    }
+    
+    .thumbnail-image {
+        transition: all 0.3s ease;
+        cursor: pointer;
+        border-radius: 10px;
+    }
+    
+    .thumbnail-image:hover {
+        transform: scale(1.05);
+        box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    }
+    
+    .thumbnail-image.active {
+        border: 3px solid #007bff;
+        transform: scale(1.02);
+    }
+    
+    .product-badge {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        z-index: 10;
+    }
+    
+    .price-section {
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        border-radius: 15px;
+        padding: 2rem;
+        border: 1px solid #dee2e6;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+    
+    .feature-list {
+        background: linear-gradient(135deg, #e3f2fd 0%, #f3e5f5 100%);
+        border-radius: 15px;
+        padding: 1.5rem;
+    }
+    
+    .quantity-selector {
+        border: 2px solid #007bff;
+        border-radius: 50px;
+        overflow: hidden;
+        display: inline-flex;
+        background: white;
+    }
+    
+    .quantity-btn {
+        background: #007bff;
+        color: white;
+        border: none;
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+    }
+    
+    .quantity-btn:hover {
+        background: #0056b3;
+        transform: scale(1.1);
+    }
+    
+    .quantity-input {
+        border: none;
+        text-align: center;
+        width: 60px;
+        height: 40px;
+        font-weight: bold;
+        background: transparent;
+    }
+    
+    .product-tabs .nav-link {
+        border: none;
+        background: transparent;
+        color: #6c757d;
+        font-weight: 600;
+        padding: 1rem 2rem;
+        border-radius: 50px;
+        margin: 0 0.5rem;
+        transition: all 0.3s ease;
+    }
+    
+    .product-tabs .nav-link.active {
+        background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0,123,255,0.4);
+    }
+    
+    .related-product-card {
+        transition: all 0.3s ease;
+        border: none;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        border-radius: 15px;
+        overflow: hidden;
+    }
+    
+    .related-product-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+    }
+    
+    .zoom-container {
+        position: relative;
+        overflow: hidden;
+        border-radius: 15px;
+        background: white;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    }
+    
+    .zoom-image {
+        transition: transform 0.3s ease;
+        cursor: zoom-in;
+    }
+    
+    .zoom-image:hover {
+        transform: scale(1.1);
+    }
+    
+    @media (max-width: 768px) {
+        .product-gallery {
+            position: static;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-4 py-3">
+    <!-- Breadcrumb mejorado -->
+    <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a href="{% url 'core:home' %}" class="text-decoration-none">
+                    <i class="bi bi-house-fill me-1"></i>Inicio
+                </a>
+            </li>
+            <li class="breadcrumb-item">
+                <a href="{% url 'products:list' %}" class="text-decoration-none">Productos</a>
+            </li>
+            {% if product.category %}
+            <li class="breadcrumb-item">
+                <a href="{% url 'products:list' %}?category={{ product.category.slug }}" 
+                   class="text-decoration-none">{{ product.category.name }}</a>
+            </li>
+            {% endif %}
+            <li class="breadcrumb-item active">{{ product.name|truncatewords:3 }}</li>
+        </ol>
+    </nav>
+
+    <div class="row g-5">
+        <!-- Galería de imágenes (Columna izquierda) -->
+        <div class="col-lg-6">
+            <div class="product-gallery">
+                <!-- Imagen principal -->
+                <div class="main-image-container mb-4">
+                    <div class="zoom-container position-relative">
+                        {% if product.is_on_sale %}
+                        <div class="product-badge">
+                            <span class="badge bg-danger fs-6">
+                                -{{ product.discount_percentage|floatformat:0 }}%
+                            </span>
+                        </div>
+                        {% endif %}
+                        
+                        {% if product.featured_image %}
+                        <img id="main-image" 
+                             src="{{ product.featured_image.url }}" 
+                             alt="{{ product.name }}" 
+                             class="img-fluid zoom-image w-100"
+                             style="height: 500px; object-fit: cover;">
+                        {% else %}
+                        <div class="d-flex align-items-center justify-content-center bg-light" 
+                             style="height: 500px;">
+                            <div class="text-center">
+                                <i class="bi bi-image display-1 text-muted"></i>
+                                <p class="text-muted mt-3">Imagen no disponible</p>
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <!-- Miniaturas -->
+                <div class="row g-2">
+                    {% if product.featured_image %}
+                    <div class="col-3">
+                        <img src="{{ product.featured_image.url }}" 
+                             alt="{{ product.name }}" 
+                             class="img-fluid thumbnail-image active rounded"
+                             style="height: 100px; object-fit: cover; width: 100%;"
+                             onclick="changeMainImage(this.src)">
+                    </div>
+                    {% endif %}
+                    
+                    <!-- Placeholder thumbnails for demo -->
+                    <div class="col-3">
+                        <div class="bg-light rounded d-flex align-items-center justify-content-center thumbnail-image" 
+                             style="height: 100px; cursor: pointer;">
+                            <i class="bi bi-plus-lg text-muted"></i>
+                        </div>
+                    </div>
+                    <div class="col-3">
+                        <div class="bg-light rounded d-flex align-items-center justify-content-center thumbnail-image" 
+                             style="height: 100px; cursor: pointer;">
+                            <i class="bi bi-plus-lg text-muted"></i>
+                        </div>
+                    </div>
+                    <div class="col-3">
+                        <div class="bg-light rounded d-flex align-items-center justify-content-center thumbnail-image" 
+                             style="height: 100px; cursor: pointer;">
+                            <i class="bi bi-plus-lg text-muted"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Información del producto (Columna derecha) -->
+        <div class="col-lg-6">
+            <div class="product-info">
+                <!-- Header con categoría y marca -->
+                <div class="mb-3">
+                    <div class="d-flex align-items-center gap-3 mb-2">
+                        {% if product.category %}
+                        <a href="{% url 'products:list' %}?category={{ product.category.slug }}" 
+                           class="badge bg-primary text-decoration-none">
+                            {{ product.category.name }}
+                        </a>
+                        {% endif %}
+                        {% if product.brand %}
+                        <a href="{% url 'products:list' %}?brand={{ product.brand.slug }}" 
+                           class="badge bg-secondary text-decoration-none">
+                            {{ product.brand.name }}
+                        </a>
+                        {% endif %}
+                    </div>
+                    
+                    <h1 class="display-5 fw-bold text-dark mb-2">{{ product.name }}</h1>
+                    
+                    {% if product.sku %}
+                    <p class="text-muted small mb-0">
+                        <i class="bi bi-tag me-1"></i>SKU: {{ product.sku }}
+                    </p>
+                    {% endif %}
+                </div>
+                
+                <!-- Rating y reseñas -->
+                <div class="mb-4">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="text-warning">
+                            {% for i in "12345" %}
+                                <i class="bi bi-star-fill"></i>
+                            {% endfor %}
+                        </div>
+                        <span class="badge bg-light text-dark">4.8/5</span>
+                        <a href="#reviews" class="text-decoration-none small">
+                            ({{ product.reviews_count|default:127 }} reseñas)
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Badges de estado -->
+                <div class="mb-4">
+                    <div class="d-flex flex-wrap gap-2">
+                        {% if product.is_featured %}
+                        <span class="badge bg-warning text-dark">
+                            <i class="bi bi-star me-1"></i>Producto Destacado
+                        </span>
+                        {% endif %}
+                        
+                        {% if product.is_in_stock %}
+                            {% if product.is_low_stock %}
+                            <span class="badge bg-warning">
+                                <i class="bi bi-exclamation-triangle me-1"></i>¡Últimas unidades!
+                            </span>
+                            {% else %}
+                            <span class="badge bg-success">
+                                <i class="bi bi-check-circle me-1"></i>En Stock
+                            </span>
+                            {% endif %}
+                        {% else %}
+                        <span class="badge bg-danger">
+                            <i class="bi bi-x-circle me-1"></i>Sin Stock
+                        </span>
+                        {% endif %}
+                        
+                        <span class="badge bg-info">
+                            <i class="bi bi-truck me-1"></i>Envío Gratis
+                        </span>
+                        
+                        <span class="badge bg-secondary">
+                            <i class="bi bi-shield-check me-1"></i>Garantía 2 años
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Precios -->
+                <div class="price-section mb-4">
+                    {% if product.is_on_sale %}
+                    <div class="d-flex align-items-center gap-3 mb-2">
+                        <span class="display-4 fw-bold text-success">
+                            ${{ product.price|floatformat:0 }}
+                        </span>
+                        <span class="h4 text-muted text-decoration-line-through">
+                            ${{ product.compare_price|floatformat:0 }}
+                        </span>
+                    </div>
+                    <div class="text-success fw-bold">
+                        <i class="bi bi-arrow-down me-1"></i>
+                        Ahorras ${{ product.savings|floatformat:0 }}
+                    </div>
+                    {% else %}
+                    <div class="display-4 fw-bold text-primary">
+                        ${{ product.price|floatformat:0 }}
+                    </div>
+                    {% endif %}
+                    
+                    <div class="mt-3">
+                        <small class="text-muted">
+                            <i class="bi bi-credit-card me-1"></i>
+                            Hasta 12 cuotas sin interés
+                        </small>
+                    </div>
+                </div>
+
+                <!-- Descripción corta -->
+                {% if product.short_description %}
+                <div class="mb-4">
+                    <h5 class="fw-bold mb-3">Descripción</h5>
+                    <p class="lead text-muted">{{ product.short_description }}</p>
+                </div>
+                {% endif %}
+
+                <!-- Características principales -->
+                <div class="feature-list mb-4">
+                    <h6 class="fw-bold mb-3">
+                        <i class="bi bi-list-check me-2"></i>Características Principales
+                    </h6>
+                    <div class="row g-2">
+                        <div class="col-md-6">
+                            <div class="d-flex align-items-center">
+                                <i class="bi bi-check-circle-fill text-success me-2"></i>
+                                <small>Envío gratuito</small>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="d-flex align-items-center">
+                                <i class="bi bi-check-circle-fill text-success me-2"></i>
+                                <small>Garantía extendida</small>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="d-flex align-items-center">
+                                <i class="bi bi-check-circle-fill text-success me-2"></i>
+                                <small>Devolución 30 días</small>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="d-flex align-items-center">
+                                <i class="bi bi-check-circle-fill text-success me-2"></i>
+                                <small>Soporte técnico</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Selector de cantidad y botones -->
+                {% if product.is_in_stock %}
+                <div class="mb-4">
+                    <div class="row g-3 align-items-center">
+                        <div class="col-auto">
+                            <label class="form-label fw-bold">Cantidad:</label>
+                        </div>
+                        <div class="col-auto">
+                            <div class="quantity-selector">
+                                <button type="button" class="quantity-btn" onclick="decreaseQuantity()">
+                                    <i class="bi bi-dash"></i>
+                                </button>
+                                <input type="number" 
+                                       id="quantity" 
+                                       name="quantity" 
+                                       value="1" 
+                                       min="1" 
+                                       max="{{ product.stock }}"
+                                       class="quantity-input">
+                                <button type="button" class="quantity-btn" onclick="increaseQuantity()">
+                                    <i class="bi bi-plus"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <small class="text-muted">
+                                ({{ product.stock }} disponibles)
+                            </small>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Botones de acción -->
+                <div class="d-grid gap-3 mb-4">
+                    <button type="button" 
+                            class="btn btn-primary btn-lg fw-bold"
+                            hx-post="{% url 'cart:add' %}"
+                            hx-vals='{"product_id": "{{ product.id }}"}'
+                            hx-include="#quantity"
+                            hx-target="#cart-messages"
+                            hx-swap="beforeend"
+                            hx-indicator="#loading-indicator">
+                        <i class="bi bi-cart-plus me-2"></i>
+                        Agregar al Carrito
+                    </button>
+                    
+                    <div class="row g-2">
+                        <div class="col-6">
+                            <button class="btn btn-outline-danger w-100">
+                                <i class="bi bi-heart me-1"></i>
+                                Favoritos
+                            </button>
+                        </div>
+                        <div class="col-6">
+                            <button class="btn btn-outline-secondary w-100">
+                                <i class="bi bi-share me-1"></i>
+                                Compartir
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                {% else %}
+                <div class="alert alert-warning">
+                    <i class="bi bi-exclamation-triangle me-2"></i>
+                    <strong>Producto no disponible</strong><br>
+                    Este producto está temporalmente agotado.
+                    <a href="#" class="alert-link">Notificarme cuando esté disponible</a>
+                </div>
+                {% endif %}
+
+                <!-- Información adicional -->
+                <div class="border-top pt-4">
+                    <div class="row g-3 text-center">
+                        <div class="col-4">
+                            <i class="bi bi-truck display-6 text-primary"></i>
+                            <div class="small fw-bold mt-2">Envío Gratis</div>
+                            <div class="small text-muted">A todo el país</div>
+                        </div>
+                        <div class="col-4">
+                            <i class="bi bi-arrow-clockwise display-6 text-success"></i>
+                            <div class="small fw-bold mt-2">Devoluciones</div>
+                            <div class="small text-muted">30 días</div>
+                        </div>
+                        <div class="col-4">
+                            <i class="bi bi-headset display-6 text-info"></i>
+                            <div class="small fw-bold mt-2">Soporte 24/7</div>
+                            <div class="small text-muted">Atención continua</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tabs de información del producto -->
+    <div class="row mt-5">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white border-0">
+                    <ul class="nav nav-tabs product-tabs border-0" id="productTabs" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active" id="description-tab" data-bs-toggle="tab" 
+                                    data-bs-target="#description" type="button" role="tab">
+                                <i class="bi bi-card-text me-2"></i>Descripción
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="specifications-tab" data-bs-toggle="tab" 
+                                    data-bs-target="#specifications" type="button" role="tab">
+                                <i class="bi bi-gear me-2"></i>Especificaciones
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="reviews-tab" data-bs-toggle="tab" 
+                                    data-bs-target="#reviews" type="button" role="tab">
+                                <i class="bi bi-star me-2"></i>Reseñas (127)
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="shipping-tab" data-bs-toggle="tab" 
+                                    data-bs-target="#shipping" type="button" role="tab">
+                                <i class="bi bi-truck me-2"></i>Envío
+                            </button>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="card-body">
+                    <div class="tab-content" id="productTabsContent">
+                        <!-- Descripción -->
+                        <div class="tab-pane fade show active" id="description" role="tabpanel">
+                            <div class="row">
+                                <div class="col-lg-8">
+                                    <h5 class="fw-bold mb-4">Descripción Detallada</h5>
+                                    {% if product.description %}
+                                    <div class="formatted-text">{{ product.description|linebreaks }}</div>
+                                    {% else %}
+                                    <p class="text-muted">{{ product.short_description|default:"Descripción no disponible." }}</p>
+                                    {% endif %}
+                                    
+                                    <h6 class="fw-bold mt-4 mb-3">Incluye en la caja:</h6>
+                                    <ul class="list-unstyled">
+                                        <li><i class="bi bi-check-circle text-success me-2"></i>{{ product.name }}</li>
+                                        <li><i class="bi bi-check-circle text-success me-2"></i>Cable de alimentación</li>
+                                        <li><i class="bi bi-check-circle text-success me-2"></i>Manual de usuario</li>
+                                        <li><i class="bi bi-check-circle text-success me-2"></i>Tarjeta de garantía</li>
+                                    </ul>
+                                </div>
+                                <div class="col-lg-4">
+                                    <div class="bg-light rounded-3 p-4">
+                                        <h6 class="fw-bold mb-3">Información Importante</h6>
+                                        <div class="small">
+                                            <div class="mb-2">
+                                                <i class="bi bi-shield-check text-success me-2"></i>
+                                                <strong>Garantía:</strong> 2 años
+                                            </div>
+                                            <div class="mb-2">
+                                                <i class="bi bi-truck text-primary me-2"></i>
+                                                <strong>Envío:</strong> 1-3 días hábiles
+                                            </div>
+                                            <div class="mb-2">
+                                                <i class="bi bi-arrow-clockwise text-info me-2"></i>
+                                                <strong>Devoluciones:</strong> 30 días
+                                            </div>
+                                            <div class="mb-2">
+                                                <i class="bi bi-headset text-warning me-2"></i>
+                                                <strong>Soporte:</strong> 24/7
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Especificaciones -->
+                        <div class="tab-pane fade" id="specifications" role="tabpanel">
+                            <h5 class="fw-bold mb-4">Especificaciones Técnicas</h5>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <table class="table table-borderless">
+                                        <tbody>
+                                            <tr>
+                                                <td class="fw-bold text-muted">SKU:</td>
+                                                <td>{{ product.sku|default:"N/A" }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="fw-bold text-muted">Marca:</td>
+                                                <td>{{ product.brand.name|default:"Tech Brand" }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="fw-bold text-muted">Categoría:</td>
+                                                <td>{{ product.category.name|default:"Tecnología" }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="fw-bold text-muted">Peso:</td>
+                                                <td>{{ product.weight|default:"2.5" }} kg</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="fw-bold text-muted">Dimensiones:</td>
+                                                <td>{{ product.dimensions|default:"30x20x5 cm" }}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="col-md-6">
+                                    <table class="table table-borderless">
+                                        <tbody>
+                                            <tr>
+                                                <td class="fw-bold text-muted">Color:</td>
+                                                <td>Negro/Plata</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="fw-bold text-muted">Material:</td>
+                                                <td>Aluminio Premium</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="fw-bold text-muted">Conectividad:</td>
+                                                <td>WiFi, Bluetooth 5.0</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="fw-bold text-muted">Energía:</td>
+                                                <td>110V - 240V</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="fw-bold text-muted">Certificaciones:</td>
+                                                <td>CE, FCC, RoHS</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Reseñas -->
+                        <div class="tab-pane fade" id="reviews" role="tabpanel">
+                            <div class="row">
+                                <div class="col-lg-4">
+                                    <div class="text-center p-4 bg-light rounded-3">
+                                        <div class="display-4 fw-bold text-warning">4.8</div>
+                                        <div class="text-warning mb-2">
+                                            <i class="bi bi-star-fill"></i>
+                                            <i class="bi bi-star-fill"></i>
+                                            <i class="bi bi-star-fill"></i>
+                                            <i class="bi bi-star-fill"></i>
+                                            <i class="bi bi-star-fill"></i>
+                                        </div>
+                                        <div class="text-muted">Basado en 127 reseñas</div>
+                                    </div>
+                                </div>
+                                
+                                <div class="col-lg-8">
+                                    <div class="d-flex justify-content-between align-items-center mb-4">
+                                        <h6 class="fw-bold">Reseñas de Clientes</h6>
+                                        <button class="btn btn-primary btn-sm">
+                                            <i class="bi bi-plus me-1"></i>Escribir Reseña
+                                        </button>
+                                    </div>
+                                    
+                                    <!-- Reseña individual -->
+                                    <div class="border-bottom pb-4 mb-4">
+                                        <div class="d-flex align-items-start">
+                                            <div class="bg-primary rounded-circle d-flex align-items-center justify-content-center me-3" 
+                                                 style="width: 40px; height: 40px;">
+                                                <i class="bi bi-person text-white"></i>
+                                            </div>
+                                            <div class="flex-grow-1">
+                                                <div class="d-flex justify-content-between align-items-start mb-2">
+                                                    <div>
+                                                        <h6 class="mb-0">María González</h6>
+                                                        <div class="text-warning small">
+                                                            <i class="bi bi-star-fill"></i>
+                                                            <i class="bi bi-star-fill"></i>
+                                                            <i class="bi bi-star-fill"></i>
+                                                            <i class="bi bi-star-fill"></i>
+                                                            <i class="bi bi-star-fill"></i>
+                                                        </div>
+                                                    </div>
+                                                    <small class="text-muted">Hace 2 días</small>
+                                                </div>
+                                                <p class="mb-2">Excelente producto, muy buena calidad y llegó rapidísimo. Lo recomiendo totalmente.</p>
+                                                <div class="small text-muted">
+                                                    <i class="bi bi-hand-thumbs-up me-1"></i>Útil (12)
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Envío -->
+                        <div class="tab-pane fade" id="shipping" role="tabpanel">
+                            <h5 class="fw-bold mb-4">Información de Envío</h5>
+                            <div class="row g-4">
+                                <div class="col-md-6">
+                                    <div class="p-4 bg-light rounded-3">
+                                        <h6 class="fw-bold text-success mb-3">
+                                            <i class="bi bi-truck me-2"></i>Envío Gratuito
+                                        </h6>
+                                        <ul class="list-unstyled mb-0">
+                                            <li class="mb-2">
+                                                <i class="bi bi-check-circle text-success me-2"></i>
+                                                Bogotá: 1-2 días hábiles
+                                            </li>
+                                            <li class="mb-2">
+                                                <i class="bi bi-check-circle text-success me-2"></i>
+                                                Ciudades principales: 2-3 días hábiles
+                                            </li>
+                                            <li class="mb-2">
+                                                <i class="bi bi-check-circle text-success me-2"></i>
+                                                Resto del país: 3-5 días hábiles
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                
+                                <div class="col-md-6">
+                                    <div class="p-4 bg-light rounded-3">
+                                        <h6 class="fw-bold text-info mb-3">
+                                            <i class="bi bi-arrow-clockwise me-2"></i>Devoluciones
+                                        </h6>
+                                        <ul class="list-unstyled mb-0">
+                                            <li class="mb-2">
+                                                <i class="bi bi-check-circle text-info me-2"></i>
+                                                30 días para devoluciones
+                                            </li>
+                                            <li class="mb-2">
+                                                <i class="bi bi-check-circle text-info me-2"></i>
+                                                Producto en perfecto estado
+                                            </li>
+                                            <li class="mb-2">
+                                                <i class="bi bi-check-circle text-info me-2"></i>
+                                                Reembolso completo
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Loading indicator -->
+<div id="loading-indicator" class="htmx-indicator position-fixed top-50 start-50 translate-middle">
+    <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Cargando...</span>
+    </div>
+</div>
+
+<!-- Messages for HTMX -->
+<div id="cart-messages" class="position-fixed top-0 start-50 translate-middle-x" 
+     style="z-index: 9999; margin-top: 100px;">
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Thumbnail image click handler
+    window.changeMainImage = function(src) {
+        const mainImage = document.getElementById('main-image');
+        if (mainImage) {
+            mainImage.src = src;
+        }
+        
+        // Update active thumbnail
+        document.querySelectorAll('.thumbnail-image').forEach(thumb => {
+            thumb.classList.remove('active');
+        });
+        event.target.classList.add('active');
+    };
+    
+    // Quantity controls
+    window.increaseQuantity = function() {
+        const input = document.getElementById('quantity');
+        const max = parseInt(input.getAttribute('max'));
+        const current = parseInt(input.value);
+        
+        if (current < max) {
+            input.value = current + 1;
+        }
+    };
+    
+    window.decreaseQuantity = function() {
+        const input = document.getElementById('quantity');
+        const min = parseInt(input.getAttribute('min')) || 1;
+        const current = parseInt(input.value);
+        
+        if (current > min) {
+            input.value = current - 1;
+        }
+    };
+    
+    // Add to cart success animation
+    document.addEventListener('htmx:afterRequest', function(event) {
+        if (event.detail.xhr.status === 200 && event.target.type === 'button') {
+            const button = event.target;
+            const originalText = button.innerHTML;
+            
+            // Success animation
+            button.innerHTML = '<i class="bi bi-check-circle me-2"></i>¡Agregado!';
+            button.classList.remove('btn-primary');
+            button.classList.add('btn-success');
+            
+            setTimeout(() => {
+                button.innerHTML = originalText;
+                button.classList.remove('btn-success');
+                button.classList.add('btn-primary');
+            }, 2000);
+            
+            // Auto-hide messages
+            setTimeout(() => {
+                const alerts = document.querySelectorAll('#cart-messages .alert');
+                alerts.forEach(alert => {
+                    alert.classList.add('fade');
+                    setTimeout(() => alert.remove(), 300);
+                });
+            }, 3000);
+        }
+    });
+    
+    // Image zoom on hover
+    const zoomImage = document.querySelector('.zoom-image');
+    if (zoomImage) {
+        zoomImage.addEventListener('mousemove', function(e) {
+            const rect = this.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            
+            const xPercent = (x / rect.width) * 100;
+            const yPercent = (y / rect.height) * 100;
+            
+            this.style.transformOrigin = `${xPercent}% ${yPercent}%`;
+        });
+        
+        zoomImage.addEventListener('mouseleave', function() {
+            this.style.transformOrigin = 'center center';
+        });
+    }
+    
+    // Smooth scroll to tabs
+    document.querySelectorAll('.nav-link[data-bs-toggle="tab"]').forEach(tab => {
+        tab.addEventListener('click', function() {
+            setTimeout(() => {
+                const target = document.querySelector(this.getAttribute('data-bs-target'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            }, 100);
+        });
+    });
+});
+</script>
+{% endblock %}

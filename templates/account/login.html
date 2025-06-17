@@ -1,0 +1,191 @@
+{% extends "account/base_auth.html" %}
+{% load i18n %}
+{% load account socialaccount %}
+
+{% block title %}Iniciar Sesión - Tech Ecommerce{% endblock %}
+
+{% block content %}
+<div class="text-center mb-4">
+    <h1 class="auth-title">¡Bienvenido de vuelta!</h1>
+    <p class="auth-subtitle">Inicia sesión en tu cuenta para continuar</p>
+</div>
+
+<!-- Mostrar errores si los hay -->
+{% if form.errors %}
+    <div class="alert alert-danger-modern alert-modern">
+        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+        <strong>¡Ups! Algo salió mal:</strong>
+        <ul class="mb-0 mt-2">
+            {% for field, errors in form.errors.items %}
+                {% for error in errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+            {% endfor %}
+        </ul>
+    </div>
+{% endif %}
+
+<!-- Mostrar mensajes -->
+{% if messages %}
+    {% for message in messages %}
+        <div class="alert alert-{{ message.tags }}-modern alert-modern">
+            <i class="bi bi-info-circle-fill me-2"></i>
+            {{ message }}
+        </div>
+    {% endfor %}
+{% endif %}
+
+<!-- Formulario de login -->
+<form method="post" action="{% url 'account_login' %}" class="needs-validation" novalidate>
+    {% csrf_token %}
+    
+    <!-- Campo de email/usuario -->
+    <div class="form-floating">
+        <input 
+            type="text" 
+            class="form-control" 
+            id="id_login" 
+            name="login" 
+            value="{{ form.login.value|default:'' }}"
+            placeholder="tu@email.com"
+            required
+            autocomplete="username"
+        >
+        <label for="id_login">
+            <i class="bi bi-person-fill me-2"></i>Email o Usuario
+        </label>
+        <div class="invalid-feedback">
+            Por favor ingresa tu email o usuario.
+        </div>
+    </div>
+    
+    <!-- Campo de contraseña -->
+    <div class="form-floating">
+        <input 
+            type="password" 
+            class="form-control" 
+            id="id_password" 
+            name="password"
+            placeholder="Contraseña"
+            required
+            autocomplete="current-password"
+        >
+        <label for="id_password">
+            <i class="bi bi-lock-fill me-2"></i>Contraseña
+        </label>
+        <div class="invalid-feedback">
+            Por favor ingresa tu contraseña.
+        </div>
+    </div>
+    
+    <!-- Recordarme y olvidé contraseña -->
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <div class="form-check">
+            <input 
+                class="form-check-input" 
+                type="checkbox" 
+                id="id_remember" 
+                name="remember"
+                {% if form.remember.value %}checked{% endif %}
+            >
+            <label class="form-check-label" for="id_remember">
+                Recordarme
+            </label>
+        </div>
+        <a href="{% url 'account_reset_password' %}" class="auth-link">
+            ¿Olvidaste tu contraseña?
+        </a>
+    </div>
+    
+    <!-- Botón de login -->
+    <button type="submit" class="btn btn-auth-primary mb-3">
+        <i class="bi bi-box-arrow-in-right me-2"></i>
+        Iniciar Sesión
+    </button>
+</form>
+
+<!-- Divider -->
+<div class="auth-divider">
+    <span>o continúa con</span>
+</div>
+
+<!-- Botones sociales (si están configurados) -->
+{% get_providers as socialaccount_providers %}
+{% if socialaccount_providers %}
+    <div class="social-login mb-3">
+        {% include "socialaccount/snippets/provider_list.html" with process="login" %}
+    </div>
+{% else %}
+    <!-- Botones sociales estáticos para demostración -->
+    <div class="social-login mb-3">
+        <button type="button" class="btn btn-social">
+            <i class="bi bi-google me-2"></i>
+            Continuar con Google
+        </button>
+        <button type="button" class="btn btn-social">
+            <i class="bi bi-facebook me-2"></i>
+            Continuar con Facebook
+        </button>
+    </div>
+{% endif %}
+
+<!-- Divider -->
+<div class="auth-divider">
+    <span>¿Nuevo en Tech Ecommerce?</span>
+</div>
+
+<!-- Enlace a registro -->
+<div class="text-center">
+    <p class="mb-0">
+        ¿No tienes una cuenta? 
+        <a href="{% url 'account_signup' %}" class="auth-link">
+            <strong>Crear cuenta gratis</strong>
+        </a>
+    </p>
+</div>
+
+<!-- Información adicional -->
+<div class="mt-4 pt-3 border-top text-center">
+    <small class="text-muted">
+        <i class="bi bi-shield-check me-1"></i>
+        Tus datos están protegidos con encriptación SSL
+    </small>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Validación del formulario
+    const forms = document.querySelectorAll('.needs-validation');
+    
+    Array.prototype.slice.call(forms).forEach(function(form) {
+        form.addEventListener('submit', function(event) {
+            if (!form.checkValidity()) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
+            form.classList.add('was-validated');
+        }, false);
+    });
+    
+    // Efecto de escritura en el título
+    const title = document.querySelector('.auth-title');
+    if (title) {
+        const text = title.textContent;
+        title.textContent = '';
+        let i = 0;
+        
+        function typeWriter() {
+            if (i < text.length) {
+                title.textContent += text.charAt(i);
+                i++;
+                setTimeout(typeWriter, 50);
+            }
+        }
+        
+        setTimeout(typeWriter, 300);
+    }
+});
+</script>
+{% endblock %}

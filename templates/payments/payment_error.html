@@ -1,0 +1,278 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Error en el Pago - Tech Ecommerce{% endblock %}
+
+{% block extra_css %}
+<style>
+    .error-container {
+        background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%);
+        min-height: 60vh;
+        display: flex;
+        align-items: center;
+    }
+    .error-card {
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        overflow: hidden;
+    }
+    .error-icon {
+        background: linear-gradient(135deg, #dc3545, #c82333);
+        color: white;
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1rem;
+        animation: shake 0.5s ease-in-out;
+    }
+    @keyframes shake {
+        10%, 90% { transform: translate3d(-1px, 0, 0); }
+        20%, 80% { transform: translate3d(2px, 0, 0); }
+        30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
+        40%, 60% { transform: translate3d(4px, 0, 0); }
+    }
+    .troubleshooting {
+        background: #f8f9fa;
+        border-radius: 15px;
+        padding: 1.5rem;
+        margin: 1rem 0;
+    }
+    .support-info {
+        background: linear-gradient(135deg, #17a2b8, #138496);
+        color: white;
+        border-radius: 15px;
+        padding: 1.5rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="error-container">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="error-card">
+                    <div class="card-body text-center p-5">
+                        <!-- Error Icon -->
+                        <div class="error-icon">
+                            <i class="bi bi-x-lg fs-1"></i>
+                        </div>
+                        
+                        <!-- Error Message -->
+                        <h1 class="text-danger mb-3">Error en el Pago</h1>
+                        <p class="lead text-muted mb-4">
+                            Lo sentimos, no pudimos procesar tu pago. 
+                            {% if error_message %}
+                                <br><strong>Razón:</strong> {{ error_message }}
+                            {% endif %}
+                        </p>
+                        
+                        <!-- Order Info (if available) -->
+                        {% if order %}
+                        <div class="troubleshooting">
+                            <h5 class="text-primary mb-3">
+                                <i class="bi bi-receipt"></i>
+                                Información del Pedido
+                            </h5>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h6 class="text-muted">Número de Orden:</h6>
+                                    <p class="fw-bold">{{ order.order_number }}</p>
+                                </div>
+                                <div class="col-md-6">
+                                    <h6 class="text-muted">Total:</h6>
+                                    <p class="fw-bold text-primary">${{ order.total_amount|floatformat:0 }}</p>
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
+                        
+                        <!-- Troubleshooting -->
+                        <div class="troubleshooting">
+                            <h5 class="text-primary mb-3">
+                                <i class="bi bi-tools"></i>
+                                Posibles Soluciones
+                            </h5>
+                            <ul class="list-unstyled text-start">
+                                <li class="mb-3">
+                                    <i class="bi bi-credit-card text-warning me-2"></i>
+                                    <strong>Verifica tu información de pago:</strong>
+                                    <br>
+                                    <small class="text-muted">
+                                        Asegúrate de que los datos de tu tarjeta sean correctos (número, fecha de vencimiento, CVC)
+                                    </small>
+                                </li>
+                                <li class="mb-3">
+                                    <i class="bi bi-bank text-warning me-2"></i>
+                                    <strong>Fondos insuficientes:</strong>
+                                    <br>
+                                    <small class="text-muted">
+                                        Verifica que tu tarjeta tenga fondos suficientes o límite de crédito disponible
+                                    </small>
+                                </li>
+                                <li class="mb-3">
+                                    <i class="bi bi-shield-check text-warning me-2"></i>
+                                    <strong>Restricciones bancarias:</strong>
+                                    <br>
+                                    <small class="text-muted">
+                                        Tu banco podría haber bloqueado la transacción por seguridad
+                                    </small>
+                                </li>
+                                <li class="mb-3">
+                                    <i class="bi bi-wifi text-warning me-2"></i>
+                                    <strong>Conexión a internet:</strong>
+                                    <br>
+                                    <small class="text-muted">
+                                        Verifica tu conexión a internet e intenta nuevamente
+                                    </small>
+                                </li>
+                            </ul>
+                        </div>
+                        
+                        <!-- Support Info -->
+                        <div class="support-info">
+                            <h5 class="mb-3">
+                                <i class="bi bi-headset"></i>
+                                ¿Necesitas Ayuda?
+                            </h5>
+                            <div class="row text-start">
+                                <div class="col-md-6">
+                                    <h6 class="text-white-50">Contacto Directo:</h6>
+                                    <p class="text-white mb-2">
+                                        <i class="bi bi-envelope me-2"></i>
+                                        soporte@techecommerce.com
+                                    </p>
+                                    <p class="text-white mb-2">
+                                        <i class="bi bi-telephone me-2"></i>
+                                        +57 (1) 234-5678
+                                    </p>
+                                    <p class="text-white">
+                                        <i class="bi bi-whatsapp me-2"></i>
+                                        +57 300 123 4567
+                                    </p>
+                                </div>
+                                <div class="col-md-6">
+                                    <h6 class="text-white-50">Horarios de Atención:</h6>
+                                    <p class="text-white mb-1">
+                                        <strong>Lunes a Viernes:</strong> 8:00 AM - 6:00 PM
+                                    </p>
+                                    <p class="text-white mb-1">
+                                        <strong>Sábados:</strong> 9:00 AM - 2:00 PM
+                                    </p>
+                                    <p class="text-white">
+                                        <strong>Domingos:</strong> Chat en línea 24/7
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Action Buttons -->
+                        <div class="mt-5">
+                            <div class="row g-3">
+                                <div class="col-md-4">
+                                    <a href="{% url 'payments:process' %}" 
+                                       class="btn btn-danger btn-lg w-100">
+                                        <i class="bi bi-arrow-repeat"></i>
+                                        Intentar Nuevamente
+                                    </a>
+                                </div>
+                                <div class="col-md-4">
+                                    <a href="{% url 'cart:detail' %}" 
+                                       class="btn btn-outline-primary btn-lg w-100">
+                                        <i class="bi bi-cart"></i>
+                                        Volver al Carrito
+                                    </a>
+                                </div>
+                                <div class="col-md-4">
+                                    <a href="{% url 'products:list' %}" 
+                                       class="btn btn-outline-secondary btn-lg w-100">
+                                        <i class="bi bi-house"></i>
+                                        Ir al Inicio
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Security Notice -->
+                        <div class="alert alert-warning mt-4">
+                            <h6 class="alert-heading">
+                                <i class="bi bi-shield-exclamation"></i>
+                                Información de Seguridad
+                            </h6>
+                            <p class="mb-0">
+                                Tu información de pago está completamente segura. No almacenamos datos de tarjetas de crédito
+                                en nuestros servidores. Todas las transacciones son procesadas a través de proveedores
+                                certificados PCI DSS.
+                            </p>
+                        </div>
+                        
+                        <!-- Alternative Payment Methods -->
+                        <div class="mt-4">
+                            <h6 class="text-muted">
+                                <i class="bi bi-credit-card-2-front"></i>
+                                Métodos de Pago Alternativos
+                            </h6>
+                            <div class="row mt-3">
+                                <div class="col-6 col-md-3 mb-2">
+                                    <div class="text-center p-2 border rounded">
+                                        <i class="bi bi-credit-card fs-4 text-primary"></i>
+                                        <br>
+                                        <small>Tarjeta de Crédito</small>
+                                    </div>
+                                </div>
+                                <div class="col-6 col-md-3 mb-2">
+                                    <div class="text-center p-2 border rounded">
+                                        <i class="bi bi-paypal fs-4 text-warning"></i>
+                                        <br>
+                                        <small>PayPal</small>
+                                    </div>
+                                </div>
+                                <div class="col-6 col-md-3 mb-2">
+                                    <div class="text-center p-2 border rounded">
+                                        <i class="bi bi-bank fs-4 text-info"></i>
+                                        <br>
+                                        <small>Transferencia</small>
+                                    </div>
+                                </div>
+                                <div class="col-6 col-md-3 mb-2">
+                                    <div class="text-center p-2 border rounded">
+                                        <i class="bi bi-cash fs-4 text-success"></i>
+                                        <br>
+                                        <small>Contra Entrega</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Auto-scroll to error message
+    setTimeout(() => {
+        document.querySelector('.error-icon').scrollIntoView({
+            behavior: 'smooth',
+            block: 'center'
+        });
+    }, 100);
+    
+    // Optional: Send error analytics
+    if (typeof gtag !== 'undefined') {
+        gtag('event', 'payment_error', {
+            'event_category': 'ecommerce',
+            'event_label': '{{ error_message|default:"unknown_error" }}'
+        });
+    }
+});
+</script>
+{% endblock %}

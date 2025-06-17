@@ -1,0 +1,251 @@
+{% extends 'base_modern.html' %}
+{% load static %}
+{% load custom_filters %}
+
+{% block title %}{{ product.name }} - Tech Ecommerce{% endblock %}
+
+{% block meta_description %}{{ product.description|truncatechars:160 }}{% endblock %}
+
+{% block extra_css %}
+<style>
+    .product-hero {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 2rem 0;
+        margin-top: -80px;
+        padding-top: 100px;
+    }
+    
+    .product-image-container {
+        position: relative;
+        overflow: hidden;
+        border-radius: 20px;
+        box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+    }
+    
+    .product-image {
+        width: 100%;
+        height: 500px;
+        object-fit: cover;
+        transition: transform 0.3s ease;
+    }
+    
+    .product-image:hover {
+        transform: scale(1.05);
+    }
+    
+    .price-container {
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        color: white;
+        padding: 1.5rem;
+        border-radius: 15px;
+        margin-bottom: 2rem;
+    }
+    
+    .btn-add-cart {
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        border: none;
+        color: white;
+        padding: 15px 30px;
+        border-radius: 50px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-add-cart:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        color: white;
+    }
+    
+    .product-info-card {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 20px;
+        padding: 2rem;
+        box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="product-hero">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-12">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb text-white-50">
+                        <li class="breadcrumb-item">
+                            <a href="{% url 'core:home' %}" class="text-white-50">Inicio</a>
+                        </li>
+                        <li class="breadcrumb-item">
+                            <a href="{% url 'products:list' %}" class="text-white-50">Productos</a>
+                        </li>
+                        <li class="breadcrumb-item active text-white">{{ product.name }}</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container my-5">
+    <div class="row">
+        <!-- Imagen del producto -->
+        <div class="col-lg-6 mb-4">
+            <div class="product-image-container">
+                {% if product.featured_image %}
+                <img src="{{ product.featured_image.url }}" 
+                     alt="{{ product.name }}" 
+                     class="product-image">
+                {% else %}
+                <div class="d-flex align-items-center justify-content-center bg-light product-image">
+                    <i class="bi bi-image display-1 text-muted"></i>
+                </div>
+                {% endif %}
+                
+                <!-- Badges -->
+                {% if product.is_featured %}
+                <div class="position-absolute top-0 start-0 p-3">
+                    <span class="badge bg-warning">
+                        <i class="bi bi-star-fill me-1"></i>Destacado
+                    </span>
+                </div>
+                {% endif %}
+                
+                {% if product.is_on_sale %}
+                <div class="position-absolute top-0 end-0 p-3">
+                    <span class="badge bg-danger">
+                        -{{ product.discount_percentage|floatformat:0 }}%
+                    </span>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        
+        <!-- Información del producto -->
+        <div class="col-lg-6">
+            <div class="product-info-card">
+                <h1 class="h2 fw-bold mb-3">{{ product.name }}</h1>
+                
+                <!-- Rating -->
+                <div class="mb-3">
+                    <div class="text-warning">
+                        {% for i in "12345" %}
+                        <i class="bi bi-star-fill"></i>
+                        {% endfor %}
+                    </div>
+                    <small class="text-muted">(4.8) • 127 reseñas</small>
+                </div>
+                
+                <!-- Price -->
+                <div class="price-container">
+                    {% if product.is_on_sale %}
+                    <div class="d-flex align-items-center">
+                        <span class="h3 fw-bold me-3 mb-0">
+                            ${{ product.price|floatformat:0 }}
+                        </span>
+                        <small class="text-white-50 text-decoration-line-through">
+                            ${{ product.compare_price|floatformat:0 }}
+                        </small>
+                    </div>
+                    <small class="text-white-50">
+                        Ahorras ${{ product.savings|floatformat:0 }}
+                    </small>
+                    {% else %}
+                    <span class="h3 fw-bold mb-0">
+                        ${{ product.price|floatformat:0 }}
+                    </span>
+                    {% endif %}
+                </div>
+                
+                <!-- Description -->
+                {% if product.description %}
+                <div class="mb-4">
+                    <h5 class="fw-bold mb-2">Descripción</h5>
+                    <p class="text-muted">{{ product.description|linebreaks }}</p>
+                </div>
+                {% endif %}
+                
+                <!-- Stock -->
+                <div class="mb-4">
+                    {% if product.is_in_stock %}
+                    <div class="alert alert-success d-flex align-items-center">
+                        <i class="bi bi-check-circle me-2"></i>
+                        <strong>En stock</strong> - Disponible para envío inmediato
+                    </div>
+                    {% else %}
+                    <div class="alert alert-danger d-flex align-items-center">
+                        <i class="bi bi-x-circle me-2"></i>
+                        <strong>Sin stock</strong> - Notificaremos cuando esté disponible
+                    </div>
+                    {% endif %}
+                </div>
+                
+                <!-- Actions -->
+                <div class="d-grid gap-2">
+                    {% if product.is_in_stock %}
+                    <button class="btn btn-add-cart btn-lg"
+                            hx-post="{% url 'cart:add' %}"
+                            hx-vals='{"product_id": "{{ product.id }}", "quantity": 1}'
+                            hx-target="#cart-messages"
+                            hx-swap="beforeend">
+                        <i class="bi bi-cart-plus me-2"></i>
+                        Agregar al Carrito
+                    </button>
+                    <a href="{% url 'orders:checkout' %}" 
+                       class="btn btn-success btn-lg">
+                        <i class="bi bi-lightning-fill me-2"></i>
+                        Comprar Ahora
+                    </a>
+                    {% else %}
+                    <button disabled class="btn btn-secondary btn-lg">
+                        <i class="bi bi-x-circle me-2"></i>
+                        Sin Stock
+                    </button>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Descripción detallada -->
+    {% if product.description %}
+    <div class="row mt-5">
+        <div class="col-12">
+            <div class="product-info-card">
+                <h3 class="fw-bold mb-4">Descripción Detallada</h3>
+                <div class="text-muted">
+                    {{ product.description|linebreaks }}
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<!-- Cart messages container -->
+<div id="cart-messages"></div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // HTMX events para carrito
+    document.addEventListener('htmx:afterRequest', function(evt) {
+        if (evt.detail.successful) {
+            showToast('¡Producto agregado al carrito!', 'success');
+            // Actualizar contador del carrito si existe
+            const cartCount = document.getElementById('cart-count');
+            if (cartCount) {
+                const current = parseInt(cartCount.textContent) || 0;
+                cartCount.textContent = current + 1;
+            }
+        } else {
+            showToast('Error al agregar el producto. Intenta nuevamente.', 'error');
+        }
+    });
+});
+</script>
+{% endblock %}

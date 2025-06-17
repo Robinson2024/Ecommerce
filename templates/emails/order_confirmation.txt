@@ -1,0 +1,63 @@
+¡PEDIDO CONFIRMADO!
+==================
+
+Hola {% if order.user %}{{ order.user.first_name }}{% else %}{{ order.get_full_name }}{% endif %},
+
+¡Excelente noticia! Hemos recibido tu pedido y ya estamos trabajando para prepararlo.
+
+INFORMACIÓN DEL PEDIDO
+=====================
+Número de Pedido: #{{ order.order_number }}
+Fecha: {{ order.created_at|date:"d/m/Y H:i" }}
+Estado: {{ order.get_status_display }}
+Total: ${{ order.total_amount|floatformat:0 }} {{ order.currency }}
+
+PRODUCTOS ORDENADOS
+==================
+{% for item in order.items.all %}
+• {{ item.product_name }}
+  {% if item.variant_info %}({{ item.variant_info }}){% endif %}
+  Cantidad: {{ item.quantity }} x ${{ item.unit_price|floatformat:0 }} = ${{ item.total_price|floatformat:0 }}
+
+{% endfor %}
+
+RESUMEN DE COSTOS
+================
+Subtotal: ${{ order.subtotal|floatformat:0 }}
+Envío: {% if order.shipping_cost > 0 %}${{ order.shipping_cost|floatformat:0 }}{% else %}¡Gratis!{% endif %}
+IVA (19%): ${{ order.tax_amount|floatformat:0 }}
+----------------------------------------
+TOTAL: ${{ order.total_amount|floatformat:0 }} {{ order.currency }}
+
+INFORMACIÓN DE ENVÍO
+===================
+{{ order.get_shipping_address_display }}
+{% if order.phone %}Teléfono: {{ order.phone }}{% endif %}
+
+¿QUÉ SIGUE?
+===========
+• Procesamiento: Prepararemos tu pedido en las próximas 24 horas
+• Envío: Te notificaremos cuando tu pedido sea enviado
+• Seguimiento: Podrás rastrear tu pedido en todo momento
+• Entrega: Tiempo estimado: 3-5 días hábiles
+
+ENLACES ÚTILES
+==============
+Ver Pedido Completo: {{ site_url }}/orders/{{ order.order_number }}/
+Rastrear Pedido: {{ site_url }}/orders/{{ order.order_number }}/track/
+
+¿NECESITAS AYUDA?
+================
+Si tienes alguna pregunta sobre tu pedido, contáctanos:
+
+Email: {{ support_email }}
+Teléfono: +57 (1) 234-5678
+WhatsApp: +57 300 123 4567
+Horarios: Lunes a Viernes 8:00 AM - 6:00 PM
+
+---
+{{ company_name }}
+Tu tienda de tecnología de confianza
+
+Este es un email automático, por favor no responder directamente.
+© 2025 {{ company_name }}. Todos los derechos reservados.

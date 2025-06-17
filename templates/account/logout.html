@@ -1,0 +1,348 @@
+{% extends "account/base_auth.html" %}
+{% load i18n %}
+
+{% block title %}Redirigiendo... - Tech Ecommerce{% endblock %}
+
+{% block extra_head %}
+<style>
+    .redirect-container {
+        text-align: center;
+        padding: 3rem 0;
+    }
+    
+    .spinner {
+        width: 60px;
+        height: 60px;
+        border: 4px solid #f3f3f3;
+        border-top: 4px solid var(--auth-primary);
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        margin: 0 auto 2rem;
+    }
+    
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+    
+    .redirect-text {
+        color: #6c757d;
+        font-size: 1.1rem;
+        margin-bottom: 1rem;
+    }
+</style>
+<script>
+// Redirección automática inmediata
+window.location.href = '/accounts/logout-success/';
+</script>
+{% endblock %}
+
+{% block content %}
+<div class="redirect-container">
+    <div class="spinner"></div>
+    <h3 class="text-center mb-3">Cerrando sesión...</h3>
+    <p class="redirect-text">
+        Serás redirigido automáticamente en un momento.
+    </p>
+    <div class="mt-3">
+        <a href="/accounts/logout-success/" class="btn btn-modern">
+            <i class="bi bi-arrow-right me-2"></i>
+            Continuar
+        </a>
+    </div>
+</div>
+{% endblock %}
+<div class="alert" style="background: linear-gradient(135deg, #e3f2fd, #bbdefb); border: none; border-radius: 16px; border-left: 4px solid var(--auth-primary);">
+    <div class="d-flex align-items-center">
+        <div class="me-3">
+            <div class="rounded-circle d-inline-flex align-items-center justify-content-center" 
+                 style="width: 50px; height: 50px; background: var(--auth-primary); color: white;">
+                <i class="bi bi-person-fill" style="font-size: 1.5rem;"></i>
+            </div>
+        </div>
+        <div>
+            <h6 class="mb-1">Sesión Activa</h6>
+            <p class="mb-0">
+                <strong>{{ user.email|default:user.username }}</strong>
+                {% if user.first_name %}- {{ user.first_name }}{% endif %}
+            </p>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<!-- Información sobre cerrar sesión -->
+<div class="row mb-4">
+    <div class="col-md-6 mb-3">
+        <div class="card border-0 h-100" style="background: #f8f9fa; border-radius: 16px;">
+            <div class="card-body text-center p-4">
+                <i class="bi bi-shield-check text-success mb-3" style="font-size: 2.5rem;"></i>
+                <h6 class="card-title">Sesión Segura</h6>
+                <p class="card-text small text-muted mb-0">
+                    Tu información estará protegida y tu carrito se guardará automáticamente.
+                </p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 mb-3">
+        <div class="card border-0 h-100" style="background: #f8f9fa; border-radius: 16px;">
+            <div class="card-body text-center p-4">
+                <i class="bi bi-arrow-clockwise text-info mb-3" style="font-size: 2.5rem;"></i>
+                <h6 class="card-title">Fácil Retorno</h6>
+                <p class="card-text small text-muted mb-0">
+                    Podrás volver a iniciar sesión cuando quieras con tus mismas credenciales.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Formulario de logout -->
+<form method="post" action="{% url 'account_logout' %}" class="mb-4">
+    {% csrf_token %}
+    
+    <!-- Mensaje de confirmación -->
+    <div class="alert alert-warning" style="background: linear-gradient(135deg, #fff8e1, #ffecb3); border: none; border-radius: 16px; border-left: 4px solid var(--auth-warning);">
+        <div class="d-flex align-items-center">
+            <i class="bi bi-exclamation-triangle-fill text-warning me-3" style="font-size: 1.5rem;"></i>
+            <div>
+                <strong>¡Importante!</strong>
+                <p class="mb-0 small">Al cerrar sesión, serás redirigido a la página principal. Tu carrito se guardará para tu próxima visita.</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Botones de acción -->
+    <div class="row g-3">
+        <div class="col-md-6">
+            <button type="submit" class="btn btn-outline-danger w-100" style="border-radius: 16px; padding: 1rem;">
+                <i class="bi bi-box-arrow-right me-2"></i>
+                Sí, Cerrar Sesión
+            </button>
+        </div>
+        <div class="col-md-6">
+            <a href="/" class="btn btn-auth-primary w-100" style="border-radius: 16px; padding: 1rem;">
+                <i class="bi bi-house-fill me-2"></i>
+                No, Volver al Inicio
+            </a>
+        </div>
+    </div>
+</form>
+
+<!-- Opciones rápidas -->
+<div class="border-top pt-4">
+    <h6 class="text-center mb-3 text-muted">¿Qué quieres hacer antes de irte?</h6>
+    <div class="row g-2">
+        <div class="col-6 col-md-3">
+            <a href="/products/" class="btn btn-outline-primary btn-sm w-100" style="border-radius: 12px;">
+                <i class="bi bi-bag d-block mb-1"></i>
+                <small>Ver Productos</small>
+            </a>
+        </div>
+        <div class="col-6 col-md-3">
+            <a href="/cart/" class="btn btn-outline-primary btn-sm w-100" style="border-radius: 12px;">
+                <i class="bi bi-cart d-block mb-1"></i>
+                <small>Mi Carrito</small>
+            </a>
+        </div>
+        <div class="col-6 col-md-3">
+            <a href="/orders/" class="btn btn-outline-primary btn-sm w-100" style="border-radius: 12px;">
+                <i class="bi bi-list-check d-block mb-1"></i>
+                <small>Mis Pedidos</small>
+            </a>
+        </div>
+        <div class="col-6 col-md-3">
+            <a href="/wishlist/" class="btn btn-outline-primary btn-sm w-100" style="border-radius: 12px;">
+                <i class="bi bi-heart d-block mb-1"></i>
+                <small>Favoritos</small>
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Estadísticas de sesión (si están disponibles) -->
+<div class="mt-4 p-4 border rounded-3" style="background: linear-gradient(135deg, #f0f4ff, #e8f2ff); border-radius: 16px !important;">
+    <h6 class="text-center mb-3">
+        <i class="bi bi-graph-up me-2"></i>
+        Tu Actividad en Tech Ecommerce
+    </h6>
+    <div class="row text-center">
+        <div class="col-4">
+            <div class="fw-bold text-primary" style="font-size: 1.5rem;">
+                {% if user.orders %}{{ user.orders.count }}{% else %}0{% endif %}
+            </div>
+            <small class="text-muted">Pedidos</small>
+        </div>
+        <div class="col-4">
+            <div class="fw-bold text-success" style="font-size: 1.5rem;">
+                {% if user.cart_items %}{{ user.cart_items.count }}{% else %}0{% endif %}
+            </div>
+            <small class="text-muted">En Carrito</small>
+        </div>
+        <div class="col-4">
+            <div class="fw-bold text-warning" style="font-size: 1.5rem;">
+                {% if user.wishlist_items %}{{ user.wishlist_items.count }}{% else %}0{% endif %}
+            </div>
+            <small class="text-muted">Favoritos</small>
+        </div>
+    </div>
+</div>
+
+<!-- Información de contacto -->
+<div class="mt-4 text-center">
+    <small class="text-muted">
+        <i class="bi bi-headset me-1"></i>
+        ¿Necesitas ayuda? 
+        <a href="mailto:soporte@techecommerce.com" class="auth-link">Contáctanos</a>
+    </small>
+</div>
+
+<!-- Logout alternativo para usuarios no autenticados -->
+{% if not user.is_authenticated %}
+<div class="alert alert-info" style="background: linear-gradient(135deg, #e1f5fe, #b3e5fc); border: none; border-radius: 16px;">
+    <div class="text-center">
+        <i class="bi bi-info-circle-fill mb-2" style="font-size: 2rem;"></i>
+        <h5>Ya cerraste sesión</h5>
+        <p class="mb-3">No hay ninguna sesión activa en este momento.</p>
+        <a href="{% url 'account_login' %}" class="btn btn-auth-primary">
+            <i class="bi bi-box-arrow-in-right me-2"></i>
+            Iniciar Sesión
+        </a>
+    </div>
+</div>
+{% endif %}
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Estilos específicos para logout */
+    .btn-outline-danger {
+        border: 2px solid #dc3545;
+        color: #dc3545;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-outline-danger:hover {
+        background: linear-gradient(135deg, #dc3545, #c82333);
+        border-color: #c82333;
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(220, 53, 69, 0.3);
+    }
+    
+    .card {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    }
+    
+    .btn-outline-primary.btn-sm {
+        transition: all 0.3s ease;
+        border-radius: 12px;
+        padding: 0.75rem 0.5rem;
+    }
+    
+    .btn-outline-primary.btn-sm:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(102, 126, 234, 0.2);
+    }
+    
+    /* Animación de entrada */
+    .alert, .card, .btn {
+        animation: fadeInUp 0.6s ease-out;
+    }
+    
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    /* Efecto hover en estadísticas */
+    .row.text-center .col-4:hover {
+        transform: scale(1.05);
+        transition: transform 0.2s ease;
+    }
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Efecto de confirmación en el botón de logout
+    const logoutBtn = document.querySelector('button[type="submit"]');
+    if (logoutBtn) {
+        logoutBtn.addEventListener('click', function(e) {
+            // Agregar una pequeña pausa para efecto visual
+            this.innerHTML = '<i class="bi bi-hourglass-split me-2"></i>Cerrando sesión...';
+            this.disabled = true;
+            
+            setTimeout(() => {
+                // El formulario se enviará automáticamente
+            }, 500);
+        });
+    }
+    
+    // Efecto de escritura en el título
+    const title = document.querySelector('.auth-title');
+    if (title) {
+        const text = title.textContent;
+        title.textContent = '';
+        let i = 0;
+        
+        function typeWriter() {
+            if (i < text.length) {
+                title.textContent += text.charAt(i);
+                i++;
+                setTimeout(typeWriter, 50);
+            }
+        }
+        
+        setTimeout(typeWriter, 300);
+    }
+    
+    // Animación staggered para las tarjetas
+    const cards = document.querySelectorAll('.card, .alert');
+    cards.forEach((card, index) => {
+        card.style.animationDelay = (index * 0.1) + 's';
+    });
+    
+    // Contador regresivo opcional (comentado por defecto)
+    /*
+    let countdown = 30; // 30 segundos
+    const countdownElement = document.createElement('div');
+    countdownElement.className = 'text-center mt-3';
+    countdownElement.innerHTML = `
+        <small class="text-muted">
+            <i class="bi bi-clock me-1"></i>
+            Cierre automático en: <span id="countdown">${countdown}</span> segundos
+        </small>
+    `;
+    
+    // Opcional: agregar countdown automático
+    // document.querySelector('.container').appendChild(countdownElement);
+    */
+});
+
+// Función para manejar navegación rápida
+function quickNav(url, action) {
+    // Mostrar loading state
+    const btn = event.target.closest('a');
+    const originalText = btn.innerHTML;
+    btn.innerHTML = '<i class="bi bi-hourglass-split"></i>';
+    
+    setTimeout(() => {
+        window.location.href = url;
+    }, 300);
+}
+</script>
+{% endblock %}

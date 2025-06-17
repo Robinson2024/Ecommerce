@@ -1,0 +1,86 @@
+<!-- empty_cart.html - Carrito vacío -->
+<div class="row justify-content-center">
+    <div class="col-md-6 text-center py-5">
+        <div class="mb-4">
+            <i class="bi bi-cart-x display-1 text-muted" style="font-size: 8rem;"></i>
+        </div>
+        
+        <h2 class="h3 mb-3">Tu carrito está vacío</h2>
+        <p class="text-muted mb-4">
+            Parece que aún no has agregado ningún producto a tu carrito. 
+            ¡Explora nuestra tienda y encuentra productos increíbles!
+        </p>
+        
+        <div class="d-grid gap-2 d-md-block">
+            <a href="{% url 'products:list' %}" class="btn btn-primary btn-lg">
+                <i class="bi bi-shop"></i>
+                Explorar Productos
+            </a>
+            <a href="{% url 'core:home' %}" class="btn btn-outline-secondary btn-lg">
+                <i class="bi bi-house"></i>
+                Ir al Inicio
+            </a>
+        </div>
+        
+        <!-- Productos destacados o sugerencias -->
+        <div class="mt-5">
+            <h5 class="mb-3">¿No sabes qué comprar?</h5>
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <div class="card border-0">
+                        <div class="card-body text-center">
+                            <i class="bi bi-laptop display-6 text-primary"></i>
+                            <h6 class="mt-2">Laptops</h6>
+                            <p class="small text-muted">Equipos de última generación</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <div class="card border-0">
+                        <div class="card-body text-center">
+                            <i class="bi bi-phone display-6 text-success"></i>
+                            <h6 class="mt-2">Smartphones</h6>
+                            <p class="small text-muted">Los mejores dispositivos móviles</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <div class="card border-0">
+                        <div class="card-body text-center">
+                            <i class="bi bi-headphones display-6 text-warning"></i>
+                            <h6 class="mt-2">Audio</h6>
+                            <p class="small text-muted">Sonido de calidad profesional</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Beneficios de comprar -->
+        <div class="mt-5">
+            <h5 class="mb-3">¿Por qué elegir Tech Ecommerce?</h5>
+            <div class="row">
+                <div class="col-md-3 mb-3">
+                    <i class="bi bi-truck text-primary fs-1"></i>
+                    <p class="mt-2 mb-0"><strong>Envío Gratis</strong></p>
+                    <small class="text-muted">En compras superiores a $100,000</small>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <i class="bi bi-shield-check text-success fs-1"></i>
+                    <p class="mt-2 mb-0"><strong>Garantía</strong></p>
+                    <small class="text-muted">Productos con garantía oficial</small>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <i class="bi bi-arrow-return-left text-warning fs-1"></i>
+                    <p class="mt-2 mb-0"><strong>Devoluciones</strong></p>
+                    <small class="text-muted">30 días para cambios</small>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <i class="bi bi-headset text-info fs-1"></i>
+                    <p class="mt-2 mb-0"><strong>Soporte</strong></p>
+                    <small class="text-muted">Atención al cliente 24/7</small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

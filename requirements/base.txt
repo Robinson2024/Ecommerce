@@ -1,0 +1,61 @@
+# ========================================
+# DEPENDENCIAS BÁSICAS DEL PROYECTO
+# ========================================
+# Estas son las dependencias mínimas que se necesitan en TODOS los entornos
+
+# Core Django packages - Framework principal
+Django==5.1.4                              # Framework web principal de Python
+djangorestframework==3.15.2                # Framework para crear APIs REST
+django-environ==0.11.2                     # Manejo seguro de variables de entorno
+django-cors-headers==4.5.0                 # Manejo de CORS para APIs frontend
+django-extensions==3.2.3                   # Comandos útiles adicionales para Django
+
+# Database - Base de datos y cache
+psycopg2-binary==2.9.10                    # Conector para base de datos PostgreSQL
+redis==6.2.0                               # Base de datos en memoria para cache
+django-redis==5.4.0                        # Integración Redis con Django cache
+
+# Authentication & Authorization - Autenticación y autorización
+django-allauth==0.63.6                     # Sistema completo de autenticación (login/registro/social)
+djangorestframework-simplejwt==5.3.0       # Tokens JWT para autenticación en APIs
+setuptools>=81.0.0                         # Fix para eliminar warnings de compatibilidad
+
+# Forms & Templates - Formularios y plantillas
+django-crispy-forms==2.3                   # Formularios elegantes y responsivos
+crispy-tailwind==0.5.0                     # Integración con framework CSS TailwindCSS
+django-htmx==1.17.3                        # Interactividad AJAX sin JavaScript
+
+# File handling & Storage - Manejo de archivos e imágenes
+Pillow==11.2.1                             # Procesamiento y manipulación de imágenes
+django-storages==1.14.4                    # Almacenamiento en servicios de nube (AWS S3)
+boto3==1.35.35                             # SDK oficial de Amazon Web Services
+
+# Async & Background Tasks - Tareas asíncronas y en segundo plano
+celery==5.4.0                              # Sistema de tareas asíncronas y en cola
+django-celery-beat==2.7.0                  # Programador de tareas periódicas
+django-celery-results==2.5.1               # Almacenamiento de resultados de tareas
+
+# Payments - Procesamiento de pagos
+stripe==12.2.0                             # Procesador de pagos Stripe (tarjetas, etc.)
+paypalrestsdk==1.13.3                      # SDK oficial de PayPal
+django-payments==2.0.0                     # Framework unificado de pagos para Django
+
+# API & Serialization - APIs y documentación
+djangorestframework-api-key==3.0.0         # Autenticación mediante API keys
+drf-spectacular==0.27.2                    # Generación automática de documentación OpenAPI
+drf-spectacular-sidecar==2024.7.1          # Assets estáticos para DRF Spectacular
+
+# Utilities - Utilidades generales
+django-model-utils==4.5.1                  # Herramientas útiles para modelos Django
+django-versatileimagefield==3.1            # Campo de imagen con múltiples tamaños
+python-slugify==8.0.4                      # Generación automática de slugs URL-friendly
+python-decouple==3.8                       # Separación de configuración del código
+whitenoise==6.8.2                          # Servir archivos estáticos en producción
+
+# Monitoring & Logging - Monitoreo y logging
+sentry-sdk==2.30.0                         # Monitoreo de errores y performance en producción
+django-debug-toolbar==4.4.6                # Toolbar de debugging para desarrollo
+
+# Development Tools - Herramientas de desarrollo
+ipython==9.3.0                             # REPL interactivo mejorado de Python
+django-seed==0.3.1                         # Generación de datos de prueba automatizada

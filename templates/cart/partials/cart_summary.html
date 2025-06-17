@@ -1,0 +1,142 @@
+<!-- cart_summary.html - Resumen del carrito -->
+{% load custom_filters %}
+{% load math_filters %}
+<div class="card shadow-sm sticky-top" style="top: 2rem;">
+    <div class="card-header bg-primary text-white">
+        <h5 class="mb-0">
+            <i class="bi bi-calculator"></i>
+            Resumen del Pedido
+        </h5>
+    </div>
+    <div class="card-body">
+        <!-- Resumen de items -->
+        <div class="d-flex justify-content-between mb-2">
+            <span>Productos ({{ total_items }} items):</span>
+            <span id="cart-subtotal">${{ total_price|floatformat:0 }}</span>
+        </div>
+        
+        <!-- Descuentos (si hay) -->
+        {% comment %}
+        <div class="d-flex justify-content-between mb-2 text-success">
+            <span>Descuento:</span>
+            <span>-$0</span>
+        </div>
+        {% endcomment %}
+        
+        <!-- Envío -->
+        <div class="d-flex justify-content-between mb-2">
+            <span>Envío:</span>
+            {% if total_price >= 100000 %}
+                <span class="text-success">GRATIS</span>
+            {% else %}
+                <span>$15,000</span>
+            {% endif %}
+        </div>
+        
+        <!-- Total -->
+        <hr>
+        <div class="d-flex justify-content-between mb-3">
+            <strong class="h5">Total:</strong>
+            <strong class="h5 text-primary" id="cart-total">
+                {% if total_price >= 100000 %}
+                    ${{ total_price|floatformat:0 }}
+                {% else %}
+                    ${{ total_price|add:15000|floatformat:0 }}
+                {% endif %}
+            </strong>
+        </div>
+        
+        <!-- Información de envío gratis -->
+        {% if total_price < 100000 %}
+            <div class="alert alert-info py-2 mb-3">
+                <small>
+                    <i class="bi bi-truck"></i>
+                    Agrega ${{ 100000|sub:total_price|floatformat:0 }} más para envío gratis
+                </small>                <div class="progress mt-1" style="height: 4px;">
+                    <div class="progress-bar" 
+                         data-total="{{ total_price }}" 
+                         data-target="100000"
+                         style="width: 0%"></div>
+                </div>
+            </div>
+        {% else %}
+            <div class="alert alert-success py-2 mb-3">
+                <small>
+                    <i class="bi bi-check-circle"></i>
+                    ¡Tienes envío gratis!
+                </small>
+            </div>
+        {% endif %}
+          <!-- Botones de acción -->
+        <div class="d-grid gap-2">
+            <a href="{% url 'orders:checkout' %}" 
+               class="btn btn-primary btn-lg">
+                <i class="bi bi-credit-card"></i>
+                Proceder al Pago
+            </a>
+            
+            <a href="{% url 'products:list' %}" 
+               class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left"></i>
+                Seguir Comprando
+            </a>
+        </div>
+        
+        <!-- Métodos de pago aceptados -->
+        <div class="mt-4 text-center">
+            <small class="text-muted d-block mb-2">Métodos de pago aceptados:</small>
+            <div class="d-flex justify-content-center gap-2">
+                <i class="bi bi-credit-card-2-front fs-4 text-muted"></i>
+                <i class="bi bi-paypal fs-4 text-muted"></i>
+                <i class="bi bi-bank fs-4 text-muted"></i>
+            </div>
+        </div>
+        
+        <!-- Garantías -->
+        <div class="mt-4">
+            <hr>
+            <div class="row text-center">
+                <div class="col-4">
+                    <i class="bi bi-shield-check text-success"></i>
+                    <small class="d-block text-muted">Compra Segura</small>
+                </div>
+                <div class="col-4">
+                    <i class="bi bi-arrow-return-left text-primary"></i>
+                    <small class="d-block text-muted">30 días devolución</small>
+                </div>
+                <div class="col-4">
+                    <i class="bi bi-truck text-warning"></i>
+                    <small class="d-block text-muted">Envío rápido</small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Cupón de descuento (para futuras versiones) -->
+{% comment %}
+<div class="card shadow-sm mt-3">
+    <div class="card-body">
+        <h6 class="card-title">
+            <i class="bi bi-ticket-perforated"></i>
+            Código de Descuento
+        </h6>
+        <div class="input-group">
+            <input type="text" class="form-control" placeholder="Ingresa tu código">
+            <button class="btn btn-outline-primary" type="button">Aplicar</button>
+        </div>
+    </div>
+</div>
+{% endcomment %}
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const progressBar = document.querySelector('.progress-bar[data-total]');
+    if (progressBar) {
+        const total = parseFloat(progressBar.dataset.total);
+        const target = parseFloat(progressBar.dataset.target);
+        const percentage = Math.min((total / target) * 100, 100);
+        progressBar.style.width = percentage + '%';
+    }
+});
+</script>
